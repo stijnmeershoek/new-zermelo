@@ -1,0 +1,28 @@
+.lesson {
+    @apply relative bg-white text-[#7c87ac] max-w-fit min-h-fit mb-2 overflow-hidden flex;
+
+
+    & > div {
+        @apply text-sm text-[#929bb9];
+    }
+
+    & > .content-left {
+        --padding: 64px;
+        @apply pl-2 flex flex-col justify-between w-[calc(100px+var(--padding))] pr-[var(--padding)] py-1 border-l-[#7c87ac] border-l-[5px] border-y-[#7c87ac] border-y-[1px];
+    
+        & > div:first-child {
+            @apply pb-4;
+        }
+
+        & > div > div {
+            @apply -mt-1;
+        }
+
+        & > div > div:first-child {
+            @apply font-bold text-base text-[#7c87ac];
+        }
+    }
+    & > .content-right {
+        @apply absolute text-base inset-0 text-right pr-2 pt-1 border-r-[#7c87ac] border-r-[1px] border-y-[#7c87ac] border-y-[1px];
+    }
+}

@@ -3,11 +3,11 @@
 @tailwind utilities;
 
 body {
-    @apply w-screen h-screen relative text-white;
+    @apply w-screen h-screen relative bg-[#f8f8f8] text-white;
 }
 
 #root {
-    @apply w-full h-full bg-black;
+    @apply w-full h-full;
 }
 
 .login {
