@@ -1,28 +1,59 @@
-.lesson {
-    @apply relative bg-white text-[#7c87ac] max-w-fit min-h-fit mb-2 overflow-hidden flex;
-
+.block {
+    @apply relative mx-auto bg-[#CFDDDB] py-2 px-[0.375rem] rounded-2xl h-full w-[calc(100%-10px)] overflow-hidden flex;
 
     & > div {
-        @apply text-sm text-[#929bb9];
+        @apply text-sm text-[rgb(0,0,0,0.75)];
+    }
+
+    &.top-flat {
+        @apply rounded-t-none border-t-[1px] border-t-[rgb(0,0,0,0.3)]
+    }
+
+    &.bottom-flat {
+        @apply rounded-b-none;
     }
 
     & > .content-left {
-        --padding: 64px;
-        @apply pl-2 flex flex-col justify-between w-[calc(100px+var(--padding))] pr-[var(--padding)] py-1 border-l-[#7c87ac] border-l-[5px] border-y-[#7c87ac] border-y-[1px];
+        @apply pb-[2px] pl-2 flex flex-col justify-between w-full h-full py-1;
     
-        & > div:first-child {
-            @apply pb-4;
-        }
-
         & > div > div {
             @apply -mt-1;
         }
 
         & > div > div:first-child {
-            @apply font-bold text-base text-[#7c87ac];
+            @apply font-bold text-base text-[rgb(0,0,0,0.65)];
         }
     }
+
     & > .content-right {
-        @apply absolute text-base inset-0 text-right pr-2 pt-1 border-r-[#7c87ac] border-r-[1px] border-y-[#7c87ac] border-y-[1px];
+        @apply absolute text-base inset-0 text-right pr-3 pt-2;
+    }
+
+    &.unkown {
+        @apply bg-[#9EC1CF];
+    }
+    &.lesson {
+        @apply bg-[#E9E9E9];
+    }
+    &.exam {
+        @apply bg-yellow-200;
+    }
+    &.activity {
+        @apply bg-[#77DD77];
+    }
+    &.choice {
+        @apply bg-[#99c5c4];
+    }
+    &.talk {
+        @apply bg-[#ff6961];
+    }
+    &.other {
+        @apply bg-[#9EC1CF];
+    }
+    &.interlude {
+        @apply bg-neutral-400;
+    }
+    &.meeting {
+        @apply bg-[#ff6961];
     }
 }

@@ -14,9 +14,26 @@ export async function getAccessToken(school: string, code: string) {
         if (json.access_token) return json.access_token;
 }
 
-export async function getSchedule(school: string, access_token: string) {
+export async function getSchedule(school: string, access_token: string, start: number, end:number) {
     const url = getApiURL(school)
-    const res = await fetch(`${url}/appointments?valid=true&start=1665352800&end=1665957599&user=~me`, { 
+    const res = await fetch(`${url}/appointments?valid=true&start=${start}&end=${end}&user=~me`, { 
+        method: "GET", 
+        headers: {
+            "Authorization": `Bearer ${access_token}`
+        }
+        });
+        if (!res.ok) {
+            const message = `Server returned with an error (${res.status})`;
+            console.error(message)
+            return
+        }
+        const json = await res.json();
+        return json.response;
+}
+
+export async function getAnnouncements(school: string, access_token:string) {
+    const url = getApiURL(school)
+    const res = await fetch(`${url}/announcements?user=~me&current=true`, { 
         method: "GET", 
         headers: {
             "Authorization": `Bearer ${access_token}`
@@ -40,9 +57,30 @@ export type Schedule = {
     startRow?: number,
     status?: number,
     totalRows?: number,
-  }
+}
+
+export type Announcements = {
+    data: Announcement[],
+    details?: string,
+    endRow?: number,
+    eventId?: number,
+    message?: string,
+    startRow?: number,
+    status?: number,
+    totalRows?: number,
+}
+
+export type Announcement = {
+    branchesOfSchools: number[],
+    end: number,
+    id: number,
+    read: boolean,
+    start: number,
+    text: string,
+    title: string,
+}
   
-  export type Lesson = {
+export type Lesson = {
     id: number;
     start: number;
     end: number;
@@ -50,7 +88,7 @@ export type Schedule = {
     endTimeSlot: number;
     startTimeSlotName: string;
     endTimeSlotName: string;
-    optional: boolean;
+    optional?: boolean;
     teacherChanged: boolean;
     groupChanged: boolean;
     locationChanged: boolean;
@@ -64,22 +102,22 @@ export type Schedule = {
     content?: any;
     extraStudentSource?: any;
     onlineLocationUrl?: any;
-    schedulerRemark: string;
-    remark: string;
+    schedulerRemark?: string;
+    remark?: string;
     changeDescription: string;
-    branch: string;
-    branchOfSchool: number;
+    branch?: string;
+    branchOfSchool?: number;
     created: number;
-    appointmentInstance: number;
+    appointmentInstance?: number;
     type: string;
     lastModified: number;
-    appointmentLastModified: number;
+    appointmentLastModified?: number;
     subjects: string[];
     choosableInDepartmentCodes: string[];
-    teachers: string[];
-    onlineTeachers: any[];
-    groupsInDepartments: number[];
-    groups: string[];
-    locationsOfBranch: number[];
-    locations: string[];
-  }
+    teachers?: string[];
+    onlineTeachers?: any[];
+    groupsInDepartments?: number[];
+    groups?: string[];
+    locationsOfBranch?: number[];
+    locations?: string[];
+}

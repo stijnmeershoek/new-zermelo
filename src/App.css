@@ -1,0 +1,250 @@
+.app {
+    @apply h-full w-full text-black overflow-hidden flex;
+}
+
+.loader {
+    @apply relative m-auto w-12 aspect-square inline-block;
+
+    &::after, &::before {
+        content: "";
+        @apply box-border w-full h-full rounded-full bg-black absolute left-0 top-0 animate-[animloader_2s_linear_infinite];
+    }
+
+    &::after {
+        animation-delay: -1s;
+    }
+} 
+
+@keyframes animloader {
+    0% {
+      transform: scale(0);
+      opacity: 1;
+    }
+    100% {
+      transform: scale(1);
+      opacity: 0;
+    }
+  }
+
+.sidebar {
+    @apply pt-5 px-12 bg-black w-1/4 text-white;
+
+    & > .announcements {
+        @apply h-1/2;
+
+        & .announcement {
+            @apply flex flex-col justify-between px-4 py-3 bg-[#151515] rounded-lg text-lg mb-3 cursor-pointer;
+
+            & > div:last-of-type {
+                @apply max-h-0 text-neutral-300 leading-5 text-[0.9rem] pt-2 overflow-hidden transition-all duration-500;
+            }
+
+            &:hover > div:last-of-type {
+                @apply max-h-[200px];
+            }
+
+            & > div:first-child {
+                @apply flex items-center justify-between;
+
+                & > div {
+                    @apply flex items-center;
+
+                    & > span:nth-child(1) {
+                        @apply text-sm ml-auto;
+                    }
+
+                    & > span:nth-child(2) {
+                        @apply flex items-center flex-grow h-5 ml-2;
+        
+                        & > svg {
+                            @apply h-2/3 aspect-square fill-white;
+                        }
+                    }
+                }
+            }
+        }
+
+        & h1 {
+            @apply font-bold text-3xl mb-5;
+        }
+    }
+}
+
+.schedule {
+    @apply relative pt-5 px-12 h-full flex-grow flex flex-col;
+
+    & > .header {
+        @apply flex items-center font-bold text-3xl pb-12;
+
+        & span {
+            @apply text-5xl h-full font-light mr-5 leading-[44px];
+        }
+
+        & h1 {
+            @apply mr-5;
+        }
+
+        & > button.next > svg {
+            @apply -scale-x-100;
+        }
+
+        & > .right {
+            @apply ml-auto;
+
+            & > button {
+                @apply bg-[#EAEAEA] text-black text-base font-normal px-7 py-3 rounded-xl ml-2;
+
+                &:hover {
+                    @apply bg-[hsl(0,0%,78%)]
+                }
+
+                &.active {
+                    @apply bg-black text-[#EAEAEA];
+
+                    &:hover {
+                        @apply bg-[hsl(0,0%,30%)];
+                    }
+                }
+            }
+        }
+
+        & > button {
+            @apply aspect-square mr-8;
+
+            &:first-of-type {
+                @apply ml-5;
+            }
+
+            & > svg {
+                @apply h-8;
+            }
+        }
+    }
+
+    & > .dates {
+        @apply relative flex w-full justify-evenly ;
+
+        &::after {
+            content: "";
+            @apply absolute z-10 w-full -bottom-5 h-5 bg-gradient-to-b from-[rgb(250,250,250,1)] to-[rgb(250,250,250,0)];
+        }
+
+        & > .space {
+            @apply text-transparent pl-[0.375rem] pr-5 flex-grow-0;
+        }
+
+        & > div {
+            @apply flex flex-grow justify-evenly;
+
+            & .date {
+                @apply w-full flex flex-col justify-center items-center row-start-1 pb-3 px-1 pt-[0.1875rem] bg-[#FAFAFA] -z-10 text-[rgb(0,0,0,0.25)];
+        
+                &.current {
+                    @apply text-black;
+
+                    & > div:last-child {
+                        @apply bg-black;
+                    }
+                }
+
+                & > span:first-child {
+                    @apply font-bold text-6xl mb-2;
+                }
+        
+                & > div:last-child {
+                    @apply h-5 bg-[rgb(0,0,0,0.25)] w-[2px] mt-4;
+                }
+            }
+        }
+    }
+
+    & .scroller {
+        @apply flex-grow overflow-auto;
+
+        &::-webkit-scrollbar-track {
+            @apply bg-[#F8F8F8];
+        }
+
+        &::-webkit-scrollbar {
+            @apply w-2;
+    
+        }
+
+        &::-webkit-scrollbar-thumb {
+            @apply bg-[rgb(0,0,0,0.0)];
+        }
+
+    }
+
+    & .schedule-grid-week {
+        @apply relative h-fit flex-shrink-0 aspect-[3/4] overflow-x-visible w-auto grid grid-rows-[auto,repeat(110,minmax(0,1fr))] grid-cols-[auto,repeat(5,minmax(0,1fr))];
+    
+        & .current-time {
+            @apply absolute z-50 top-[0px] flex items-center h-[1px] overflow-visible left-1/2 -translate-x-1/2 w-[calc(100%+15px)] col-[span_5/7];
+    
+            & > div {
+                @apply bg-[rgb(0,0,0,0.5)] mt-1;
+            }
+
+            & > div:first-child {
+                @apply w-[2px] h-[25px];
+            }
+
+            & > div:nth-child(2) {
+                @apply h-[2px] w-full;
+            }
+        }
+        
+        & .line {
+            @apply absolute flex items-center h-full left-1/2 -translate-x-1/2 w-[calc(100%+15px)] col-[span_5/7];
+    
+            & > div {
+                @apply bg-[rgb(0,0,0,0.25)] h-[1px] w-full mt-[1px];
+            }
+        }
+    
+        & > div:nth-of-type(-n+10) {
+            @apply pl-[0.375rem] pr-5 bg-[#FAFAFA] -z-10 text-black flex items-center;
+        }
+    
+        & > div:nth-of-type(-n+10):not(:first-child) {
+            @apply col-start-1;
+        }
+    
+        & > div:nth-of-type(2) {
+            @apply row-[2/4];
+        }
+    
+        & .line:nth-of-type(1) {
+            @apply row-[2/4];
+        }
+    
+        & .line:nth-of-type(2), & > div:nth-of-type(3) {
+            @apply row-[14/16];
+        }
+        & .line:nth-of-type(3), & > div:nth-of-type(4) {
+            @apply row-[26/28];
+        }
+        & .line:nth-of-type(4), & > div:nth-of-type(5) {
+            @apply row-[38/40];
+        }
+        & .line:nth-of-type(5), & > div:nth-of-type(6) {
+            @apply row-[50/52];
+        }
+        & .line:nth-of-type(6), & > div:nth-of-type(7) {
+            @apply row-[62/64];
+        }
+        & .line:nth-of-type(7), & > div:nth-of-type(8) {
+            @apply row-[74/76];
+        }
+        & .line:nth-of-type(8), & > div:nth-of-type(9) {
+            @apply row-[86/88];
+        }
+        & .line:nth-of-type(9), & > div:nth-of-type(10)  {
+            @apply row-[98/100];
+        }
+        & .line:nth-of-type(10), & > div:nth-of-type(11)  {
+            @apply row-[110/112];
+        }
+    }
+}
