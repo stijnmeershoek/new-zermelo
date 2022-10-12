@@ -1,0 +1,19 @@
+.login {
+    @apply w-full h-full flex flex-col justify-center items-center;
+
+    & h1 {
+        @apply font-bold text-4xl;
+    }
+
+    & > form {
+        @apply w-fit flex flex-col gap-5;
+    }
+
+    & input {
+        @apply w-96 text-2xl text-black outline-black border-black border-[1px] rounded-md px-2;
+    }
+
+    & button {
+        @apply bg-black text-white px-3 py-2 rounded-lg;
+    }
+}

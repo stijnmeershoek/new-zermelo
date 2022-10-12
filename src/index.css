@@ -3,25 +3,9 @@
 @tailwind utilities;
 
 body {
-    @apply w-screen h-screen relative bg-[#f8f8f8] text-white;
+    @apply w-screen h-screen relative bg-[#f8f8f8];
 }
 
 #root {
     @apply w-full h-full;
-}
-
-.login {
-    @apply w-full h-full flex justify-center items-center;
-
-    & > form {
-        @apply w-1/2 flex flex-col justify-center items-center gap-5;
-    }
-
-    & input {
-        @apply w-96 text-black;
-    }
-
-    & button {
-        @apply bg-white
-    }
 }
