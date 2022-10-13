@@ -17,7 +17,7 @@ export function useAppState() {
 }
 
 interface Props {
-  children: ReactNode[]
+  children: ReactNode[] | ReactNode,
 }
 
 export function AppProvider({ children }: Props) {
