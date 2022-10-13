@@ -4,14 +4,18 @@ function getApiURL(school: string) {
 
 export async function getAccessToken(school: string, code: string) {
     const url = getApiURL(school);
-    const res = await fetch(`${url}/oauth/token?grant_type=authorization_code&code=${code}`, { method: "POST"})
-        if (!res.ok) {
-            const message = `Server returned with an error (${res.status})`;
-            console.error(message)
-            return
-        }
-        const json = await res.json();
-        if (json.access_token) return json.access_token;
+    const res = await fetch(`${url}/oauth/token?grant_type=authorization_code&code=${code}`, { method: "POST"});
+
+    if (!res.ok) {
+        return await Promise.reject(Error(`Server returned an error. you probably entered an invalid code.`));
+    }
+
+    const json = await res.json();
+    if (json.access_token) {
+        return await Promise.resolve(json.access_token)
+    } else {
+        return await Promise.reject(Error(`No access token could be retrieved from server.`))
+    };
 }
 
 export async function getSchedule(school: string, access_token: string, start: number, end:number) {
@@ -21,14 +25,14 @@ export async function getSchedule(school: string, access_token: string, start: n
         headers: {
             "Authorization": `Bearer ${access_token}`
         }
-        });
-        if (!res.ok) {
-            const message = `Server returned with an error (${res.status})`;
-            console.error(message)
-            return
-        }
-        const json = await res.json();
-        return json.response;
+    });
+
+    if (!res.ok) {
+        return Promise.reject(Error(`Server returned with an error (${res.status})`))
+    }
+
+    const json = await res.json();
+    return Promise.resolve(json.response);
 }
 
 export async function getAnnouncements(school: string, access_token:string) {
@@ -38,14 +42,14 @@ export async function getAnnouncements(school: string, access_token:string) {
         headers: {
             "Authorization": `Bearer ${access_token}`
         }
-        });
-        if (!res.ok) {
-            const message = `Server returned with an error (${res.status})`;
-            console.error(message)
-            return
-        }
-        const json = await res.json();
-        return json.response;
+    });
+
+    if (!res.ok) {
+        return Promise.reject(Error(`Server returned with an error (${res.status})`))
+    }
+
+    const json = await res.json();
+    return Promise.resolve(json.response);
 }
 
 export type Schedule = {

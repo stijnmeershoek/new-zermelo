@@ -27,10 +27,14 @@
   }
 
 .sidebar {
-    @apply pt-5 px-12 bg-black w-1/4 text-white;
+    @apply py-7 px-12 bg-black w-1/4 text-white min-w-[350px] h-full flex flex-col;
+
+    & > .logout {
+        @apply mt-auto bg-[#151515] border-[1px] border-neutral-800 rounded-lg py-2;
+    }
 
     & > .announcements {
-        @apply h-1/2;
+        @apply flex-grow mb-5 overflow-y-auto overflow-x-hidden;
 
         & .announcement {
             @apply flex flex-col justify-between px-4 py-3 bg-[#151515] rounded-lg text-lg mb-3 cursor-pointer;
@@ -47,7 +51,11 @@
                 @apply flex items-center justify-between;
 
                 & > div {
-                    @apply flex items-center;
+                    @apply pl-5 flex items-center;
+
+                    @media (max-width: 1400px) {
+                        @apply hidden;
+                    }
 
                     & > span:nth-child(1) {
                         @apply text-sm ml-auto;
@@ -76,12 +84,16 @@
     & > .header {
         @apply flex items-center font-bold text-3xl pb-12;
 
-        & span {
-            @apply text-5xl h-full font-light mr-5 leading-[44px];
-        }
+        & > div:first-child {
+            @apply flex items-center w-[calc(19ch+3.75rem)];
 
-        & h1 {
-            @apply mr-5;
+            & h1 {
+                @apply mr-5;
+            }
+
+            & span {
+                @apply block uppercase text-center text-5xl h-full font-light mr-5 pb-2;
+            }
         }
 
         & > button.next > svg {
@@ -159,7 +171,7 @@
     }
 
     & .scroller {
-        @apply flex-grow overflow-auto;
+        @apply flex-grow overflow-y-auto overflow-x-hidden;
 
         &::-webkit-scrollbar-track {
             @apply bg-[#F8F8F8];

@@ -1,34 +1,41 @@
 .block {
-    @apply relative mx-auto bg-[#CFDDDB] py-2 px-[0.375rem] rounded-2xl h-full w-[calc(100%-10px)] overflow-hidden flex;
+    @apply relative mx-auto bg-[#CFDDDB] py-2 px-[0.375rem] rounded-2xl h-[calc(100%-2px)] w-[calc(100%-10px)] overflow-hidden flex mt-[1px];
 
     & > div {
         @apply text-sm text-[rgb(0,0,0,0.75)];
     }
 
-    &.top-flat {
-        @apply rounded-t-none border-t-[1px] border-t-[rgb(0,0,0,0.3)]
-    }
-
-    &.bottom-flat {
-        @apply rounded-b-none;
-    }
-
     & > .content-left {
-        @apply pb-[2px] pl-2 flex flex-col justify-between w-full h-full py-1;
-    
-        & > div > div {
+        @apply pb-[2px] pl-2 flex flex-col justify-center w-full h-full py-1 flex-wrap;
+
+        & span.change {
+            @apply text-red-500 font-bold ml-1;
+        }
+        
+        & > div:first-child {
+            @apply font-bold text-base text-[rgb(0,0,0,0.65)] max-w-[11ch] break-words;
+        }
+        
+        & > div:not(:last-child) {
             @apply -mt-1;
         }
 
-        & > div > div:first-child {
-            @apply font-bold text-base text-[rgb(0,0,0,0.65)];
+        & > div:last-child {
+            @apply mt-auto;
         }
     }
 
     & > .content-right {
         @apply absolute text-base inset-0 text-right pr-3 pt-2;
+
+        & > svg {
+            @apply ml-auto w-4 text-red-500;
+        }
     }
 
+    &.wrap * {
+        @apply !mt-[unset] leading-4;
+    }
     &.unkown {
         @apply bg-[#9EC1CF];
     }
