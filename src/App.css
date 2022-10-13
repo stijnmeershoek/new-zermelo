@@ -37,7 +37,7 @@
         @apply flex-grow mb-5 overflow-y-auto overflow-x-hidden;
 
         & .announcement {
-            @apply flex flex-col justify-between px-4 py-3 bg-[#151515] rounded-lg text-lg mb-3 cursor-pointer;
+            @apply flex flex-col justify-between px-4 py-3 bg-[#151515] border-neutral-800 border-[1px] rounded-lg text-lg mb-3 cursor-pointer;
 
             & > div:last-of-type {
                 @apply max-h-0 text-neutral-300 leading-5 text-[0.9rem] pt-2 overflow-hidden transition-all duration-500;
@@ -96,31 +96,35 @@
             }
         }
 
-        & > button.next > svg {
+        & button.next > svg {
             @apply -scale-x-100;
         }
 
         & > .right {
-            @apply ml-auto;
+            @apply ml-auto flex items-center;
+
+            & > div {
+                @apply h-full flex items-center;
+            }
 
             & > button {
-                @apply bg-[#EAEAEA] text-black text-base font-normal px-7 py-3 rounded-xl ml-2;
+                @apply bg-[#EAEAEA] border-neutral-300 border-[1px] text-black text-base font-normal px-7 py-3 rounded-xl ml-2;
 
                 &:hover {
-                    @apply bg-[hsl(0,0%,78%)]
+                    @apply bg-neutral-300;
                 }
 
                 &.active {
-                    @apply bg-black text-[#EAEAEA];
+                    @apply bg-black text-[#EAEAEA] border-neutral-700;
 
                     &:hover {
-                        @apply bg-[hsl(0,0%,30%)];
+                        @apply bg-neutral-700;
                     }
                 }
             }
         }
 
-        & > button {
+        & button.next, button.prev {
             @apply aspect-square mr-8;
 
             &:first-of-type {
@@ -189,7 +193,7 @@
     }
 
     & .schedule-grid-week {
-        @apply relative h-fit flex-shrink-0 aspect-[3/4] overflow-x-visible w-auto grid grid-rows-[auto,repeat(110,minmax(0,1fr))] grid-cols-[auto,repeat(5,minmax(0,1fr))];
+        @apply relative h-fit flex-shrink-0 aspect-[5/8] overflow-x-visible w-auto grid grid-rows-[auto,repeat(110,minmax(0,1fr))] grid-cols-[auto,repeat(5,minmax(0,1fr))];
     
         & .current-time {
             @apply absolute z-50 top-[0px] flex items-center h-[1px] overflow-visible left-1/2 -translate-x-1/2 w-[calc(100%+15px)] col-[span_5/7];
