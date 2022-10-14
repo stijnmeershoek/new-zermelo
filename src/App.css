@@ -27,72 +27,100 @@
   }
 
 .sidebar {
-    @apply py-7 px-12 bg-black w-1/4 text-white min-w-[350px] h-full flex flex-col;
+    @apply py-7 px-12 bg-black w-1/4 text-white min-w-[325px] h-full flex flex-col;
 
     & > .logout {
-        @apply mt-auto bg-[#151515] border-[1px] border-neutral-800 rounded-lg py-2;
+        @apply mt-auto bg-[#151515] border-[1px] border-neutral-800 rounded-lg py-2 hover:bg-neutral-800 hover:border-neutral-700;
     }
+}
 
-    & > .announcements {
-        @apply flex-grow mb-5 overflow-y-auto overflow-x-hidden;
+.announcements, .announcements-screen {
+    @apply flex-grow mb-5 overflow-y-auto overflow-x-hidden;
 
-        & .announcement {
-            @apply flex flex-col justify-between px-4 py-3 bg-[#151515] border-neutral-800 border-[1px] rounded-lg text-lg mb-3 cursor-pointer;
+    & .announcement {
+        @apply flex flex-col justify-between px-4 py-3 bg-[#151515] border-neutral-800 border-[1px] rounded-lg text-lg mb-3 cursor-pointer;
 
-            & > div:last-of-type {
-                @apply max-h-0 text-neutral-300 leading-5 text-[0.9rem] pt-2 overflow-hidden transition-all duration-500;
-            }
+        & > div:last-of-type {
+            @apply max-h-0 text-neutral-300 leading-5 text-[0.9rem] pt-2 overflow-hidden transition-all duration-500;
+        }
 
-            &:hover > div:last-of-type {
-                @apply max-h-[200px];
-            }
+        &:hover > div:last-of-type, &:focus > div:last-of-type, &:focus-within > div:last-of-type {
+            @apply max-h-[200px];
+        }
 
-            & > div:first-child {
-                @apply flex items-center justify-between;
+        & > div:first-child {
+            @apply flex items-center justify-between;
 
-                & > div {
-                    @apply pl-5 flex items-center;
+            & > div {
+                @apply pl-5 flex items-center;
 
-                    @media (max-width: 1400px) {
-                        @apply hidden;
-                    }
+                @media (max-width: 1400px) {
+                    @apply hidden;
+                }
 
-                    & > span:nth-child(1) {
-                        @apply text-sm ml-auto;
-                    }
+                & > span:nth-child(1) {
+                    @apply text-sm ml-auto;
+                }
 
-                    & > span:nth-child(2) {
-                        @apply flex items-center flex-grow h-5 ml-2;
-        
-                        & > svg {
-                            @apply h-2/3 aspect-square fill-white;
-                        }
+                & > span:nth-child(2) {
+                    @apply flex items-center flex-grow h-5 ml-2;
+    
+                    & > svg {
+                        @apply h-2/3 aspect-square fill-white;
                     }
                 }
             }
         }
+    }
 
-        & h1 {
-            @apply font-bold text-3xl mb-5;
-        }
+    & h1 {
+        @apply font-bold text-3xl mb-5;
     }
 }
 
+.announcements-screen {
+    @apply absolute bg-[black] inset-0 z-30 pt-20 text-white h-full px-5;
+}
+
 .schedule {
-    @apply relative pt-5 px-12 h-full flex-grow flex flex-col;
+    @apply relative h-full flex-grow flex flex-col dsk:max-w-[min(75vw,calc(100vw-325px))] max-w-[100vw];
+
+    & > .menu {
+        @apply dsk:!hidden absolute z-50 w-full h-full bg-black -translate-x-full transition-transform flex flex-col items-center pt-20 text-white;
+
+        & > button {
+            @apply flex items-center text-3xl font-bold uppercase px-7 py-4 hover:scale-125 transition-all;
+
+            & > svg {
+                @apply h-10 aspect-square mr-3;
+            }
+        }
+
+        & > button:last-child {
+            @apply mt-auto mb-20;
+        }
+
+        &.show {
+            @apply translate-x-0;
+        }
+    }
 
     & > .header {
-        @apply flex items-center font-bold text-3xl pb-12;
+        @apply z-40 py-5 dsk:px-12 px-5 flex items-center font-bold text-xl dsk:text-3xl dsk:mb-12 mb-3 text-white dsk:text-black dsk:bg-transparent bg-black;
 
-        & > div:first-child {
-            @apply flex items-center w-[calc(19ch+3.75rem)];
+        & > .menu-hamburger {
+            @apply text-white h-[70%] aspect-square mr-3;
+        }
+
+        & > div:first-of-type {
+            @apply flex items-center;
 
             & h1 {
                 @apply mr-5;
             }
 
             & span {
-                @apply block uppercase text-center text-5xl h-full font-light mr-5 pb-2;
+                @apply block uppercase text-center text-3xl dsk:text-5xl h-full font-light mr-5 dsk:pb-2 pb-1;
             }
         }
 
@@ -108,37 +136,29 @@
             }
 
             & > button {
-                @apply bg-[#EAEAEA] border-neutral-300 border-[1px] text-black text-base font-normal px-7 py-3 rounded-xl ml-2;
-
-                &:hover {
-                    @apply bg-neutral-300;
-                }
+                @apply hidden sm:block bg-[#EAEAEA] border-neutral-300 border-[1px] text-black dsk:text-base text-sm font-normal dsk:px-7 dsk:py-3 py-2 px-5 dsk:rounded-xl rounded-lg ml-2 hover:bg-neutral-300;
 
                 &.active {
-                    @apply bg-black text-[#EAEAEA] border-neutral-700;
-
-                    &:hover {
-                        @apply bg-neutral-700;
-                    }
+                    @apply bg-[#151515] border-[1px] border-neutral-800 hover:bg-neutral-800 hover:border-neutral-700 text-[#EAEAEA];
                 }
             }
         }
 
         & button.next, button.prev {
-            @apply aspect-square mr-8;
+            @apply aspect-square dsk:mr-8 sm:mr-5 mr-0;
 
             &:first-of-type {
-                @apply ml-5;
+                @apply dsk:mr-8 !mr-5;
             }
 
             & > svg {
-                @apply h-8;
+                @apply dsk:h-8 h-6;
             }
         }
     }
 
     & > .dates {
-        @apply relative flex w-full justify-evenly ;
+        @apply relative flex w-full justify-evenly dsk:px-12 pl-5 pr-4;
 
         &::after {
             content: "";
@@ -146,7 +166,7 @@
         }
 
         & > .space {
-            @apply text-transparent pl-[0.375rem] pr-5 flex-grow-0;
+            @apply text-transparent dsk:pl-[0.375rem] dsk:pr-5 pr-2 flex-grow-0;
         }
 
         & > div {
@@ -164,18 +184,18 @@
                 }
 
                 & > span:first-child {
-                    @apply font-bold text-6xl mb-2;
+                    @apply font-bold dsk:text-6xl dsk:mb-2 text-[2.5rem] -mb-2;
                 }
         
                 & > div:last-child {
-                    @apply h-5 bg-[rgb(0,0,0,0.25)] w-[2px] mt-4;
+                    @apply h-5 bg-[rgb(0,0,0,0.25)] w-[2px] dsk:mt-4 mt-2;
                 }
             }
         }
     }
 
     & .scroller {
-        @apply flex-grow overflow-y-auto overflow-x-hidden;
+        @apply flex-grow overflow-y-auto overflow-x-hidden dsk:px-12 pl-5 pr-2;
 
         &::-webkit-scrollbar-track {
             @apply bg-[#F8F8F8];
@@ -193,7 +213,7 @@
     }
 
     & .schedule-grid-week {
-        @apply relative h-fit flex-shrink-0 aspect-[5/8] overflow-x-visible w-auto grid grid-rows-[auto,repeat(110,minmax(0,1fr))] grid-cols-[auto,repeat(5,minmax(0,1fr))];
+        @apply relative h-fit flex-shrink-0 overflow-x-visible w-auto grid grid-rows-[auto,repeat(110,minmax(0,1fr))] grid-cols-[auto,repeat(5,minmax(0,1fr))];
     
         & .current-time {
             @apply absolute z-50 top-[0px] flex items-center h-[1px] overflow-visible left-1/2 -translate-x-1/2 w-[calc(100%+15px)] col-[span_5/7];
@@ -212,7 +232,7 @@
         }
         
         & .line {
-            @apply absolute flex items-center h-full left-1/2 -translate-x-1/2 w-[calc(100%+15px)] col-[span_5/7];
+            @apply absolute flex items-center h-full left-1/2 -translate-x-1/2 dsk:w-[calc(100%+15px)] w-full col-[span_5/7];
     
             & > div {
                 @apply bg-[rgb(0,0,0,0.25)] h-[1px] w-full mt-[1px];
@@ -220,7 +240,7 @@
         }
     
         & > div:nth-of-type(-n+10) {
-            @apply pl-[0.375rem] pr-5 bg-[#FAFAFA] -z-10 text-black flex items-center;
+            @apply dsk:pl-[0.375rem] dsk:pr-5 pr-2 -z-10 flex items-center;
         }
     
         & > div:nth-of-type(-n+10):not(:first-child) {

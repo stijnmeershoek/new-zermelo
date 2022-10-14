@@ -1,35 +1,39 @@
 .block {
-    @apply relative mx-auto bg-[#CFDDDB] py-2 px-[0.375rem] rounded-2xl h-[calc(100%-2px)] w-[calc(100%-10px)] overflow-hidden flex mt-[1px];
+    @apply relative mx-auto bg-[#CFDDDB] py-2 dsk:px-[0.375rem] rounded-xl h-[calc(100%-2px)] dsk:w-[calc(100%-10px)] w-[calc(100%-5px)] aspect-[16/10] overflow-hidden flex mt-[1px];
 
     & > div {
         @apply text-sm text-[rgb(0,0,0,0.75)];
     }
 
     & > .content-left {
-        @apply pb-[2px] pl-2 flex flex-col w-full h-full py-1;
+        @apply pb-[2px] dsk:pl-2 dsk:pr-0 px-2 flex flex-col w-full h-full py-1;
 
         & span.change {
             @apply text-red-500 font-bold ml-1;
         }
         
         & > div:first-child {
-            @apply font-bold text-base text-[rgb(0,0,0,0.65)] max-w-[11ch] break-words;
+            @apply font-bold text-base text-[rgb(0,0,0,0.65)] max-w-[11ch] break-normal uppercase dsk:normal-case dsk:leading-normal leading-4;
+        }
+
+        & > div:nth-child(2) {
+            @apply dsk:mt-0 mt-1;
         }
         
         & > div:not(:last-child) {
-            @apply -mt-1;
+            @apply dsk:-mt-1;
         }
 
-        & > div:last-child {
+        & > div:.times {
             @apply mt-auto;
         }
     }
 
     & > .content-right {
-        @apply absolute text-base inset-0 text-right pr-3 pt-2;
+        @apply absolute text-base inset-0 text-right dsk:pr-3 pr-[0.375rem] pt-2;
 
         & > svg {
-            @apply ml-auto w-4 text-red-500;
+            @apply dsk:mb-0 dsk:mr-0 mb-2 mr-1 dsk:relative dsk:right-0 absolute right-1 bottom-0 ml-auto w-4 text-red-500;
         }
     }
 
