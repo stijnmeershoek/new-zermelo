@@ -9,8 +9,10 @@ interface Props {
 }
 
 export function LessonBlock({lesson, style, className, isDesktop}: Props) {
+  const classes = `block ${lesson.type} ${className} ${lesson.cancelled ? "cancelled" : ""}${lesson.hidden ? "hidden": ""}`;
+
   return (
-    <div className={`block ${lesson.type} ${className ? className : ""}`} style={style}>
+    <div className={classes.replace(/\s+/g,' ').trim()} style={style}>
       <div className="content-left">
         <div>{lesson.subjects.length <= 1 ? lesson.subjects[0] : `${lesson.subjects[0]}, ${lesson.subjects[1]}${lesson.subjects.length > 2 ? "+" : ""}`}</div>
         {isDesktop && lesson.teachers && lesson.teachers.length > 0 && <div>{lesson.teachers.length <= 1 ? lesson.teachers[0].toUpperCase() : `${lesson.teachers[0].toUpperCase()}, ${lesson.teachers[1].toUpperCase()}${lesson.teachers.length > 2 ? "+" : ""}`}<span className='change'>{lesson.teacherChanged && "!"}</span></div>}

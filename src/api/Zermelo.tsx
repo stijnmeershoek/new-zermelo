@@ -18,13 +18,14 @@ export async function getAccessToken(school: string, code: string) {
     };
 }
 
-export async function getSchedule(school: string, access_token: string, start: number, end:number) {
+export async function getSchedule(school: string, access_token: string, start: number, end:number, abortController: AbortController) {
     const url = getApiURL(school)
     const res = await fetch(`${url}/appointments?valid=true&start=${start}&end=${end}&user=~me`, { 
         method: "GET", 
         headers: {
             "Authorization": `Bearer ${access_token}`
-        }
+        },
+        signal: abortController.signal
     });
 
     if (!res.ok) {
@@ -35,13 +36,14 @@ export async function getSchedule(school: string, access_token: string, start: n
     return Promise.resolve(json.response);
 }
 
-export async function getAnnouncements(school: string, access_token:string) {
+export async function getAnnouncements(school: string, access_token:string, abortController: AbortController) {
     const url = getApiURL(school)
     const res = await fetch(`${url}/announcements?user=~me&current=true`, { 
         method: "GET", 
         headers: {
             "Authorization": `Bearer ${access_token}`
-        }
+        },
+        signal: abortController.signal
     });
 
     if (!res.ok) {

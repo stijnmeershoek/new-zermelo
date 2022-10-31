@@ -1,5 +1,196 @@
+/* @font-face {
+	src: url('/fonts/SF-Pro/SFNS.woff2') format('woff2-variations');
+	font-family:'SF Pro';
+	font-style: normal;
+}
+@font-face {
+	src: url('/fonts/SF-Pro/SFNSItalic.woff2') format('woff2-variations');
+	font-family:'SF Pro';
+	font-style: italic;
+} */
+
+@font-face {
+    font-family: 'HelveticaNowDisplay';
+    src: local('HelveticaNowDisplay-ExtLt'),
+        url('/fonts/HelveticaNow/HelveticaNowDisplay-ExtLt.woff2') format('woff2');
+    font-weight: 200;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'HelveticaNowDisplay Hairline';
+    src: local('HelveticaNowDisplay-Hairline'),
+        url('/fonts/HelveticaNow/HelveticaNowDisplay-Hairline.woff2') format('woff2');
+    font-weight: 100;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'HelveticaNowDisplay';
+    src: local('HelveticaNowDisplay-LightIta'),
+        url('/fonts/HelveticaNow/HelveticaNowDisplay-LightIta.woff2') format('woff2');
+    font-weight: 300;
+    font-style: italic;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'HelveticaNowDisplay ExtraBlack';
+    src: local('HelveticaNowDisplay-ExtBlkIta'),
+        url('/fonts/HelveticaNow/HelveticaNowDisplay-ExtBlkIta.woff2') format('woff2');
+    font-weight: 950;
+    font-style: italic;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'HelveticaNowDisplay ExtraBlack';
+    src: local('HelveticaNowDisplay-ExtBlk'),
+        url('/fonts/HelveticaNow/HelveticaNowDisplay-ExtBlk.woff2') format('woff2');
+    font-weight: 950;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'HelveticaNowDisplay';
+    src: local('HelveticaNowDisplay-ExtBdIta'),
+        url('/fonts/HelveticaNow/HelveticaNowDisplay-ExtBdIta.woff2') format('woff2');
+    font-weight: 800;
+    font-style: italic;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'HelveticaNowDisplay';
+    src: local('HelveticaNowDisplay-ExtLtIta'),
+        url('/fonts/HelveticaNow/HelveticaNowDisplay-ExtLtIta.woff2') format('woff2');
+    font-weight: 200;
+    font-style: italic;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'HelveticaNowDisplay';
+    src: local('HelveticaNowDisplay-Black'),
+        url('/fonts/HelveticaNow/HelveticaNowDisplay-Black.woff2') format('woff2');
+    font-weight: 900;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'HelveticaNowDisplay';
+    src: local('HelveticaNowDisplay-ExtraBold'),
+        url('/fonts/HelveticaNow/HelveticaNowDisplay-ExtraBold.woff2') format('woff2');
+    font-weight: 800;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'HelveticaNowDisplay';
+    src: local('HelveticaNowDisplay-Bold'),
+        url('/fonts/HelveticaNow/HelveticaNowDisplay-Bold.woff2') format('woff2');
+    font-weight: bold;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'HelveticaNowDisplay';
+    src: local('HelveticaNowDisplay-Light'),
+        url('/fonts/HelveticaNow/HelveticaNowDisplay-Light.woff2') format('woff2');
+    font-weight: 300;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'HelveticaNowDisplay Hairline';
+    src: local('HelveticaNowDisplay-HairlineI'),
+        url('/fonts/HelveticaNow/HelveticaNowDisplay-HairlineI.woff2') format('woff2');
+    font-weight: 100;
+    font-style: italic;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'HelveticaNowDisplay';
+    src: local('HelveticaNowDisplay-BoldIta'),
+        url('/fonts/HelveticaNow/HelveticaNowDisplay-BoldIta.woff2') format('woff2');
+    font-weight: bold;
+    font-style: italic;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'HelveticaNowDisplay';
+    src: local('HelveticaNowDisplay-BlackIta'),
+        url('/fonts/HelveticaNow/HelveticaNowDisplay-BlackIta.woff2') format('woff2');
+    font-weight: 900;
+    font-style: italic;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'HelveticaNowDisplay';
+    src: local('HelveticaNowDisplay-Thin'),
+        url('/fonts/HelveticaNow/HelveticaNowDisplay-Thin.woff2') format('woff2');
+    font-weight: 100;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'HelveticaNowDisplay';
+    src: local('HelveticaNowDisplay-Regular'),
+        url('/fonts/HelveticaNow/HelveticaNowDisplay-Regular.woff2') format('woff2');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'HelveticaNowDisplay';
+    src: local('HelveticaNowDisplay-MedIta'),
+        url('/fonts/HelveticaNow/HelveticaNowDisplay-MedIta.woff2') format('woff2');
+    font-weight: 500;
+    font-style: italic;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'HelveticaNowDisplay';
+    src: local('HelveticaNowDisplay-Medium'),
+        url('/fonts/HelveticaNow/HelveticaNowDisplay-Medium.woff2') format('woff2');
+    font-weight: 500;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'HelveticaNowDisplay';
+    src: local('HelveticaNowDisplay-ThinIta'),
+        url('/fonts/HelveticaNow/HelveticaNowDisplay-ThinIta.woff2') format('woff2');
+    font-weight: 100;
+    font-style: italic;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'HelveticaNowDisplay';
+    src: local('HelveticaNowDisplay-RegIta'),
+        url('/fonts/HelveticaNow/HelveticaNowDisplay-RegIta.woff2') format('woff2');
+    font-weight: normal;
+    font-style: italic;
+    font-display: swap;
+}
+
 .app {
-    @apply h-full w-full text-black overflow-hidden flex;
+    @apply h-full w-full text-black overflow-hidden flex font-helvetica;
 }
 
 .loader {
@@ -24,21 +215,41 @@
       transform: scale(1);
       opacity: 0;
     }
-  }
+}
 
-.sidebar {
-    @apply py-7 px-12 bg-black w-1/4 text-white min-w-[325px] h-full flex flex-col;
+.navbar {
+    @apply py-7 px-4 bg-black border-r-[1px] border-[rgb(255,255,255,0.2)] w-min text-white h-full flex flex-col items-center;
+
+    & > .logo {
+        @apply max-w-[3.5rem] rounded-[21%];
+    }
+
+    & > .separator {
+        @apply h-[2px] w-4/5 bg-[rgb(255,255,255,0.2)] rounded-md mt-2 mb-4; 
+    }
+
+    & .accounts {
+        @apply w-full flex-grow pb-4;
+
+        & > button {
+            @apply bg-[#1a1a1a] text-[rgb(255,255,255,0.9)] w-full aspect-square rounded-[50%] text-5xl font-light hover:text-[#ee3b33] hover:rounded-[21%] transition-all duration-100 ease-linear;
+        }
+    }
 
     & > .logout {
-        @apply mt-auto bg-[#151515] border-[1px] border-neutral-800 rounded-lg py-2 hover:bg-neutral-800 hover:border-neutral-700;
+        @apply mt-auto w-1/2 mx-auto text-[rgb(255,255,255,0.5)] hover:text-[#ee3b33] transition-colors;
     }
+}
+
+.sidebar {
+    @apply py-7 px-4 bg-black w-1/4 text-white min-w-[325px] h-full flex flex-col;
 }
 
 .announcements, .announcements-screen {
     @apply flex-grow mb-5 overflow-y-auto overflow-x-hidden;
 
     & .announcement {
-        @apply flex flex-col justify-between px-4 py-3 bg-[#151515] border-neutral-800 border-[1px] rounded-lg text-lg mb-3 cursor-pointer;
+        @apply flex flex-col justify-between px-5 py-4 bg-[#1a1a1a] text-white rounded-xl text-lg mb-3 cursor-pointer;
 
         & > div:last-of-type {
             @apply max-h-0 text-neutral-300 leading-5 text-[0.9rem] pt-2 overflow-hidden transition-all duration-500;
@@ -48,33 +259,41 @@
             @apply max-h-[200px];
         }
 
-        & > div:first-child {
+        &:hover .plusminus span:nth-child(2) {
+            @apply -rotate-90;
+        }
+
+        & > header {
             @apply flex items-center justify-between;
+
+            & > span {
+                @apply font-medium tracking-wider text-[rgb(255,255,255,0.9)];
+            }
 
             & > div {
                 @apply pl-5 flex items-center;
 
-                @media (max-width: 1400px) {
-                    @apply hidden;
-                }
+                .plusminus {
+                    @apply block relative w-5 aspect-square ml-2;
 
-                & > span:nth-child(1) {
-                    @apply text-sm ml-auto;
-                }
-
-                & > span:nth-child(2) {
-                    @apply flex items-center flex-grow h-5 ml-2;
-    
-                    & > svg {
-                        @apply h-2/3 aspect-square fill-white;
+                    & span:nth-child(1), & span:nth-child(2) {
+                        @apply block absolute rounded-sm bg-current transition-all;
                     }
-                }
+
+                    & span:nth-child(1) {
+                        @apply top-1/2 -translate-y-1/2 h-[3px] w-4/5 m-[0_10%];
+                    }
+
+                    & span:nth-child(2) {
+                        @apply left-1/2 -translate-x-1/2 w-[3px] h-4/5 m-[10%_0];
+                    }
+                  }
             }
         }
     }
 
     & h1 {
-        @apply font-bold text-3xl mb-5;
+        @apply font-bold text-3xl mb-8 ml-1;
     }
 }
 
@@ -113,14 +332,14 @@
         }
 
         & > div:first-of-type {
-            @apply flex items-center;
+            @apply relative flex items-center;
 
             & h1 {
-                @apply mr-5;
+                @apply mr-5 font-extrabold;
             }
 
-            & span {
-                @apply block uppercase text-center text-3xl dsk:text-5xl h-full font-light mr-5 dsk:pb-2 pb-1;
+            & .line {
+                @apply self-stretch dsk:py-6 py-4 w-[2px] rounded-full bg-current rotate-[25deg] dsk:ml-2 dsk:mr-7 mr-5;
             }
         }
 
@@ -136,10 +355,10 @@
             }
 
             & > button {
-                @apply hidden sm:block bg-[#EAEAEA] border-neutral-300 border-[1px] text-black dsk:text-base text-sm font-normal dsk:px-7 dsk:py-3 py-2 px-5 dsk:rounded-xl rounded-lg ml-2 hover:bg-neutral-300;
+                @apply hidden sm:block bg-[#EAEAEA] text-black dsk:text-lg text-base font-normal dsk:px-7 dsk:py-3 py-2 px-5 dsk:rounded-xl rounded-lg ml-2 hover:bg-neutral-300;
 
                 &.active {
-                    @apply bg-[#151515] border-[1px] border-neutral-800 hover:bg-neutral-800 hover:border-neutral-700 text-[#EAEAEA];
+                    @apply bg-black hover:bg-neutral-800 text-[#EAEAEA];
                 }
             }
         }
@@ -152,7 +371,7 @@
             }
 
             & > svg {
-                @apply dsk:h-8 h-6;
+                @apply dsk:h-7 h-6;
             }
         }
     }
@@ -173,10 +392,12 @@
             @apply flex flex-grow justify-evenly;
 
             & .date {
-                @apply w-full flex flex-col justify-center items-center row-start-1 pb-3 px-1 pt-[0.1875rem] bg-[#FAFAFA] -z-10 text-[rgb(0,0,0,0.25)];
+                @apply w-full flex flex-col justify-center items-center row-start-1 pb-3 px-1 pt-[0.1875rem] bg-[#FAFAFA] -z-10 text-[rgb(0,0,0,0.3)];
         
                 &.current {
-                    @apply text-black;
+                    & > span {
+                        @apply !text-black;
+                    }
 
                     & > div:last-child {
                         @apply bg-black;
@@ -185,6 +406,10 @@
 
                 & > span:first-child {
                     @apply font-bold dsk:text-6xl dsk:mb-2 text-[2.5rem] -mb-2;
+                }
+
+                & > span:not(:first-child) {
+                    @apply text-lg font-medium lowercase text-[rgb(0,0,0,0.4)];
                 }
         
                 & > div:last-child {
@@ -212,8 +437,8 @@
 
     }
 
-    & .schedule-grid-week {
-        @apply relative h-fit flex-shrink-0 overflow-x-visible w-auto grid grid-rows-[auto,repeat(110,minmax(0,1fr))] grid-cols-[auto,repeat(5,minmax(0,1fr))];
+    & .schedule-grid-week, & .schedule-grid-day {
+        @apply relative h-fit flex-shrink-0 overflow-x-visible w-auto grid grid-rows-[auto,repeat(110,minmax(0,1fr))];
     
         & .current-time {
             @apply absolute z-50 top-[0px] flex items-center h-[1px] overflow-visible left-1/2 -translate-x-1/2 w-[calc(100%+15px)] col-[span_5/7];
@@ -282,5 +507,13 @@
         & .line:nth-of-type(10), & > div:nth-of-type(11)  {
             @apply row-[110/112];
         }
+    }
+
+    & .schedule-grid-week {
+        @apply grid-cols-[auto,repeat(5,minmax(0,1fr))];
+    }
+
+    & .schedule-grid-day {
+        @apply grid-cols-[max-content,1fr]
     }
 }

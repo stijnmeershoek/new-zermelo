@@ -1,19 +1,25 @@
+.schedule-grid-day {
+    & > .block {
+        @apply aspect-[48/9] max-w-[50vmax];
+    }
+}
+
 .block {
-    @apply relative mx-auto bg-[#CFDDDB] py-2 dsk:px-[0.375rem] rounded-xl h-[calc(100%-2px)] dsk:w-[calc(100%-10px)] w-[calc(100%-5px)] aspect-[16/10] overflow-hidden flex mt-[1px];
+    @apply relative mx-auto bg-[#CFDDDB] py-2 dsk:px-[0.375rem] rounded-xl h-[calc(100%-2px)] dsk:w-[calc(100%-10px)] w-[calc(100%-5px)] aspect-[16/10] overflow-hidden flex mt-[1px] font-medium;
 
     & > div {
-        @apply text-sm text-[rgb(0,0,0,0.75)];
+        @apply text-sm text-[rgba(0,0,0,0.75)];
     }
 
     & > .content-left {
         @apply pb-[2px] dsk:pl-2 dsk:pr-0 px-2 flex flex-col w-full h-full py-1;
 
         & span.change {
-            @apply text-red-500 font-bold ml-1;
+            @apply text-red-500 font-black ml-1;
         }
         
         & > div:first-child {
-            @apply font-bold text-base text-[rgb(0,0,0,0.65)] max-w-[11ch] break-normal uppercase dsk:normal-case dsk:leading-normal leading-4;
+            @apply font-black text-base text-[rgba(0,0,0,0.65)] max-w-[11ch] break-normal uppercase dsk:normal-case dsk:leading-normal leading-4;
         }
 
         & > div:nth-child(2) {
@@ -24,7 +30,7 @@
             @apply dsk:-mt-1;
         }
 
-        & > div:.times {
+        & > div.times {
             @apply mt-auto;
         }
     }
@@ -72,5 +78,12 @@
     }
     &.meeting {
         @apply bg-[#ff6961];
+    }
+    &.cancelled {
+        @apply bg-[#ee3b33];
+
+        & > *,  & > * > * {
+            @apply !text-[rgba(255,255,255,0.9)];
+        }
     }
 }
