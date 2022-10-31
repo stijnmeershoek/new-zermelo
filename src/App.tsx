@@ -174,7 +174,7 @@ function App() {
     <div className="app">
       {isDesktop && (
         <nav className="navbar">
-          <img draggable="false" className='logo' src="/favicon.png" alt="logo" />
+          <img draggable="false" className='logo' src={new URL('/favicon.png', import.meta.url).href} alt="logo" />
           <div className="separator"></div>
           <div className="accounts">
             {}
