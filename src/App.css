@@ -1,196 +1,13 @@
-/* @font-face {
-	src: url('/fonts/SF-Pro/SFNS.woff2') format('woff2-variations');
-	font-family:'SF Pro';
-	font-style: normal;
-}
-@font-face {
-	src: url('/fonts/SF-Pro/SFNSItalic.woff2') format('woff2-variations');
-	font-family:'SF Pro';
-	font-style: italic;
-} */
-
-@font-face {
-    font-family: 'HelveticaNowDisplay';
-    src: local('HelveticaNowDisplay-ExtLt'),
-        url('/fonts/HelveticaNow/HelveticaNowDisplay-ExtLt.woff2') format('woff2');
-    font-weight: 200;
-    font-style: normal;
-    font-display: swap;
-}
-
-@font-face {
-    font-family: 'HelveticaNowDisplay Hairline';
-    src: local('HelveticaNowDisplay-Hairline'),
-        url('/fonts/HelveticaNow/HelveticaNowDisplay-Hairline.woff2') format('woff2');
-    font-weight: 100;
-    font-style: normal;
-    font-display: swap;
-}
-
-@font-face {
-    font-family: 'HelveticaNowDisplay';
-    src: local('HelveticaNowDisplay-LightIta'),
-        url('/fonts/HelveticaNow/HelveticaNowDisplay-LightIta.woff2') format('woff2');
-    font-weight: 300;
-    font-style: italic;
-    font-display: swap;
-}
-
-@font-face {
-    font-family: 'HelveticaNowDisplay ExtraBlack';
-    src: local('HelveticaNowDisplay-ExtBlkIta'),
-        url('/fonts/HelveticaNow/HelveticaNowDisplay-ExtBlkIta.woff2') format('woff2');
-    font-weight: 950;
-    font-style: italic;
-    font-display: swap;
-}
-
-@font-face {
-    font-family: 'HelveticaNowDisplay ExtraBlack';
-    src: local('HelveticaNowDisplay-ExtBlk'),
-        url('/fonts/HelveticaNow/HelveticaNowDisplay-ExtBlk.woff2') format('woff2');
-    font-weight: 950;
-    font-style: normal;
-    font-display: swap;
-}
-
-@font-face {
-    font-family: 'HelveticaNowDisplay';
-    src: local('HelveticaNowDisplay-ExtBdIta'),
-        url('/fonts/HelveticaNow/HelveticaNowDisplay-ExtBdIta.woff2') format('woff2');
-    font-weight: 800;
-    font-style: italic;
-    font-display: swap;
-}
-
-@font-face {
-    font-family: 'HelveticaNowDisplay';
-    src: local('HelveticaNowDisplay-ExtLtIta'),
-        url('/fonts/HelveticaNow/HelveticaNowDisplay-ExtLtIta.woff2') format('woff2');
-    font-weight: 200;
-    font-style: italic;
-    font-display: swap;
-}
-
-@font-face {
-    font-family: 'HelveticaNowDisplay';
-    src: local('HelveticaNowDisplay-Black'),
-        url('/fonts/HelveticaNow/HelveticaNowDisplay-Black.woff2') format('woff2');
-    font-weight: 900;
-    font-style: normal;
-    font-display: swap;
-}
-
-@font-face {
-    font-family: 'HelveticaNowDisplay';
-    src: local('HelveticaNowDisplay-ExtraBold'),
-        url('/fonts/HelveticaNow/HelveticaNowDisplay-ExtraBold.woff2') format('woff2');
-    font-weight: 800;
-    font-style: normal;
-    font-display: swap;
-}
-
-@font-face {
-    font-family: 'HelveticaNowDisplay';
-    src: local('HelveticaNowDisplay-Bold'),
-        url('/fonts/HelveticaNow/HelveticaNowDisplay-Bold.woff2') format('woff2');
-    font-weight: bold;
-    font-style: normal;
-    font-display: swap;
-}
-
-@font-face {
-    font-family: 'HelveticaNowDisplay';
-    src: local('HelveticaNowDisplay-Light'),
-        url('/fonts/HelveticaNow/HelveticaNowDisplay-Light.woff2') format('woff2');
-    font-weight: 300;
-    font-style: normal;
-    font-display: swap;
-}
-
-@font-face {
-    font-family: 'HelveticaNowDisplay Hairline';
-    src: local('HelveticaNowDisplay-HairlineI'),
-        url('/fonts/HelveticaNow/HelveticaNowDisplay-HairlineI.woff2') format('woff2');
-    font-weight: 100;
-    font-style: italic;
-    font-display: swap;
-}
-
-@font-face {
-    font-family: 'HelveticaNowDisplay';
-    src: local('HelveticaNowDisplay-BoldIta'),
-        url('/fonts/HelveticaNow/HelveticaNowDisplay-BoldIta.woff2') format('woff2');
-    font-weight: bold;
-    font-style: italic;
-    font-display: swap;
-}
-
-@font-face {
-    font-family: 'HelveticaNowDisplay';
-    src: local('HelveticaNowDisplay-BlackIta'),
-        url('/fonts/HelveticaNow/HelveticaNowDisplay-BlackIta.woff2') format('woff2');
-    font-weight: 900;
-    font-style: italic;
-    font-display: swap;
-}
-
-@font-face {
-    font-family: 'HelveticaNowDisplay';
-    src: local('HelveticaNowDisplay-Thin'),
-        url('/fonts/HelveticaNow/HelveticaNowDisplay-Thin.woff2') format('woff2');
-    font-weight: 100;
-    font-style: normal;
-    font-display: swap;
-}
-
-@font-face {
-    font-family: 'HelveticaNowDisplay';
-    src: local('HelveticaNowDisplay-Regular'),
-        url('/fonts/HelveticaNow/HelveticaNowDisplay-Regular.woff2') format('woff2');
-    font-weight: normal;
-    font-style: normal;
-    font-display: swap;
-}
-
-@font-face {
-    font-family: 'HelveticaNowDisplay';
-    src: local('HelveticaNowDisplay-MedIta'),
-        url('/fonts/HelveticaNow/HelveticaNowDisplay-MedIta.woff2') format('woff2');
-    font-weight: 500;
-    font-style: italic;
-    font-display: swap;
-}
-
-@font-face {
-    font-family: 'HelveticaNowDisplay';
-    src: local('HelveticaNowDisplay-Medium'),
-        url('/fonts/HelveticaNow/HelveticaNowDisplay-Medium.woff2') format('woff2');
-    font-weight: 500;
-    font-style: normal;
-    font-display: swap;
-}
-
-@font-face {
-    font-family: 'HelveticaNowDisplay';
-    src: local('HelveticaNowDisplay-ThinIta'),
-        url('/fonts/HelveticaNow/HelveticaNowDisplay-ThinIta.woff2') format('woff2');
-    font-weight: 100;
-    font-style: italic;
-    font-display: swap;
-}
-
-@font-face {
-    font-family: 'HelveticaNowDisplay';
-    src: local('HelveticaNowDisplay-RegIta'),
-        url('/fonts/HelveticaNow/HelveticaNowDisplay-RegIta.woff2') format('woff2');
-    font-weight: normal;
-    font-style: italic;
-    font-display: swap;
+body {
+    @apply overflow-hidden;
 }
 
 .app {
-    @apply h-full w-full text-black overflow-hidden flex font-helvetica;
+    @apply absolute -left-[5.5rem] dsk:left-0 h-full dsk:w-full w-[calc(100%+5.5rem)] text-black overflow-hidden flex font-helvetica transition-all;
+
+    &.show-menu {
+        @apply left-0;
+    }
 }
 
 .loader {
@@ -218,7 +35,7 @@
 }
 
 .navbar {
-    @apply py-7 px-4 bg-black border-r-[1px] border-[rgb(255,255,255,0.2)] w-min text-white h-full flex flex-col items-center;
+    @apply py-7 px-4 bg-black border-r-[1px] border-[rgb(255,255,255,0.2)] max-w-min text-white h-full flex flex-col items-center z-50;
 
     & > .logo {
         @apply max-w-[3.5rem] rounded-[21%];
@@ -229,34 +46,50 @@
     }
 
     & .accounts {
-        @apply w-full flex-grow pb-4;
+        @apply w-full flex-grow pb-4 gap-5;
+
+        & > * + * {
+            @apply mt-2;
+        }
 
         & > button {
-            @apply relative bg-[#1a1a1a] text-[rgb(255,255,255,0.9)] w-full aspect-square rounded-[50%] text-5xl font-light hover:text-[#ee3b33] hover:rounded-[21%] transition-all duration-100 ease-linear;
+            @apply relative bg-[#1a1a1a] text-[rgb(255,255,255,0.9)] w-full aspect-square rounded-[50%] capitalize text-2xl font-medium outline-none focus:text-[#ee3b33] hover:text-[#ee3b33] hover:rounded-[21%] focus:rounded-[21%] transition-all duration-100 ease-linear;
             
-            &:hover {
+            &.add-account {
+                @apply text-5xl font-light;
+            }
+            
+            &:hover, &:focus {
                 & > span {
                     @apply scale-100
                 }
             }
 
+            & > svg {
+                @apply w-[1.75rem] m-auto;
+            }
+
             & > span {
-                @apply absolute w-auto p-2 m-2 min-w-max left-14 rounded-md shadow-md text-white bg-[#1a1a1a] text-xs font-bold transition-all duration-100 scale-0 origin-left;
+                @apply absolute w-auto p-2 ml-2 top-1/2 -translate-y-1/2 min-w-max left-14 rounded-md shadow-md text-white bg-[#1a1a1a] text-xs font-bold transition-all duration-100 scale-0 origin-left;
             }
         }
     }
 
-    & > .logout {
+    & > button {
         @apply mt-auto w-1/2 mx-auto text-[rgb(255,255,255,0.5)] hover:text-[#ee3b33] transition-colors;
     }
 }
 
-.sidebar {
-    @apply py-7 px-4 bg-black w-1/4 text-white min-w-[325px] h-full flex flex-col;
-}
+.announcements {
+    @apply mb-5 overflow-y-auto overflow-x-hidden bg-black;
 
-.announcements, .announcements-screen {
-    @apply flex-grow mb-5 overflow-y-auto overflow-x-hidden;
+    &:not(.mobile) {
+        @apply py-7 px-4 w-1/4 text-white min-w-[325px] h-full flex flex-col;
+    }
+
+    &.mobile {
+        @apply absolute w-screen ml-[5.5rem] z-30 pt-20 text-white h-full px-5;
+    }
 
     & .announcement {
         @apply flex flex-col justify-between px-5 py-4 bg-[#1a1a1a] text-white rounded-xl text-lg mb-3 cursor-pointer;
@@ -307,32 +140,8 @@
     }
 }
 
-.announcements-screen {
-    @apply absolute bg-[black] inset-0 z-30 pt-20 text-white h-full px-5;
-}
-
 .schedule {
     @apply relative h-full flex-grow flex flex-col dsk:max-w-[min(75vw,calc(100vw-325px))] max-w-[100vw];
-
-    & > .menu {
-        @apply dsk:!hidden absolute z-50 w-full h-full bg-black -translate-x-full transition-transform flex flex-col items-center pt-20 text-white;
-
-        & > button {
-            @apply flex items-center text-3xl font-bold uppercase px-7 py-4 hover:scale-125 transition-all;
-
-            & > svg {
-                @apply h-10 aspect-square mr-3;
-            }
-        }
-
-        & > button:last-child {
-            @apply mt-auto mb-20;
-        }
-
-        &.show {
-            @apply translate-x-0;
-        }
-    }
 
     & > .header {
         @apply z-40 py-5 dsk:px-12 px-5 flex items-center font-bold text-xl dsk:text-3xl dsk:mb-12 mb-3 text-white dsk:text-black dsk:bg-transparent bg-black;

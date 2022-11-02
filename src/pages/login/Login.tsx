@@ -1,19 +1,24 @@
 import { useState } from "react"
+import { useAppState } from "../../context";
 import './Login.css';
 
 interface Props {
-    onSubmit: (school: string, code: string) => void,
+    onSubmit: (school: string, code: string, name: string) => void,
     err: string
 }
 
 export function Login({onSubmit, err}: Props) {
+    const [name, setName] = useState<string>("");
     const [school, setSchool] = useState<string>("");
     const [code, setCode] = useState<string>("");
+    const { lng } = useAppState();
 
   return (
     <div className="login">
-        <form onSubmit={(e) => {e.preventDefault(); onSubmit(school, code)}}>
+        <form onSubmit={(e) => {e.preventDefault(); onSubmit(school, code, name)}}>
           <h1>Login</h1>
+          <label htmlFor="name">{lng === "nl" ? "Account Naam" : lng === "en" ? "Account Name" : "Account Name"}</label>
+          <input id="name" value={name} className={`${err ? "err" : ""}`} onChange={(e) => setName(e.target.value)} type="text" required/>
           <label htmlFor="school">School</label>
           <input id="school" value={school} className={`${err ? "err" : ""}`} onChange={(e) => setSchool(e.target.value)} type="text" required/>
           <label htmlFor="code">Code</label>
