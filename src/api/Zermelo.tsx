@@ -19,39 +19,61 @@ export async function getAccessToken(school: string, code: string) {
 }
 
 export async function getSchedule(school: string, access_token: string, start: number, end:number, abortController: AbortController) {
-    const url = getApiURL(school)
-    const res = await fetch(`${url}/appointments?valid=true&start=${start}&end=${end}&user=~me`, { 
+    const url = getApiURL(school);
+    let response;
+    await fetch(`${url}/appointments?valid=true&start=${start}&end=${end}&user=~me`, { 
         method: "GET", 
         headers: {
             "Authorization": `Bearer ${access_token}`
         },
         signal: abortController.signal
-    });
+    }).then(async (res) => {
+        if (!res.ok) {
+            return Promise.reject(Error(`Server returned with an error (${res.status})`))
+        }
 
-    if (!res.ok) {
-        return Promise.reject(Error(`Server returned with an error (${res.status})`))
+        const json = await res.json();
+        response = json.response;
+    }).catch(() => {
+        if(abortController.signal.aborted) {
+            return Promise.reject(`The user aborted the request`);
+        }
+    })
+
+    if(response) {
+        return Promise.resolve(response);
     }
 
-    const json = await res.json();
-    return Promise.resolve(json.response);
+    return Promise.reject(Error(`Server returned with an error`))
 }
 
 export async function getAnnouncements(school: string, access_token:string, abortController: AbortController) {
     const url = getApiURL(school)
-    const res = await fetch(`${url}/announcements?user=~me&current=true`, { 
+    let response;
+    await fetch(`${url}/announcements?user=~me&current=true`, { 
         method: "GET", 
         headers: {
             "Authorization": `Bearer ${access_token}`
         },
         signal: abortController.signal
-    });
+    }).then(async (res) => {
+        if (!res.ok) {
+            return Promise.reject(Error(`Server returned with an error (${res.status})`))
+        }
 
-    if (!res.ok) {
-        return Promise.reject(Error(`Server returned with an error (${res.status})`))
+        const json = await res.json();
+        response = json.response;
+    }).catch(() => {
+        if(abortController.signal.aborted) {
+            return Promise.reject(`The user aborted the request`);
+        }
+    })
+
+    if(response) {
+        return Promise.resolve(response);
     }
 
-    const json = await res.json();
-    return Promise.resolve(json.response);
+    return Promise.reject(Error(`Server returned with an error`))
 }
 
 export type Schedule = {

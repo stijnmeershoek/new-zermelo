@@ -5,7 +5,7 @@
 }
 
 .block {
-    @apply relative mx-auto bg-[#CFDDDB] py-2 dsk:px-[0.375rem] rounded-xl h-[calc(100%-2px)] dsk:w-[calc(100%-10px)] w-[calc(100%-5px)] aspect-[16/10] overflow-hidden flex mt-[1px] font-medium;
+    @apply relative mx-auto bg-[#CFDDDB] py-2 dsk:px-[0.375rem] rounded-xl h-[calc(100%-2px)] dsk:w-[calc(100%-10px)] w-[calc(100%-5px)] aspect-[16/10] overflow-hidden flex mt-[1px] font-medium border-[1px] border-[black] border-opacity-[0.15];
 
     & > div {
         @apply text-sm text-[rgba(0,0,0,0.75)];
