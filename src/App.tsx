@@ -173,11 +173,13 @@ function App() {
     }
   }, [loading, perWeek])
 
+  const logoURL = new URL('/favicon.png', import.meta.url).href;
+
   return (
     <div className="app">
       {isDesktop && (
         <nav className="navbar">
-          <img draggable="false" className='logo' src={new URL('/favicon.png', import.meta.url).href} alt="logo" />
+          <img draggable="false" className='logo' src={logoURL} alt="logo" />
           <div className="separator"></div>
           <div className="accounts">
             {}
