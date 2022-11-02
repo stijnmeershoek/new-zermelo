@@ -65,15 +65,14 @@ function App() {
     const dates = getDates()
     setDates(dates);
     const date = getCurrentDate();
-    const abortControllerS = new AbortController();
-    const abortControllerA = new AbortController();
+    const abortController = new AbortController();
     let fetchData;
     if(perWeek) {
       const start = Math.floor(getMonday(date).getTime() / 1000)
       const end = start + 604800;
       fetchData = async() => {
-        const scheduleRes: Schedule = await getSchedule(school, token, start, end, abortControllerS);
-        const announcementsRes: Announcements = await getAnnouncements(school, token, abortControllerA);
+        const scheduleRes: Schedule = await getSchedule(school, token, start, end, abortController);
+        const announcementsRes: Announcements = await getAnnouncements(school, token, abortController);
         
         const day0 = scheduleRes.data.filter((lesson) =>new Date(lesson.start * 1000).toDateString() === dates[0].toDateString() && new Date(lesson.end * 1000).toDateString() === dates[0].toDateString()).sort((a, b) => (a.start > b.start ? 1 : -1))
         const day1 = scheduleRes.data.filter((lesson) =>new Date(lesson.start * 1000).toDateString() === dates[1].toDateString() && new Date(lesson.end * 1000).toDateString() === dates[1].toDateString()).sort((a, b) => (a.start > b.start ? 1 : -1))
@@ -99,8 +98,8 @@ function App() {
       const start = Math.floor(getCurrentDate().getTime() / 1000)
       const end = start + 86400;
       fetchData = async() => {
-        const scheduleRes: Schedule = await getSchedule(school, token, start, end, abortControllerS);
-        const announcementsRes: Announcements = await getAnnouncements(school, token, abortControllerA);
+        const scheduleRes: Schedule = await getSchedule(school, token, start, end, abortController);
+        const announcementsRes: Announcements = await getAnnouncements(school, token, abortController);
         
         const day = scheduleRes.data;
         
@@ -109,8 +108,12 @@ function App() {
 
         if(!schedule.every((a) => a.length < 1)) {
           const group = [...new Set(scheduleRes.data.map((lesson) => lesson.groups ? lesson.groups[0] : "").filter((group) => !group?.includes(".")))][0];
+          if(!group) {
+            setAnnouncements(announcementsRes.data)
+            return;
+          };
+
           const announcements = announcementsRes.data.filter(announcement => (possibleGroups.some(element => announcement.title.toLowerCase().includes(element)) && announcement.title.toLowerCase().includes(group.slice(0,2))) || !possibleGroups.some(element => announcement.title.toLowerCase().includes(element)) || !group);
-        
           setAnnouncements(announcements);
         } else {
           setAnnouncements(announcementsRes.data);
@@ -122,9 +125,9 @@ function App() {
     fetchData();
 
     return () => {
-      abortControllerS.abort(), abortControllerA.abort();
+      abortController.abort();
     };
-  }, [token, offset])
+  }, [token, offset, perWeek])
 
   useLayoutEffect(() => {
     const schedule = document.querySelector('[class^="schedule-grid"]') as HTMLElement;
@@ -178,7 +181,11 @@ function App() {
           <div className="separator"></div>
           <div className="accounts">
             {}
-            <button className='add-account'>+</button>
+            <button className='add-account'>
+              +
+              
+              <span>Add Account</span>
+              </button>
           </div>
           <button aria-label='logout' className='logout' onClick={logOut}>
             <svg viewBox="0 0 490.3 490.3"><path d="M0,121.05v248.2c0,34.2,27.9,62.1,62.1,62.1h200.6c34.2,0,62.1-27.9,62.1-62.1v-40.2c0-6.8-5.5-12.3-12.3-12.3s-12.3,5.5-12.3,12.3v40.2c0,20.7-16.9,37.6-37.6,37.6H62.1c-20.7,0-37.6-16.9-37.6-37.6v-248.2c0-20.7,16.9-37.6,37.6-37.6h200.6c20.7,0,37.6,16.9,37.6,37.6v40.2c0,6.8,5.5,12.3,12.3,12.3s12.3-5.5,12.3-12.3v-40.2c0-34.2-27.9-62.1-62.1-62.1H62.1C27.9,58.95,0,86.75,0,121.05z" fill="currentColor"/><path d="M385.4,337.65c2.4,2.4,5.5,3.6,8.7,3.6s6.3-1.2,8.7-3.6l83.9-83.9c4.8-4.8,4.8-12.5,0-17.3l-83.9-83.9c-4.8-4.8-12.5-4.8-17.3,0s-4.8,12.5,0,17.3l63,63H218.6c-6.8,0-12.3,5.5-12.3,12.3c0,6.8,5.5,12.3,12.3,12.3h229.8l-63,63C380.6,325.15,380.6,332.95,385.4,337.65z" fill="currentColor"/></svg>
@@ -237,8 +244,8 @@ function App() {
                 <button className='prev' aria-label='previous week' onClick={() => setOffset(prev => prev - 1)}><svg viewBox="0, 0, 400,400"><g><path id="path0" d="M133.594 60.920 C 129.853 62.938,1.851 191.233,0.820 193.996 C -0.234 196.823,-0.234 203.177,0.820 206.004 C 1.904 208.909,129.973 337.146,133.758 339.116 C 143.576 344.226,154.799 337.317,154.799 326.163 C 154.799 319.823,155.717 320.847,101.220 266.406 L 49.995 215.234 219.724 214.844 L 389.453 214.453 392.740 212.697 C 402.651 207.400,402.463 192.009,392.427 187.024 C 389.545 185.593,384.190 185.535,219.724 185.156 L 49.995 184.766 101.564 133.203 C 155.745 79.028,154.953 79.923,154.813 72.963 C 154.604 62.544,142.897 55.899,133.594 60.920 " stroke="none" fill="currentColor" fillRule="evenodd"></path></g></svg></button>
                 <button className='next' aria-label='next week' onClick={() => setOffset(prev => prev + 1)}><svg viewBox="0, 0, 400,400"><g><path id="path0" d="M133.594 60.920 C 129.853 62.938,1.851 191.233,0.820 193.996 C -0.234 196.823,-0.234 203.177,0.820 206.004 C 1.904 208.909,129.973 337.146,133.758 339.116 C 143.576 344.226,154.799 337.317,154.799 326.163 C 154.799 319.823,155.717 320.847,101.220 266.406 L 49.995 215.234 219.724 214.844 L 389.453 214.453 392.740 212.697 C 402.651 207.400,402.463 192.009,392.427 187.024 C 389.545 185.593,384.190 185.535,219.724 185.156 L 49.995 184.766 101.564 133.203 C 155.745 79.028,154.953 79.923,154.813 72.963 C 154.604 62.544,142.897 55.899,133.594 60.920 " stroke="none" fill="currentColor" fillRule="evenodd"></path></g></svg></button>
               </div>}
-              <button onClick={()=> setPerWeek(true)} className={`${perWeek ? "active": ""}`} aria-label="week view">Week</button>
-              <button onClick={()=> setPerWeek(false)} className={`${!perWeek ? "active": ""}`} aria-label="day view">{lng === "nl" ? "Dag" : lng === "en" ? "Day" : "Day"}</button>
+              <button onClick={()=> {setPerWeek(true); setOffset(prev => Math.floor(prev / 7))}} className={`${perWeek ? "active": ""}`} aria-label="week view">Week</button>
+              <button onClick={()=> {setPerWeek(false); setOffset(prev => Math.floor(prev * 7))}} className={`${!perWeek ? "active": ""}`} aria-label="day view">{lng === "nl" ? "Dag" : lng === "en" ? "Day" : "Day"}</button>
             </div>
           </header>
 
@@ -302,159 +309,17 @@ function App() {
         
             {!loading ? <div className="scroller">
             <div className="schedule-grid-week">
-              <div></div>
-              <div>
-                <span>8:00</span>
-              </div>
-              <span className="line">
-                <div></div>
-              </span>
-              <div>
-                <span>9:00</span>
-              </div>
-              <span className="line">
-                <div></div>
-              </span>
-              <div>
-                <span>10:00</span>
-              </div>
-              <span className="line">
-                <div></div>
-              </span>
-              <div>
-                <span>11:00</span>
-              </div>
-              <span className="line">
-                <div></div>
-              </span>
-              <div>
-                <span>12:00</span>
-              </div>
-              <span className="line">
-                <div></div>
-              </span>
-              <div>
-                <span>13:00</span>
-              </div>
-              <span className="line">
-                <div></div>
-              </span>
-              <div>
-                <span>14:00</span>
-              </div>
-              <span className="line">
-                <div></div>
-              </span>
-              <div>
-                <span>15:00</span>
-              </div>
-              <span className="line">
-                <div></div>
-              </span>
-              <div>
-                <span>16:00</span>
-              </div>
-              <span className="line">
-                <div></div>
-              </span>
-              <div>
-                <span>17:00</span>
-              </div>
-              <span className="line">
-                <div></div>
-              </span>
+              <LinesAndTimes />
 
+              <Day schedule={schedule} dayNumber={0} isDesktop={isDesktop}/>
 
-              {schedule[0] && schedule[0].length !== 0 ? schedule[0].map((lesson) => {
-                let rowStart = (new Date(lesson.start * 1000).getHours() - 8) * 12 + new Date(lesson.start * 1000).getMinutes() / 5 + 3;
-                let rowEnd = (new Date(lesson.end * 1000).getHours() - 8) * 12 + new Date(lesson.end * 1000).getMinutes() / 5 + 3
+              <Day schedule={schedule} dayNumber={1} isDesktop={isDesktop}/>
 
-                return (
-                  <LessonBlock
-                    key={lesson.id}
-                    lesson={lesson}
-                    className={`${rowEnd - rowStart <= 5 ? "wrap" : ""}`}
-                    isDesktop={isDesktop}
-                    style={{
-                      gridRow: `${rowStart} / ${rowEnd}`,
-                      gridColumn: "2/3",
-                    }}
-                  />
-                );
-              }) : <div style={{gridRow: "1 / -1"}}></div>}
+              <Day schedule={schedule} dayNumber={2} isDesktop={isDesktop}/>
 
-              {schedule[1] && schedule[1].length !== 0 ? schedule[1].map((lesson) => {
-                let rowStart = (new Date(lesson.start * 1000).getHours() - 8) * 12 + new Date(lesson.start * 1000).getMinutes() / 5 + 3;
-                let rowEnd = (new Date(lesson.end * 1000).getHours() - 8) * 12 + new Date(lesson.end * 1000).getMinutes() / 5 + 3
+              <Day schedule={schedule} dayNumber={3} isDesktop={isDesktop}/>
 
-                return (
-                  <LessonBlock
-                    key={lesson.id}
-                    lesson={lesson}
-                    className={`${rowEnd - rowStart <= 5 ? "wrap" : ""}`}
-                    isDesktop={isDesktop}
-                    style={{
-                      gridRow: `${rowStart} / ${rowEnd}`,
-                      gridColumn: "3/4",
-                    }}
-                  />
-                );
-              }) : <div style={{gridRow: "1 / -1"}}></div>}
-
-              {schedule[2] && schedule[2].length !== 0 ? schedule[2].map((lesson) => {
-                let rowStart = (new Date(lesson.start * 1000).getHours() - 8) * 12 + new Date(lesson.start * 1000).getMinutes() / 5 + 3;
-                let rowEnd = (new Date(lesson.end * 1000).getHours() - 8) * 12 + new Date(lesson.end * 1000).getMinutes() / 5 + 3
-
-                return (
-                  <LessonBlock
-                    key={lesson.id}
-                    lesson={lesson}
-                    className={`${rowEnd - rowStart <= 5 ? "wrap" : ""}`}
-                    isDesktop={isDesktop}
-                    style={{
-                      gridRow: `${rowStart} / ${rowEnd}`,
-                      gridColumn: "4/5",
-                    }}
-                  />
-                );
-              }) : <div style={{gridRow: "1 / -1"}}></div>}
-
-              {schedule[3] && schedule[3].length !== 0 ? schedule[3].map((lesson) => {
-                let rowStart = (new Date(lesson.start * 1000).getHours() - 8) * 12 + new Date(lesson.start * 1000).getMinutes() / 5 + 3;
-                let rowEnd = (new Date(lesson.end * 1000).getHours() - 8) * 12 + new Date(lesson.end * 1000).getMinutes() / 5 + 3
-
-                return (
-                  <LessonBlock
-                    key={lesson.id}
-                    lesson={lesson}
-                    className={`${rowEnd - rowStart <= 5 ? "wrap" : ""}`}
-                    isDesktop={isDesktop}
-                    style={{
-                      gridRow: `${rowStart} / ${rowEnd}`,
-                      gridColumn: "5/6",
-                    }}
-                  />
-                );
-              }) : <div style={{gridRow: "1 / -1"}}></div>}
-
-
-              {schedule[4] && schedule[4].length !== 0 ? schedule[4].map((lesson) => {
-                let rowStart = (new Date(lesson.start * 1000).getHours() - 8) * 12 + new Date(lesson.start * 1000).getMinutes() / 5 + 3;
-                let rowEnd = (new Date(lesson.end * 1000).getHours() - 8) * 12 + new Date(lesson.end * 1000).getMinutes() / 5 + 3
-
-                return (
-                  <LessonBlock
-                    key={lesson.id}
-                    lesson={lesson}
-                    className={`${rowEnd - rowStart <= 5 ? "wrap" : ""}`}
-                    isDesktop={isDesktop}
-                    style={{
-                      gridRow: `${rowStart} / ${rowEnd}`,
-                      gridColumn: "6/7",
-                    }}
-                  />
-                );
-              }) : <div style={{gridRow: "1 / -1"}}></div>}
+              <Day schedule={schedule} dayNumber={4} isDesktop={isDesktop}/>
 
               <div className="current-time">
                 <div></div>
@@ -466,85 +331,8 @@ function App() {
             <>
             {!loading ? <div className='scroller'>
               <div className='schedule-grid-day'>
-                <div></div>
-                <div>
-                  <span>8:00</span>
-                </div>
-                <span className="line">
-                  <div></div>
-                </span>
-                <div>
-                  <span>9:00</span>
-                </div>
-                <span className="line">
-                  <div></div>
-                </span>
-                <div>
-                  <span>10:00</span>
-                </div>
-                <span className="line">
-                  <div></div>
-                </span>
-                <div>
-                  <span>11:00</span>
-                </div>
-                <span className="line">
-                  <div></div>
-                </span>
-                <div>
-                  <span>12:00</span>
-                </div>
-                <span className="line">
-                  <div></div>
-                </span>
-                <div>
-                  <span>13:00</span>
-                </div>
-                <span className="line">
-                  <div></div>
-                </span>
-                <div>
-                  <span>14:00</span>
-                </div>
-                <span className="line">
-                  <div></div>
-                </span>
-                <div>
-                  <span>15:00</span>
-                </div>
-                <span className="line">
-                  <div></div>
-                </span>
-                <div>
-                  <span>16:00</span>
-                </div>
-                <span className="line">
-                  <div></div>
-                </span>
-                <div>
-                  <span>17:00</span>
-                </div>
-                <span className="line">
-                  <div></div>
-                </span>
-
-                {schedule[0] && schedule[0].length !== 0 ? schedule[0].map((lesson) => {
-                  let rowStart = (new Date(lesson.start * 1000).getHours() - 8) * 12 + new Date(lesson.start * 1000).getMinutes() / 5 + 3;
-                  let rowEnd = (new Date(lesson.end * 1000).getHours() - 8) * 12 + new Date(lesson.end * 1000).getMinutes() / 5 + 3
-
-                  return (
-                    <LessonBlock
-                      key={lesson.id}
-                      lesson={lesson}
-                      className={`${rowEnd - rowStart <= 5 ? "wrap" : ""}`}
-                      isDesktop={isDesktop}
-                      style={{
-                        gridRow: `${rowStart} / ${rowEnd}`,
-                        gridColumn: 2
-                      }}
-                    />
-                  );
-                }) : <div style={{gridRow: "1 / -1"}}></div>}
+                <LinesAndTimes />
+                <Day schedule={schedule} dayNumber={0} isDesktop={isDesktop}/>
 
                 <div className="current-time">
                   <div></div>
@@ -557,6 +345,98 @@ function App() {
         </main>
     </div>
   );
+}
+
+function LinesAndTimes() {
+  return (
+    <>
+      <div></div>
+      <div>
+        <span>8:00</span>
+      </div>
+      <span className="line">
+        <div></div>
+      </span>
+      <div>
+        <span>9:00</span>
+      </div>
+      <span className="line">
+        <div></div>
+      </span>
+      <div>
+        <span>10:00</span>
+      </div>
+      <span className="line">
+        <div></div>
+      </span>
+      <div>
+        <span>11:00</span>
+      </div>
+      <span className="line">
+        <div></div>
+      </span>
+      <div>
+        <span>12:00</span>
+      </div>
+      <span className="line">
+        <div></div>
+      </span>
+      <div>
+        <span>13:00</span>
+      </div>
+      <span className="line">
+        <div></div>
+      </span>
+      <div>
+        <span>14:00</span>
+      </div>
+      <span className="line">
+        <div></div>
+      </span>
+      <div>
+        <span>15:00</span>
+      </div>
+      <span className="line">
+        <div></div>
+      </span>
+      <div>
+        <span>16:00</span>
+      </div>
+      <span className="line">
+        <div></div>
+      </span>
+      <div>
+        <span>17:00</span>
+      </div>
+      <span className="line">
+        <div></div>
+      </span>
+    </>
+  )
+}
+
+function Day({dayNumber, schedule, isDesktop}: {dayNumber: number, schedule: Lesson[][], isDesktop: boolean}) {
+  return (
+  <>
+    {schedule[dayNumber] && schedule[dayNumber].length !== 0 ? schedule[dayNumber].map((lesson) => {
+      let rowStart = (new Date(lesson.start * 1000).getHours() - 8) * 12 + new Date(lesson.start * 1000).getMinutes() / 5 + 3;
+      let rowEnd = (new Date(lesson.end * 1000).getHours() - 8) * 12 + new Date(lesson.end * 1000).getMinutes() / 5 + 3
+
+      return (
+        <LessonBlock
+          key={lesson.id}
+          lesson={lesson}
+          className={`${rowEnd - rowStart <= 5 ? "wrap" : ""}`}
+          isDesktop={isDesktop}
+          style={{
+            gridRow: `${rowStart} / ${rowEnd}`,
+            gridColumn: `${dayNumber+2}/${dayNumber+3}`,
+          }}
+        />
+      );
+    }) : <div style={{gridRow: "1 / -1"}}></div>}
+    </>
+  )
 }
 
 function Spinner() {

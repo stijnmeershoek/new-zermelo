@@ -232,7 +232,17 @@
         @apply w-full flex-grow pb-4;
 
         & > button {
-            @apply bg-[#1a1a1a] text-[rgb(255,255,255,0.9)] w-full aspect-square rounded-[50%] text-5xl font-light hover:text-[#ee3b33] hover:rounded-[21%] transition-all duration-100 ease-linear;
+            @apply relative bg-[#1a1a1a] text-[rgb(255,255,255,0.9)] w-full aspect-square rounded-[50%] text-5xl font-light hover:text-[#ee3b33] hover:rounded-[21%] transition-all duration-100 ease-linear;
+            
+            &:hover {
+                & > span {
+                    @apply scale-100
+                }
+            }
+
+            & > span {
+                @apply absolute w-auto p-2 m-2 min-w-max left-14 rounded-md shadow-md text-white bg-[#1a1a1a] text-xs font-bold transition-all duration-100 scale-0 origin-left;
+            }
         }
     }
 
@@ -335,7 +345,7 @@
             @apply relative flex items-center;
 
             & h1 {
-                @apply mr-5 font-extrabold;
+                @apply mr-5 font-bold;
             }
 
             & .line {
