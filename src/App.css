@@ -1,9 +1,9 @@
-body {
+body, #root, .app {
     @apply overflow-hidden;
 }
 
 .app {
-    @apply absolute -left-[5.5rem] dsk:left-0 h-full dsk:w-full w-[calc(100%+5.5rem)] text-black overflow-hidden flex font-helvetica transition-all;
+    @apply absolute -left-[5.5rem] dsk:left-0 h-full dsk:w-full w-[calc(100%+5.5rem)] text-black flex font-helvetica transition-all;
 
     &.show-menu {
         @apply left-0;
@@ -53,10 +53,10 @@ body {
         }
 
         & > button {
-            @apply relative bg-[#1a1a1a] text-[rgb(255,255,255,0.9)] w-full aspect-square rounded-[50%] capitalize text-2xl font-medium outline-none focus:text-[#ee3b33] hover:text-[#ee3b33] hover:rounded-[21%] focus:rounded-[21%] transition-all duration-100 ease-linear;
+            @apply relative bg-themeDark text-[rgb(255,255,255,0.9)] w-full aspect-square rounded-[50%] capitalize text-2xl font-medium outline-none focus:text-theme hover:text-theme hover:rounded-[21%] focus:rounded-[21%] transition-all duration-100 ease-linear;
             
             &.add-account {
-                @apply text-5xl font-light;
+                @apply text-5xl font-light mb-2;
             }
             
             &:hover, &:focus {
@@ -70,13 +70,13 @@ body {
             }
 
             & > span {
-                @apply absolute w-auto p-2 ml-2 top-1/2 -translate-y-1/2 min-w-max left-14 rounded-md shadow-md text-white bg-[#1a1a1a] text-xs font-bold transition-all duration-100 scale-0 origin-left;
+                @apply absolute w-auto p-2 ml-2 top-1/2 -translate-y-1/2 min-w-max left-14 rounded-md shadow-md text-white bg-themeDark text-xs font-bold transition-all duration-100 scale-0 origin-left;
             }
         }
     }
 
     & > button {
-        @apply mt-auto w-1/2 mx-auto text-[rgb(255,255,255,0.5)] hover:text-[#ee3b33] transition-colors;
+        @apply mt-auto w-1/2 mx-auto text-[rgb(255,255,255,0.5)] hover:text-theme outline-none focus:text-theme transition-colors;
     }
 }
 
@@ -92,7 +92,7 @@ body {
     }
 
     & .announcement {
-        @apply flex flex-col justify-between px-5 py-4 bg-[#1a1a1a] text-white rounded-xl text-lg mb-3 cursor-pointer;
+        @apply flex flex-col justify-between px-5 py-4 bg-themeDark text-white rounded-xl text-lg mb-3 cursor-pointer;
 
         & > div:last-of-type {
             @apply max-h-0 text-neutral-300 leading-5 text-[0.9rem] pt-2 overflow-hidden transition-all duration-500;
@@ -103,13 +103,13 @@ body {
         }
 
         &:hover .plusminus span:nth-child(2) {
-            @apply -rotate-90;
+            @apply -rotate-90 delay-[0ms];
         }
 
         & > header {
             @apply flex items-center justify-between;
 
-            & > span {
+            & > h1 {
                 @apply font-medium tracking-wider text-[rgb(255,255,255,0.9)];
             }
 
@@ -120,7 +120,7 @@ body {
                     @apply block relative w-5 aspect-square ml-2;
 
                     & span:nth-child(1), & span:nth-child(2) {
-                        @apply block absolute rounded-sm bg-current transition-all;
+                        @apply block absolute rounded-sm bg-current transition-all delay-300;
                     }
 
                     & span:nth-child(1) {
@@ -135,7 +135,7 @@ body {
         }
     }
 
-    & h1 {
+    & > h1 {
         @apply font-bold text-3xl mb-8 ml-1;
     }
 }
@@ -143,22 +143,64 @@ body {
 .schedule {
     @apply relative h-full flex-grow flex flex-col dsk:max-w-[min(75vw,calc(100vw-325px))] max-w-[100vw];
 
-    & > .header {
-        @apply z-40 py-5 dsk:px-12 px-5 flex items-center font-bold text-xl dsk:text-3xl dsk:mb-12 mb-3 text-white dsk:text-black dsk:bg-transparent bg-black;
+    & > .lesson-modal {
+        @apply hidden absolute top-0 left-0 w-full h-full bg-black bg-opacity-60 z-40 justify-center items-center;
 
-        & > .menu-hamburger {
-            @apply text-white h-[70%] aspect-square mr-3;
+        & > .content {
+            @apply bg-white w-[17rem] px-5 py-6 rounded-md flex flex-col gap-2 text-xl;
+
+            & > span {
+                @apply font-bold underline;
+            }
+
+            & span:nth-of-type(1) {
+                @apply text-lg;
+            }
+
+            & span:nth-of-type(2) {
+                @apply font-bold;
+            }
+
+            .times {
+                @apply text-lg
+            }
         }
 
-        & > div:first-of-type {
-            @apply relative flex items-center;
+        &.open {
+            @apply flex;
+        }
+    }
 
-            & h1 {
-                @apply mr-5 font-bold;
+    & > .header {
+        @apply z-40 dsk:py-5 py-2 h-32 dsk:h-auto dsk:px-12 px-5 flex items-center font-bold text-[clamp(1.1rem,4.75vw,1.25rem)] dsk:text-3xl dsk:mb-12 mb-3 text-white dsk:text-black dsk:bg-transparent bg-black;
+
+        & > .menu-hamburger {
+            @apply text-white h-full pr-5;
+
+            & > svg {
+                @apply h-[50%] aspect-square 
+            }
+        }
+
+        & > section {
+            @apply relative flex items-center flex-shrink; 
+
+            & > div:first-of-type {
+                @apply font-bold flex gap-1 flex-wrap leading-none;
+
+                & > span {
+                    @media (max-width: 370px) {
+                        @apply max-w-min;
+                    }
+                }
             }
 
             & .line {
-                @apply self-stretch dsk:py-6 py-4 w-[2px] rounded-full bg-current rotate-[25deg] dsk:ml-2 dsk:mr-7 mr-5;
+                @apply self-stretch dsk:py-6 py-4 w-[2px] rounded-full bg-current rotate-[25deg] dsk:mx-7 mx-5 z-10;
+            }
+
+            & h1 {
+                @apply mr-5 font-bold;
             }
         }
 
@@ -174,10 +216,10 @@ body {
             }
 
             & > button {
-                @apply hidden sm:block bg-[#EAEAEA] text-black dsk:text-lg text-base font-normal dsk:px-7 dsk:py-3 py-2 px-5 dsk:rounded-xl rounded-lg ml-2 hover:bg-neutral-300;
+                @apply hidden sm:block bg-neutral-200 text-black dsk:text-lg text-base font-normal dsk:px-7 dsk:py-3 py-2 px-5 dsk:rounded-xl rounded-lg ml-2 hover:bg-neutral-300;
 
                 &.active {
-                    @apply bg-black hover:bg-neutral-800 text-[#EAEAEA];
+                    @apply bg-black hover:bg-neutral-800 text-neutral-200;
                 }
             }
         }
@@ -196,22 +238,22 @@ body {
     }
 
     & > .dates {
-        @apply relative flex w-full justify-evenly dsk:px-12 pl-5 pr-4;
+        @apply relative flex w-full justify-evenly dsk:px-12 dsk:w-[calc(100%-8px)] pl-5 pr-4;
 
         &::after {
             content: "";
-            @apply absolute z-10 w-full -bottom-5 h-5 bg-gradient-to-b from-[rgb(250,250,250,1)] to-[rgb(250,250,250,0)];
+            @apply absolute z-10 w-full -bottom-5 h-5 bg-gradient-to-b from-themeWhite;
         }
 
         & > .space {
-            @apply text-transparent dsk:pl-[0.375rem] dsk:pr-5 pr-2 flex-grow-0;
+            @apply text-transparent dsk:pl-[0.375rem] dsk:pr-5 flex-grow-0 pr-2;
         }
 
         & > div {
             @apply flex flex-grow justify-evenly;
 
             & .date {
-                @apply w-full flex flex-col justify-center items-center row-start-1 pb-3 px-1 pt-[0.1875rem] bg-[#FAFAFA] -z-10 text-[rgb(0,0,0,0.3)];
+                @apply w-full flex flex-col justify-center items-center row-start-1 pb-3 pt-[0.1875rem] bg-themeWhite -z-10 text-[rgb(0,0,0,0.3)];
         
                 &.current {
                     & > span {
@@ -224,11 +266,11 @@ body {
                 }
 
                 & > span:first-child {
-                    @apply font-bold dsk:text-6xl dsk:mb-2 text-[2.5rem] -mb-2;
+                    @apply font-bold dsk:text-6xl dsk:mb-2 text-[clamp(2.25rem,8vw,2.5rem)] -mb-2;
                 }
 
                 & > span:not(:first-child) {
-                    @apply text-lg font-medium lowercase text-[rgb(0,0,0,0.4)];
+                    @apply text-[clamp(0.9rem,4vw,1.1rem)] font-medium lowercase text-[rgb(0,0,0,0.4)];
                 }
         
                 & > div:last-child {
@@ -242,7 +284,7 @@ body {
         @apply flex-grow overflow-y-auto overflow-x-hidden dsk:px-12 pl-5 pr-2;
 
         &::-webkit-scrollbar-track {
-            @apply bg-[#F8F8F8];
+            @apply bg-themeWhite;
         }
 
         &::-webkit-scrollbar {
@@ -276,7 +318,7 @@ body {
         }
         
         & .line {
-            @apply absolute flex items-center h-full left-1/2 -translate-x-1/2 dsk:w-[calc(100%+15px)] w-full col-[span_5/7];
+            @apply absolute flex items-center h-full left-1/2 -translate-x-1/2 dsk:w-[calc(100%+16px)] w-full col-[span_5/7];
     
             & > div {
                 @apply bg-[rgb(0,0,0,0.25)] h-[1px] w-full mt-[1px];
@@ -288,7 +330,7 @@ body {
         }
     
         & > div:nth-of-type(-n+10):not(:first-child) {
-            @apply col-start-1;
+            @apply col-start-1 text-[clamp(0.75rem,3.5vw,1rem)];
         }
     
         & > div:nth-of-type(2) {

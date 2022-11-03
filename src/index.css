@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 body {
-    @apply w-screen h-screen relative bg-[#f8f8f8];
+    @apply w-screen h-screen relative bg-themeWhite;
 }
 
 #root {

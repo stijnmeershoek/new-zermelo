@@ -6,26 +6,26 @@
     }
 
     & > form {
-        @apply relative w-[24rem] flex flex-col gap-1;
+        @apply relative w-[clamp(280px,25vw,24rem)] flex flex-col gap-1;
 
         & > label {
             @apply mt-4
         }
 
         & input {
-            @apply w-full text-xl text-black outline-none border-black border-[1px] rounded-md px-2 py-[2px];
+            @apply w-full text-xl text-themeDark outline-none border-themeDark border-[1px] rounded-md px-2 py-[2px];
 
             &.err {
-                @apply border-red-500;
+                @apply border-theme;
             }
         }
 
         & span.err {
-            @apply absolute bottom-0 translate-y-full pt-5 whitespace-pre-wrap text-red-500 font-semibold;
+            @apply absolute bottom-0 translate-y-full pt-5 whitespace-pre-wrap text-theme font-semibold;
         }
     
         & button {
-            @apply bg-black text-white px-3 py-2 rounded-lg mt-4 font-semibold;
+            @apply bg-themeDark text-white px-3 py-2 rounded-lg mt-4 font-semibold;
         }
     }
 }

@@ -5,9 +5,9 @@
 }
 
 .block {
-    @apply relative mx-auto bg-[#CFDDDB] py-2 dsk:px-[0.375rem] rounded-xl h-[calc(100%-2px)] dsk:w-[calc(100%-10px)] w-[calc(100%-5px)] aspect-[16/10] overflow-hidden flex mt-[1px] font-medium border-[1px] border-[black] border-opacity-[0.15];
+    @apply relative mx-auto bg-[#CFDDDB] py-2 dsk:px-[0.375rem] rounded-xl h-[calc(100%-2px)] dsk:w-[calc(100%-10px)] w-[calc(100%-5px)] aspect-[16/10] overflow-hidden flex mt-[1px] font-medium border-[1px] border-black border-opacity-[0.15] cursor-pointer;
 
-    & > div {
+    & > section {
         @apply text-sm text-[rgba(0,0,0,0.75)];
     }
 
@@ -18,19 +18,19 @@
             @apply text-red-500 font-black ml-1;
         }
         
-        & > div:first-child {
-            @apply font-black text-base text-[rgba(0,0,0,0.65)] max-w-[11ch] break-normal uppercase dsk:normal-case dsk:leading-normal leading-4;
+        & > :first-child {
+            @apply font-black text-[clamp(.875rem,3vw,1rem)] text-[rgba(0,0,0,0.65)] max-w-[11ch] break-normal uppercase dsk:normal-case dsk:leading-normal leading-4;
         }
 
-        & > div:nth-child(2) {
+        & > :nth-child(2) {
             @apply dsk:mt-0 mt-1;
         }
         
-        & > div:not(:last-child) {
+        & > :not(:last-child) {
             @apply dsk:-mt-1;
         }
 
-        & > div.times {
+        & > .times {
             @apply mt-auto;
         }
     }
@@ -52,38 +52,39 @@
             @apply justify-center;
         }
     }
-    &.unkown {
-        @apply bg-[#9EC1CF];
-    }
-    &.lesson {
-        @apply bg-[#E9E9E9];
-    }
-    &.exam {
-        @apply bg-yellow-200;
-    }
-    &.activity {
-        @apply bg-[#77DD77];
-    }
-    &.choice {
-        @apply bg-[#99c5c4];
-    }
-    &.talk {
-        @apply bg-[#ff6961];
-    }
-    &.other {
-        @apply bg-[#9EC1CF];
-    }
-    &.interlude {
-        @apply bg-neutral-400;
-    }
-    &.meeting {
-        @apply bg-[#ff6961];
-    }
-    &.cancelled {
-        @apply bg-[#ee3b33];
+}
 
-        & > *,  & > * > * {
-            @apply !text-[rgba(255,255,255,0.9)];
-        }
+.unkown {
+    @apply !bg-[#9EC1CF];
+}
+.lesson {
+    @apply !bg-[#E9E9E9];
+}
+.exam {
+    @apply !bg-yellow-200;
+}
+.activity {
+    @apply !bg-[#77DD77];
+}
+.choice {
+    @apply !bg-[#99c5c4];
+}
+.talk {
+    @apply !bg-[#ff6961];
+}
+.other {
+    @apply !bg-[#9EC1CF];
+}
+.interlude {
+    @apply !bg-neutral-400;
+}
+.meeting {
+    @apply !bg-[#ff6961];
+}
+.cancelled {
+    @apply !bg-theme;
+
+    & > *,  & > * > * {
+        @apply !text-[rgba(255,255,255,0.9)];
     }
 }
