@@ -254,7 +254,7 @@ const App = () => {
               </>
             )}
             <section aria-label='date'>
-              <time dateTime={`${new Date()}`}>{perWeek ? <span>{getMonday(getCurrentDate()).toLocaleString('default', { month: 'long', year: 'numeric'})}</span> : <span>{getCurrentDate().toLocaleString('default', { day: "2-digit", month: 'long', year: "numeric" })}</span>}</time>
+              <time dateTime={`${new Date()}`}>{perWeek ? <><span>{getMonday(getCurrentDate()).toLocaleString('default', { month: 'long'})}</span><span>{getMonday(getCurrentDate()).toLocaleString('default', { year: 'numeric'})}</span></> : <span>{getCurrentDate().toLocaleString('default', { day: "2-digit", month: 'long', year: "numeric" })}</span>}</time>
               <div className="line"></div>
               <h1>W{Math.ceil(Math.floor((Number(getCurrentDate()) - Number(new Date(getCurrentDate().getFullYear(), 0, 1))) / (24 * 60 * 60 * 1000)) / 7)}</h1>
             </section>

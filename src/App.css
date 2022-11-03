@@ -172,25 +172,25 @@ body, #root, .app {
     }
 
     & > .header {
-        @apply z-40 dsk:py-5 py-2 h-32 dsk:h-auto dsk:px-12 px-5 flex items-center font-bold text-[clamp(1.1rem,4.75vw,1.25rem)] dsk:text-3xl dsk:mb-12 mb-3 text-white dsk:text-black dsk:bg-transparent bg-black;
+        @apply z-40 py-5 dsk:px-12 px-5 flex items-center font-bold text-[clamp(1.1rem,4.75vw,1.25rem)] dsk:text-3xl dsk:mb-12 mb-3 text-white dsk:text-black dsk:bg-transparent bg-black;
 
         & > .menu-hamburger {
             @apply text-white h-full pr-5;
 
             & > svg {
-                @apply h-[50%] aspect-square 
+                @apply h-7 aspect-square;
             }
         }
 
         & > section {
             @apply relative flex items-center flex-shrink; 
 
-            & > div:first-of-type {
-                @apply font-bold flex gap-1 flex-wrap leading-none;
+            & > time:first-of-type {
+                @apply relative flex items-center leading-none font-bold gap-1;
 
-                & > span {
-                    @media (max-width: 370px) {
-                        @apply max-w-min;
+                @media (max-width: 375px) {
+                    & > span:nth-of-type(2) {
+                        @apply hidden;
                     }
                 }
             }
