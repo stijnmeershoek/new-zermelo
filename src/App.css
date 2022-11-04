@@ -11,7 +11,7 @@ body {
 }
 
 .app {
-    @apply will-change-transform translate-x-[-5.5rem] absolute dsk:left-0 h-full dsk:w-full w-[calc(100%+5.5rem)] bg-themeWhite dark:bg-themeDark text-black dark:text-white flex font-helvetica transition-all duration-300;
+    @apply will-change-transform dsk:translate-x-0 translate-x-[-5.5rem] absolute dsk:left-0 h-full dsk:w-full w-[calc(100%+5.5rem)] bg-themeWhite dark:bg-themeDark text-black dark:text-white flex font-helvetica transition-all duration-300;
 
     &.show-menu {
         @apply translate-x-0;
@@ -89,17 +89,17 @@ body {
 }
 
 .settings {
-    @apply absolute w-screen h-full ml-[5.5rem] z-30 pt-20 bg-themeWhite dark:bg-themeDark text-black dark:text-white px-5;
+    @apply absolute w-screen h-full ml-[5.5rem] z-30 dsk:pt-7 pt-20 dsk:!bg-black dsk:!text-white bg-themeWhite dark:bg-themeDark text-black dark:text-white px-5 dsk:w-1/4 dsk:min-w-[325px];
 
     & > h1 {
-        @apply font-bold text-3xl mb-5 mt-4;
+        @apply font-bold text-3xl mb-5 dsk:mt-0 mt-4;
     }
 
     & > div {
         @apply mt-2 text-lg;
 
         & select {
-            @apply rounded-lg bg-themeWhite dark:bg-themeDark outline-none ml-3 font-bold;
+            @apply rounded-lg bg-themeWhite dark:bg-themeDark dsk:!bg-black outline-none ml-3 font-bold;
         }
     }
 
@@ -109,7 +109,19 @@ body {
     @apply mb-5 overflow-y-auto overflow-x-hidden bg-themeWhite dark:bg-themeDark;
 
     &:not(.mobile) {
-        @apply py-7 px-4 w-1/4 text-black dark:text-white min-w-[325px] h-full flex flex-col;
+        @apply py-7 px-4 w-1/4 bg-black text-white min-w-[325px] h-full flex flex-col;
+
+        & .announcement {
+            @apply !bg-themeDark text-white;
+
+            & h1 {
+                @apply text-white text-opacity-90;
+            }
+
+            & > div:last-of-type {
+                @apply text-neutral-300;
+            }
+        }
     }
 
     &.mobile {
@@ -161,7 +173,7 @@ body {
     }
 
     & > h1 {
-        @apply font-bold text-3xl mt-4 mb-5 ml-1;
+        @apply font-bold text-3xl dsk:mt-0 mt-4 mb-5 ml-1;
     }
 }
 
@@ -208,7 +220,7 @@ body {
     }
 
     & > .header {
-        @apply z-40 py-5 dsk:px-12 px-5 flex items-center font-bold text-[clamp(1.1rem,4.75vw,1.25rem)] dsk:text-3xl dsk:mb-12 mb-3 text-white dsk:text-black dsk:bg-transparent bg-black border-b-[1px] border-b-themeWhite border-opacity-20;
+        @apply z-40 py-5 dsk:px-12 px-5 flex items-center font-bold text-[clamp(1.1rem,4.75vw,1.25rem)] dsk:text-3xl dsk:mb-12 mb-3 text-white dsk:text-black dsk:dark:text-white dsk:bg-transparent bg-black border-b-[1px] border-b-themeWhite border-opacity-20;
 
         & > .menu-hamburger {
             @apply text-white h-full pr-5;
@@ -252,10 +264,10 @@ body {
             }
 
             & > button {
-                @apply hidden sm:block bg-neutral-200 text-black dsk:text-lg text-base font-normal dsk:px-7 dsk:py-3 py-2 px-5 dsk:rounded-xl rounded-lg ml-2 hover:bg-neutral-300;
+                @apply hidden sm:block bg-neutral-200 dark:bg-[#4d4d4d] text-black dark:text-neutral-200 dsk:text-lg text-base font-normal dsk:px-7 dsk:py-3 py-2 px-5 dsk:rounded-xl rounded-lg ml-2 hover:bg-neutral-300 dark:hover:bg-neutral-500;
 
                 &.active {
-                    @apply bg-black hover:bg-neutral-800 text-neutral-200;
+                    @apply bg-black dark:hover:bg-neutral-800 text-neutral-200;
                 }
             }
         }
