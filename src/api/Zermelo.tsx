@@ -76,6 +76,13 @@ export async function getAnnouncements(school: string, access_token:string, abor
     return Promise.reject(Error(`Server returned with an error`))
 }
 
+// TODOS
+/* 
+    get hours you can chose to enroll in.
+    make user able to actually enroll or unenroll in those hours.
+    get user metadata (name, lastname, student number).
+*/
+
 export type Schedule = {
     data: Lesson[],
     details?: string,

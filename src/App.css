@@ -2,11 +2,19 @@ body, #root, .app {
     @apply overflow-hidden;
 }
 
+body {
+    @apply w-screen h-screen relative;
+}
+
+#root {
+    @apply w-full h-full;
+}
+
 .app {
-    @apply absolute -left-[5.5rem] dsk:left-0 h-full dsk:w-full w-[calc(100%+5.5rem)] text-black flex font-helvetica transition-all;
+    @apply will-change-transform translate-x-[-5.5rem] absolute dsk:left-0 h-full dsk:w-full w-[calc(100%+5.5rem)] bg-themeWhite dark:bg-themeDark text-black dark:text-white flex font-helvetica transition-all duration-300;
 
     &.show-menu {
-        @apply left-0;
+        @apply translate-x-0;
     }
 }
 
@@ -15,7 +23,7 @@ body, #root, .app {
 
     &::after, &::before {
         content: "";
-        @apply box-border w-full h-full rounded-full bg-black absolute left-0 top-0 animate-[animloader_2s_linear_infinite];
+        @apply box-border w-full h-full rounded-full bg-black dark:bg-themeWhite absolute left-0 top-0 animate-[animloader_2s_linear_infinite];
     }
 
     &::after {
@@ -80,22 +88,39 @@ body, #root, .app {
     }
 }
 
+.settings {
+    @apply absolute w-screen h-full ml-[5.5rem] z-30 pt-20 bg-themeWhite dark:bg-themeDark text-black dark:text-white px-5;
+
+    & > h1 {
+        @apply font-bold text-3xl mb-5 mt-4;
+    }
+
+    & > div {
+        @apply mt-2 text-lg;
+
+        & select {
+            @apply rounded-lg bg-themeWhite dark:bg-themeDark outline-none ml-3 font-bold;
+        }
+    }
+
+}
+
 .announcements {
-    @apply mb-5 overflow-y-auto overflow-x-hidden bg-black;
+    @apply mb-5 overflow-y-auto overflow-x-hidden bg-themeWhite dark:bg-themeDark;
 
     &:not(.mobile) {
-        @apply py-7 px-4 w-1/4 text-white min-w-[325px] h-full flex flex-col;
+        @apply py-7 px-4 w-1/4 text-black dark:text-white min-w-[325px] h-full flex flex-col;
     }
 
     &.mobile {
-        @apply absolute w-screen ml-[5.5rem] z-30 pt-20 text-white h-full px-5;
+        @apply absolute w-screen ml-[5.5rem] z-30 pt-20 text-black dark:text-white h-full px-5;
     }
 
     & .announcement {
-        @apply flex flex-col justify-between px-5 py-4 bg-themeDark text-white rounded-xl text-lg mb-3 cursor-pointer;
+        @apply flex flex-col justify-between px-5 py-4 bg-[#E9E9E9] dark:bg-[#4d4d4d] text-black dark:text-white rounded-xl text-lg mb-3 cursor-pointer;
 
         & > div:last-of-type {
-            @apply max-h-0 text-neutral-300 leading-5 text-[0.9rem] pt-2 overflow-hidden transition-all duration-500;
+            @apply max-h-0 text-neutral-700 dark:text-neutral-300 leading-5 text-[0.9rem] pt-2 overflow-hidden transition-all duration-500;
         }
 
         &:hover > div:last-of-type, &:focus > div:last-of-type, &:focus-within > div:last-of-type {
@@ -110,7 +135,7 @@ body, #root, .app {
             @apply flex items-center justify-between;
 
             & > h1 {
-                @apply font-medium tracking-wider text-[rgb(255,255,255,0.9)];
+                @apply font-medium tracking-wider text-opacity-90 dark:text-white text-black;
             }
 
             & > div {
@@ -136,30 +161,41 @@ body, #root, .app {
     }
 
     & > h1 {
-        @apply font-bold text-3xl mb-8 ml-1;
+        @apply font-bold text-3xl mt-4 mb-5 ml-1;
     }
 }
 
 .schedule {
-    @apply relative h-full flex-grow flex flex-col dsk:max-w-[min(75vw,calc(100vw-325px))] max-w-[100vw];
+    @apply relative h-full flex-grow flex flex-col dsk:max-w-[min(75vw,calc(100vw-325px))] max-w-[100vw] bg-themeWhite dark:bg-themeDark;
 
     & > .lesson-modal {
-        @apply hidden absolute top-0 left-0 w-full h-full bg-black bg-opacity-60 z-40 justify-center items-center;
+        @apply will-change-auto pointer-events-none flex opacity-0 absolute top-0 left-0 w-full h-full bg-black bg-opacity-60 z-40 justify-center items-center transition-opacity;
 
         & > .content {
-            @apply bg-white w-[17rem] px-5 py-6 rounded-md flex flex-col gap-2 text-xl;
+            @apply w-[17rem] px-5 py-6 rounded-xl flex flex-col gap-2 text-xl;
+
+            &.lesson {
+                @apply text-black dark:text-white;
+            }
 
             & > span {
                 @apply font-bold underline;
             }
 
-            & span:nth-of-type(1) {
-                @apply text-lg;
+            & > div {
+                & span:nth-of-type(1) {
+                    @apply text-lg;
+                }
+
+                & span:nth-of-type(2) {
+                    @apply font-bold;
+                }
+
+                & .change {
+                    @apply ml-1 font-extrabold;
+                }
             }
 
-            & span:nth-of-type(2) {
-                @apply font-bold;
-            }
 
             .times {
                 @apply text-lg
@@ -167,12 +203,12 @@ body, #root, .app {
         }
 
         &.open {
-            @apply flex;
+            @apply pointer-events-auto opacity-100;
         }
     }
 
     & > .header {
-        @apply z-40 py-5 dsk:px-12 px-5 flex items-center font-bold text-[clamp(1.1rem,4.75vw,1.25rem)] dsk:text-3xl dsk:mb-12 mb-3 text-white dsk:text-black dsk:bg-transparent bg-black;
+        @apply z-40 py-5 dsk:px-12 px-5 flex items-center font-bold text-[clamp(1.1rem,4.75vw,1.25rem)] dsk:text-3xl dsk:mb-12 mb-3 text-white dsk:text-black dsk:bg-transparent bg-black border-b-[1px] border-b-themeWhite border-opacity-20;
 
         & > .menu-hamburger {
             @apply text-white h-full pr-5;
@@ -238,11 +274,11 @@ body, #root, .app {
     }
 
     & > .dates {
-        @apply relative flex w-full justify-evenly dsk:px-12 dsk:w-[calc(100%-8px)] pl-5 pr-4;
+        @apply relative flex w-full justify-evenly dsk:px-12 dsk:w-[calc(100%-8px)] pl-5 pr-4 bg-transparent;
 
         &::after {
             content: "";
-            @apply absolute z-10 w-full -bottom-5 h-5 bg-gradient-to-b from-themeWhite;
+            @apply absolute z-10 w-full -bottom-3 h-3 bg-gradient-to-b from-themeWhite dark:from-themeDark;
         }
 
         & > .space {
@@ -250,18 +286,18 @@ body, #root, .app {
         }
 
         & > div {
-            @apply flex flex-grow justify-evenly;
+            @apply flex flex-grow justify-evenly z-10 bg-transparent;
 
             & .date {
-                @apply w-full flex flex-col justify-center items-center row-start-1 pb-3 pt-[0.1875rem] bg-themeWhite -z-10 text-[rgb(0,0,0,0.3)];
+                @apply w-full flex flex-col justify-center items-center row-start-1 pb-3 pt-[0.1875rem] -z-10 text-[rgb(0,0,0,0.3)] dark:text-[rgb(255,255,255,.6)];
         
                 &.current {
                     & > span {
-                        @apply !text-black;
+                        @apply !text-black dark:!text-white;
                     }
 
                     & > div:last-child {
-                        @apply bg-black;
+                        @apply bg-black dark:bg-white;
                     }
                 }
 
@@ -270,11 +306,11 @@ body, #root, .app {
                 }
 
                 & > span:not(:first-child) {
-                    @apply text-[clamp(0.9rem,4vw,1.1rem)] font-medium lowercase text-[rgb(0,0,0,0.4)];
+                    @apply text-[clamp(0.9rem,4vw,1.1rem)] font-medium lowercase text-[rgb(0,0,0,0.4)] dark:text-[rgb(255,255,255,0.6)];
                 }
         
                 & > div:last-child {
-                    @apply h-5 bg-[rgb(0,0,0,0.25)] w-[2px] dsk:mt-4 mt-2;
+                    @apply h-5 bg-[rgb(0,0,0,0.25)] dark:bg-[rgb(255,255,255,0.5)] w-[2px] dsk:mt-4 mt-2;
                 }
             }
         }
@@ -284,7 +320,7 @@ body, #root, .app {
         @apply flex-grow overflow-y-auto overflow-x-hidden dsk:px-12 pl-5 pr-2;
 
         &::-webkit-scrollbar-track {
-            @apply bg-themeWhite;
+            @apply bg-themeWhite dark:bg-themeDark;
         }
 
         &::-webkit-scrollbar {
@@ -301,11 +337,11 @@ body, #root, .app {
     & .schedule-grid-week, & .schedule-grid-day {
         @apply relative h-fit flex-shrink-0 overflow-x-visible w-auto grid grid-rows-[auto,repeat(110,minmax(0,1fr))];
     
-        & .current-time {
+        & .time-indicator {
             @apply absolute z-50 top-[0px] flex items-center h-[1px] overflow-visible left-1/2 -translate-x-1/2 w-[calc(100%+15px)] col-[span_5/7];
     
             & > div {
-                @apply bg-[rgb(0,0,0,0.5)] mt-1;
+                @apply bg-[rgb(0,0,0,0.5)] dark:bg-[rgb(255,255,255,0.5)] mt-1;
             }
 
             & > div:first-child {
@@ -321,12 +357,12 @@ body, #root, .app {
             @apply absolute flex items-center h-full left-1/2 -translate-x-1/2 dsk:w-[calc(100%+16px)] w-full col-[span_5/7];
     
             & > div {
-                @apply bg-[rgb(0,0,0,0.25)] h-[1px] w-full mt-[1px];
+                @apply bg-[rgb(0,0,0,0.25)] dark:bg-[rgb(255,255,255,0.25)] h-[1px] w-full mt-[1px];
             }
         }
     
         & > div:nth-of-type(-n+10) {
-            @apply dsk:pl-[0.375rem] dsk:pr-5 pr-2 -z-10 flex items-center;
+            @apply dsk:pl-[0.375rem] dsk:pr-5 pr-2 flex items-center text-black dark:text-white z-10;
         }
     
         & > div:nth-of-type(-n+10):not(:first-child) {
