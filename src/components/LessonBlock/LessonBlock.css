@@ -5,17 +5,44 @@
 }
 
 .block {
-    @apply relative mx-auto bg-[#CFDDDB] dark:bg-[#4d4d4d] py-2 dsk:px-[0.375rem] rounded-xl h-[calc(100%-2px)] dsk:w-[calc(100%-10px)] w-[calc(100%-5px)] aspect-[16/10] overflow-hidden flex mt-[1px] font-medium border-[1px] border-black dark:border-white dark:border-opacity-[0.3] border-opacity-[0.15] cursor-pointer;
+    @apply relative mx-auto bg-[#E9E9E9] dark:bg-[#4d4d4d] py-2 dsk:px-[0.375rem] rounded-xl h-[calc(100%-2px)] dsk:w-[calc(100%-10px)] w-[calc(100%-5px)] aspect-[16/10] overflow-hidden flex mt-[1px] font-medium border-[1px] border-black dark:border-white dark:border-opacity-[0.3] border-opacity-[0.15] cursor-pointer;
 
     & > section {
         @apply text-sm text-[rgba(0,0,0,0.75)];
     }
 
+    &.choice {
+        & > .choice-content {
+            @apply relative w-full h-full flex justify-center items-center;
+    
+            & > h1 {
+                @apply text-5xl font-extrabold text-[rgb(0,0,0,0.4)] dark:text-[rgb(255,255,255,0.4)];
+            }
+        }
+
+        &.locked {
+            @apply pointer-events-none select-none;
+        }
+
+        &.allowed {
+            @apply !bg-[#77DD77] bg-opacity-20;
+
+            & > .content-right > svg {
+                @apply bg-[hsl(120,60%,40%,0.15)] dark:bg-[hsl(120,60%,80%,0.15)];
+            }
+        }
+
+        & > .content-right > svg {
+            @apply absolute bottom-0 mb-2 mr-1 right-1 w-8 text-inherit bg-[rgba(0,0,0,0.10)] dark:bg-[rgb(255,255,255,0.3)] p-2 rounded-full;
+        }
+    }
+
+
     & > .content-left {
         @apply pb-[2px] dsk:pl-2 dsk:pr-0 px-2 flex flex-col w-full h-full py-1;
 
         & span.change {
-            @apply text-red-500 font-black ml-1;
+            @apply text-theme font-black ml-1;
         }
         
         & > :first-child {
@@ -39,7 +66,7 @@
         @apply absolute text-base inset-0 text-right dsk:pr-3 pr-[0.375rem] pt-2;
 
         & > svg {
-            @apply dsk:mb-0 dsk:mr-0 mb-2 mr-1 dsk:relative dsk:right-0 absolute right-1 bottom-0 ml-auto w-4 text-red-500;
+            @apply dsk:mb-0 dsk:mr-0 mb-2 mr-1 dsk:relative dsk:right-0 absolute right-1 bottom-0 ml-auto w-4 text-theme;
         }
     }
 
@@ -54,7 +81,7 @@
     }
 }
 
-.lesson {
+.lesson, .choice {
     @apply bg-[#E9E9E9] dark:bg-[#4d4d4d];
 
     & > section {
@@ -77,7 +104,7 @@
     @apply !bg-[#77DD77];
 }
 .choice {
-    @apply !bg-[#99c5c4];
+    @apply dark:!bg-[rgb(0,0,0,0.3)] !bg-[#4d4d4d4d];
 }
 .talk {
     @apply !bg-[#ff9361];
@@ -91,7 +118,7 @@
 .meeting {
     @apply !bg-[#ff9361];
 }
-.cancelled {
+.cancelled:not(.choice) {
     @apply !bg-theme;
 
     & > *,  & > * > * {

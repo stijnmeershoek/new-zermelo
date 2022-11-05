@@ -1,10 +1,10 @@
 function getApiURL(school: string) {
-    return `https://${school}.zportal.nl/api/v3`
+    return `https://${school}.zportal.nl`
 }
 
 export async function getAccessToken(school: string, code: string) {
     const url = getApiURL(school);
-    const res = await fetch(`${url}/oauth/token?grant_type=authorization_code&code=${code}`, { method: "POST"});
+    const res = await fetch(`${url}/api/v3/oauth/token?grant_type=authorization_code&code=${code}`, { method: "POST"});
 
     if (!res.ok) {
         return await Promise.reject(Error(`Server returned an error. you probably entered an invalid code.`));
@@ -21,7 +21,36 @@ export async function getAccessToken(school: string, code: string) {
 export async function getSchedule(school: string, access_token: string, start: number, end:number, abortController: AbortController) {
     const url = getApiURL(school);
     let response;
-    await fetch(`${url}/appointments?valid=true&start=${start}&end=${end}&user=~me`, { 
+    await fetch(`${url}/api/v3/appointments?valid=true&start=${start}&end=${end}&user=~me`, { 
+        method: "GET", 
+        headers: {
+            "Authorization": `Bearer ${access_token}`
+        },
+        signal: abortController.signal
+    }).then(async (res) => {
+        if (!res.ok) {
+            return Promise.reject(Error(`Server returned with an error (${res.status})`))
+        }
+
+        const json = await res.json();
+        response = json.response;
+    }).catch(() => {
+        if(abortController.signal.aborted) {
+            return Promise.reject(`The user aborted the request`);
+        }
+    })
+
+    if(response) {
+        return Promise.resolve(response);
+    }
+
+    return Promise.reject(Error(`Server returned with an error`))
+}
+
+export async function getLiveSchedule(school: string, access_token: string, week: string, student: string, abortController: AbortController) {
+    const url = getApiURL(school);
+    let response;
+    await fetch(`${url}/api/v3/liveschedule?student=${student}&week=${week}&fields=appointmentInstance,start,end,startTimeSlotName,endTimeSlotName,subjects,groups,locations,teachers,cancelled,changeDescription,schedulerRemark,content,appointmentType`, { 
         method: "GET", 
         headers: {
             "Authorization": `Bearer ${access_token}`
@@ -50,7 +79,7 @@ export async function getSchedule(school: string, access_token: string, start: n
 export async function getAnnouncements(school: string, access_token:string, abortController: AbortController) {
     const url = getApiURL(school)
     let response;
-    await fetch(`${url}/announcements?user=~me&current=true`, { 
+    await fetch(`${url}/api/v3/announcements?user=~me&current=true`, { 
         method: "GET", 
         headers: {
             "Authorization": `Bearer ${access_token}`
@@ -76,24 +105,68 @@ export async function getAnnouncements(school: string, access_token:string, abor
     return Promise.reject(Error(`Server returned with an error`))
 }
 
-// TODOS
-/* 
-    get hours you can chose to enroll in.
-    make user able to actually enroll or unenroll in those hours.
-    get user metadata (name, lastname, student number).
-*/
+export async function getUserData(access_token:string, school: string, abortController: AbortController) {
+    const url = getApiURL(school)
+    let response;
+    await fetch(`${url}/api/v3/tokens/~current`, {
+        method: "GET", 
+        headers: {
+            "Authorization": `Bearer ${access_token}`
+        },
+        signal: abortController.signal
+    }).then(async (res) => {
+        if (!res.ok) {
+            return Promise.reject(Error(`Server returned with an error (${res.status})`))
+        }
 
-export type Schedule = {
-    data: Lesson[],
-    details?: string,
-    endRow?: number,
-    eventId?: number,
-    message?: string,
-    startRow?: number,
-    status?: number,
-    totalRows?: number,
+        const json = await res.json();
+        response = json.response;
+    }).catch(() => {
+        if(abortController.signal.aborted) {
+            return Promise.reject(`The user aborted the request`);
+        }
+    });
+
+    if(response) {
+        return Promise.resolve(response);
+    }
+
+    return Promise.reject(Error(`Server returned with an error`))
 }
 
+export async function postEnroll(access_token:string, school: string, post: string, abortController: AbortController) {
+    const url = getApiURL(school)
+    let response;
+    await fetch(`${url}${post}`, {
+        method: "POST", 
+        headers: {
+            "Authorization": `Bearer ${access_token}`
+        },
+        signal: abortController.signal
+    }).then(async (res) => {
+        if (!res.ok) {
+            return Promise.reject(Error(`Server returned with an error (${res.status})`))
+        }
+
+        const json = await res.json();
+        response = json.response;
+    }).catch(() => {
+        if(abortController.signal.aborted) {
+            return Promise.reject(`The user aborted the request`);
+        }
+    });
+
+    if(response) {
+        return Promise.resolve(response);
+    }
+
+    return Promise.reject(Error(`Server returned with an error`))
+}
+
+/* 
+    //* ANNOUNCEMENTS
+    //* ALL DATA
+*/
 export type Announcements = {
     data: Announcement[],
     details?: string,
@@ -114,45 +187,103 @@ export type Announcement = {
     text: string,
     title: string,
 }
-  
-export type Lesson = {
-    id: number;
-    start: number;
-    end: number;
-    startTimeSlot: number;
-    endTimeSlot: number;
-    startTimeSlotName: string;
-    endTimeSlotName: string;
-    optional?: boolean;
-    teacherChanged: boolean;
-    groupChanged: boolean;
-    locationChanged: boolean;
-    timeChanged: boolean;
-    valid: boolean;
-    cancelled: boolean;
-    modified: boolean;
-    moved: boolean;
-    hidden: boolean;
-    new: boolean;
-    content?: any;
-    extraStudentSource?: any;
-    onlineLocationUrl?: any;
-    schedulerRemark?: string;
-    remark?: string;
-    changeDescription: string;
-    branch?: string;
-    branchOfSchool?: number;
-    created: number;
-    appointmentInstance?: number;
-    type: string;
-    lastModified: number;
-    appointmentLastModified?: number;
-    subjects: string[];
-    choosableInDepartmentCodes: string[];
-    teachers?: string[];
-    onlineTeachers?: any[];
-    groupsInDepartments?: number[];
-    groups?: string[];
-    locationsOfBranch?: number[];
-    locations?: string[];
+
+/* 
+    //* CURRENT USER
+    //* ALL DATA
+*/
+export type Current = {
+    status:    number;
+    message:   string;
+    details:   string;
+    eventId:   number;
+    startRow:  number;
+    endRow:    number;
+    totalRows: number;
+    data:      CurrentUserData[];
+}
+
+type CurrentUserData = {
+    token:                string;
+    user:                 string;
+    permissions:          { [key: string]: number };
+    created:              number;
+    expires:              number;
+    timeout:              number;
+    comment:              string;
+    human:                boolean;
+    staffing:             number;
+    subjectSelection:     number;
+    schedule:             number;
+    global:               number;
+    effectivePermissions: { [key: string]: number };
+    authcode:             any;
+}
+
+/* 
+    //* LIVESCHEDULE 
+    //* ALL DATA
+*/
+export type LiveSchedule = {
+    status:    number;
+    message:   string;
+    details:   string;
+    eventId:   number;
+    startRow:  number;
+    endRow:    number;
+    totalRows: number;
+    data:      Data[];
+}
+
+export type Appointment = {
+    status?:                    Status[];
+    actions?:                   Action[];
+    start:                      number;
+    end:                        number;
+    cancelled:                  boolean;
+    appointmentType:            string;
+    online:                     boolean;
+    optional:                   boolean;
+    appointmentInstance:        number | null;
+    startTimeSlotName:          string;
+    endTimeSlotName:            string;
+    subjects:                   string[];
+    groups:                     string[];
+    locations:                  string[];
+    teachers:                   string[];
+    onlineTeachers:             any[];
+    onlineLocationUrl:          null;
+    capacity:                   null;
+    expectedStudentCount:       null;
+    expectedStudentCountOnline: null;
+    changeDescription:          null | string;
+    schedulerRemark:            null | string;
+    content:                    null;
+    id:                         number | null;
+    plannedAttendance?:         boolean;
+    studentEnrolled?:           boolean;
+    allowedActions?:            string;
+    attendanceOverruled?:       boolean;
+    availableSpace?:            number;
+}
+
+type Data =  {
+    week:         string;
+    user:         string;
+    appointments: Appointment[];
+    status:       Status[];
+    replacements: any[];
+}
+
+type Action = {
+    appointment: Appointment;
+    status:      any[];
+    allowed:     boolean;
+    post:        string;
+}
+
+type Status = {
+    code: number;
+    nl:   string;
+    en:   string;
 }

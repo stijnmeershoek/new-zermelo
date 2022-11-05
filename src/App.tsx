@@ -1,14 +1,14 @@
 import './App.css'
 import { useAppState } from './context';
-import { getSchedule, Schedule, getAnnouncements, Announcement, Announcements,Lesson } from './api/Zermelo';
-import { useEffect, useLayoutEffect, useState, useRef } from 'react';
+import { getLiveSchedule, LiveSchedule, Appointment, getAnnouncements, Announcements, Announcement, postEnroll, Current } from './api/Zermelo';
+import { useEffect, useLayoutEffect, useState, useRef, FormEvent } from 'react';
 import { LessonBlock } from './components/LessonBlock'
 import {useMediaQuery} from './hooks';
 
 const App = () => {
-  const { accounts, currentAccount, switchAccount, addNewAccount, logOut, lng, setLng, theme, setTheme } = useAppState();
+  const { user, accounts, currentAccount, switchAccount, addNewAccount, logOut, lng, setLng, theme, setTheme, showChoices, setShowChoices } = useAppState();
   const [perWeek, setPerWeek] = useState<boolean>(true);
-  const [schedule, setSchedule] = useState<Lesson[][]>([]);
+  const [schedule, setSchedule] = useState<Appointment[][]>([]);
   const [announcements, setAnnouncements] = useState<Announcement[]>([]);
   const [dates, setDates] = useState<Date[] | undefined>()
   const [offset, setOffset] = useState(0);
@@ -17,7 +17,9 @@ const App = () => {
   const [showAnnouncements, setShowAnnouncements] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
   const [lessonModalOpen, setLessonModalOpen] = useState(false);
-  const [selectedLesson, setSelectedLesson] = useState<Lesson | null>();
+  const [choiceModalOpen, setChoiceModalOpen] = useState(false);
+  const [selectedLesson, setSelectedLesson] = useState<Appointment | null>();
+  const [group, setGroup] = useState("");
   const isDesktop = useMediaQuery('(min-width: 1110px)');
   const scheduleRef = useRef(null);
   const timeIndicatorRef = useRef(null);
@@ -64,7 +66,7 @@ const App = () => {
     return monday;
   }
 
-  const openLessonModal = (lesson: Lesson) => {
+  const openLessonModal = (lesson: Appointment) => {
     setSelectedLesson(lesson);
     setLessonModalOpen(true);
   }
@@ -76,57 +78,54 @@ const App = () => {
     }, 150)
   }
 
+  const openChoiceModal = (lesson: Appointment) => {
+    setSelectedLesson(lesson);
+    setChoiceModalOpen(true);
+  }
+
+  const closeChoiceModal = () => {
+    setChoiceModalOpen(false);
+    setTimeout(() => {
+      setSelectedLesson(null);
+    }, 150)
+  }
+
   useEffect(() => {
-    if(!accounts[currentAccount]) return;
+    if(!accounts[currentAccount] || !user) return;
     setLoading(true);
     const school = accounts[currentAccount].school, token = accounts[currentAccount].accessToken;
     const dates = getDates()
     setDates(dates);
     const date = getCurrentDate();
+    const week = `${date.getFullYear()}${Math.ceil(Math.floor((Number(date) - Number(new Date(date.getFullYear(), 0, 1))) / (24 * 60 * 60 * 1000)) / 7)}`
 
     const abortController = new AbortController();
-    let end: number, start: number;
-
-    if(perWeek) {
-      start = Math.floor(getMonday(date).getTime() / 1000)
-      end = start + 604800;
-    } else {
-      start = Math.floor(getCurrentDate().getTime() / 1000)
-      end = start + 86400;
-    }
     
     const fetchData = async() => {
-      const scheduleRes: Schedule = await getSchedule(school, token, start, end, abortController);
-      const announcementsRes: Announcements = await getAnnouncements(school, token, abortController);
+      const livescheduleRes: LiveSchedule = await getLiveSchedule(school, token, week, user, abortController);
       
-      let schedule: Lesson[][];
-      if(perWeek) {
-        const day0 = scheduleRes.data.filter((lesson) =>new Date(lesson.start * 1000).toDateString() === dates[0].toDateString() && new Date(lesson.end * 1000).toDateString() === dates[0].toDateString()).sort((a, b) => (a.start > b.start ? 1 : -1))
-        const day1 = scheduleRes.data.filter((lesson) =>new Date(lesson.start * 1000).toDateString() === dates[1].toDateString() && new Date(lesson.end * 1000).toDateString() === dates[1].toDateString()).sort((a, b) => (a.start > b.start ? 1 : -1))
-        const day2 = scheduleRes.data.filter((lesson) =>new Date(lesson.start * 1000).toDateString() === dates[2].toDateString() && new Date(lesson.end * 1000).toDateString() === dates[2].toDateString()).sort((a, b) => (a.start > b.start ? 1 : -1))
-        const day3 = scheduleRes.data.filter((lesson) =>new Date(lesson.start * 1000).toDateString() === dates[3].toDateString() && new Date(lesson.end * 1000).toDateString() === dates[3].toDateString()).sort((a, b) => (a.start > b.start ? 1 : -1))
-        const day4 = scheduleRes.data.filter((lesson) =>new Date(lesson.start * 1000).toDateString() === dates[4].toDateString() && new Date(lesson.end * 1000).toDateString() === dates[4].toDateString()).sort((a, b) => (a.start > b.start ? 1 : -1))
-        
+      let schedule: Appointment[][];
+      if(perWeek) {        
+        const day0 = livescheduleRes.data[0].appointments.filter((lesson) =>new Date(lesson.start * 1000).toDateString() === dates[0].toDateString() && new Date(lesson.end * 1000).toDateString() === dates[0].toDateString()).sort((a, b) => (a.start > b.start ? 1 : -1)).filter((lesson) => showChoices !== "1" ? lesson.appointmentType !== "choice" : lesson);
+        const day1 = livescheduleRes.data[0].appointments.filter((lesson) =>new Date(lesson.start * 1000).toDateString() === dates[1].toDateString() && new Date(lesson.end * 1000).toDateString() === dates[1].toDateString()).sort((a, b) => (a.start > b.start ? 1 : -1)).filter((lesson) => showChoices !== "1" ? lesson.appointmentType !== "choice" : lesson);
+        const day2 = livescheduleRes.data[0].appointments.filter((lesson) =>new Date(lesson.start * 1000).toDateString() === dates[2].toDateString() && new Date(lesson.end * 1000).toDateString() === dates[2].toDateString()).sort((a, b) => (a.start > b.start ? 1 : -1)).filter((lesson) => showChoices !== "1" ? lesson.appointmentType !== "choice" : lesson);
+        const day3 = livescheduleRes.data[0].appointments.filter((lesson) =>new Date(lesson.start * 1000).toDateString() === dates[3].toDateString() && new Date(lesson.end * 1000).toDateString() === dates[3].toDateString()).sort((a, b) => (a.start > b.start ? 1 : -1)).filter((lesson) => showChoices !== "1" ? lesson.appointmentType !== "choice" : lesson);
+        const day4 = livescheduleRes.data[0].appointments.filter((lesson) =>new Date(lesson.start * 1000).toDateString() === dates[4].toDateString() && new Date(lesson.end * 1000).toDateString() === dates[4].toDateString()).sort((a, b) => (a.start > b.start ? 1 : -1)).filter((lesson) => showChoices !== "1" ? lesson.appointmentType !== "choice" : lesson);
         schedule = [day0, day1, day2, day3, day4];
       } else {
-        const day = scheduleRes.data;
+        const day = livescheduleRes.data[0].appointments.filter((lesson) => !showChoices ? lesson.appointmentType !== "choice" : lesson);
 
         schedule = [day];
       }
+
       setSchedule(schedule);
 
       if(!schedule.every((a) => a.length < 1)) {
-        const group = [...new Set(scheduleRes.data.map((lesson) => lesson.groups ? lesson.groups[0] : "").filter((group) => !group?.includes(".")))][0];
-        if(!group) {
-          setAnnouncements(announcementsRes.data)
-          return;
-        };
-
-        const announcements = announcementsRes.data.filter(announcement => (possibleGroups.some(element => announcement.title.toLowerCase().includes(element)) && announcement.title.toLowerCase().includes(group.slice(0,2))) || !possibleGroups.some(element => announcement.title.toLowerCase().includes(element)) || !group);
-        setAnnouncements(announcements);
-      } else {
-        setAnnouncements(announcementsRes.data);
-      };
+        const newGroup = [...new Set(livescheduleRes.data[0].appointments.map((lesson) => lesson.groups ? lesson.groups[0] : "").filter((group) => group?.includes(".")))].map((item) => item.split("."))[0].filter(item => possibleGroups.some(group => item == group))[0];
+        if(newGroup !== group && newGroup !== "") {
+          setGroup(newGroup)
+        }
+      }
 
       setLoading(false);
     }
@@ -136,7 +135,30 @@ const App = () => {
     return () => {
       abortController.abort();
     };
-  }, [accounts[currentAccount], offset, perWeek])
+  }, [accounts[currentAccount], offset, perWeek, user, showChoices])
+
+  useEffect(() => {
+    if(!accounts[currentAccount] || schedule.length === 0) return;
+    const abortController = new AbortController();
+    const school = accounts[currentAccount].school, token = accounts[currentAccount].accessToken;
+    const fetchData = async () => {
+      const announcementsRes: Announcements = await getAnnouncements(school, token, abortController);
+
+      if(!group) {
+        setAnnouncements(announcementsRes.data);
+        return;
+      };
+
+      const announcements = announcementsRes.data.filter(announcement => (possibleGroups.some(element => announcement.title.toLowerCase().includes(element)) && announcement.title.toLowerCase().includes(group.slice(0,2))) || !possibleGroups.some(element => announcement.title.toLowerCase().includes(element)) || !group);
+      setAnnouncements(announcements);
+    }
+
+    fetchData();
+
+    return () => {
+      abortController.abort();
+    }
+  }, [group, accounts[currentAccount]])
 
   useLayoutEffect(() => {
     const schedule = scheduleRef.current as unknown as HTMLDivElement;
@@ -192,7 +214,7 @@ const App = () => {
               </button>
             })}
             {accounts.length <= 5 && <button aria-label='add account' className='add-account' onClick={() => {addNewAccount(); setShowSettings(false); setShowAnnouncements(false)}}>
-              +
+              <svg viewBox="0 0 1024 1024"><path d="M960 448H576V64a64 64 0 0 0-128 0v384H64a64 64 0 0 0 0 128h384v384a64 64 0 0 0 128 0V576h384a64 64 0 0 0 0-128z" fill="currentColor" /></svg>
               
               <span>{lng === "nl" ? "Account Toevoegen" : lng === "en" ? "Add Account" : "Add Account"}</span>
             </button>}
@@ -252,6 +274,13 @@ const App = () => {
               <option value="dark">Dark</option>
             </select>
           </div>
+          {isDesktop && <div>
+            <label htmlFor="choices">{lng === "nl" ? "Toon keuze-uren" : lng === "en" ? "Show Enrollments" : "Show Enrollments"}:</label>
+            <select id="choices" value={showChoices} onChange={(e) => {setShowChoices(e.target.value)}}>
+              <option value="0">{lng === "nl" ? "Nee" : lng === "en" ? "No" : "No"}</option>
+              <option value="1">{lng === "nl" ? "Ja" : lng === "en" ? "Yes" : "Yes"}</option>
+            </select>
+          </div>}
         </section>}
 
         <main className="schedule">
@@ -315,15 +344,15 @@ const App = () => {
             <div ref={scheduleRef} aria-label='schedule grid' className="schedule-grid-week">
               <LinesAndTimes />
 
-              <Day schedule={schedule} dayNumber={0} isDesktop={isDesktop} openLessonModal={openLessonModal}/>
+              <Day schedule={schedule} dayNumber={0} isDesktop={isDesktop} openLessonModal={openLessonModal} openChoiceModal={openChoiceModal}/>
 
-              <Day schedule={schedule} dayNumber={1} isDesktop={isDesktop} openLessonModal={openLessonModal}/>
+              <Day schedule={schedule} dayNumber={1} isDesktop={isDesktop} openLessonModal={openLessonModal} openChoiceModal={openChoiceModal}/>
 
-              <Day schedule={schedule} dayNumber={2} isDesktop={isDesktop} openLessonModal={openLessonModal}/>
+              <Day schedule={schedule} dayNumber={2} isDesktop={isDesktop} openLessonModal={openLessonModal} openChoiceModal={openChoiceModal}/>
 
-              <Day schedule={schedule} dayNumber={3} isDesktop={isDesktop} openLessonModal={openLessonModal}/>
+              <Day schedule={schedule} dayNumber={3} isDesktop={isDesktop} openLessonModal={openLessonModal} openChoiceModal={openChoiceModal}/>
 
-              <Day schedule={schedule} dayNumber={4} isDesktop={isDesktop} openLessonModal={openLessonModal}/>
+              <Day schedule={schedule} dayNumber={4} isDesktop={isDesktop} openLessonModal={openLessonModal} openChoiceModal={openChoiceModal}/>
 
               <div ref={timeIndicatorRef} className="time-indicator">
                 <div></div>
@@ -336,7 +365,7 @@ const App = () => {
             {!loading ? <div className='scroller'>
               <div ref={scheduleRef} aria-label='schedule grid' className='schedule-grid-day'>
                 <LinesAndTimes />
-                <Day schedule={schedule} dayNumber={0} isDesktop={isDesktop} openLessonModal={openLessonModal}/>
+                <Day schedule={schedule} dayNumber={0} isDesktop={isDesktop} openLessonModal={openLessonModal} openChoiceModal={openChoiceModal}/>
 
                 <div ref={timeIndicatorRef} className="time-indicator">
                   <div></div>
@@ -348,82 +377,119 @@ const App = () => {
           )}
 
           <dialog onClick={closeLessonModal} aria-modal="true" open={lessonModalOpen} className={`${(lessonModalOpen && selectedLesson) ? "open " : ""}lesson-modal`} aria-label='lesson info'>
-            <div className={`${selectedLesson ? (selectedLesson.type + " ") : ""}${selectedLesson?.cancelled ? "cancelled " : ""}content`}>
+            <div className={`${selectedLesson ? (selectedLesson.appointmentType + " ") : ""}${selectedLesson?.cancelled ? "cancelled " : ""}content`}>
               {selectedLesson && (
                 <>
-                  <span>{selectedLesson.type}{selectedLesson.cancelled && <span>{lng === "nl" ? ": uitgevallen" : lng === "en" ? ": cancelled" : ": cancelled"}</span>}</span>
-                  <div><span>{lng === "nl" ? "Vak" : lng === "en" ? "Subject" : "Subject"}</span>: <span>{selectedLesson.subjects.length <= 1 ? selectedLesson!.subjects[0] : `${selectedLesson.subjects[0]}, ${selectedLesson.subjects[1]}${selectedLesson!.subjects.length > 2 ? "+" : ""}`}</span></div>
-                  <div><span>{lng === "nl" ? "Docent" : lng === "en" ? "Teacher" : "Teacher"}</span>: {selectedLesson.teachers!.length > 0 && <span aria-label='teacher'>{selectedLesson.teachers!.length <= 1 ? selectedLesson.teachers![0].toUpperCase() : `${selectedLesson.teachers![0].toUpperCase()}, ${selectedLesson.teachers![1].toUpperCase()}${selectedLesson.teachers!.length > 2 ? "+" : ""}`}<span className='change'>{selectedLesson.teacherChanged && "!"}</span></span>}</div>
-                  <div><span>{lng === "nl" ? "Lokaal" : lng === "en" ? "Classroom" : "Classroom"}</span>: {selectedLesson.locations!.length > 0 && <span aria-label='location'>{selectedLesson.locations!.length <= 1 ? selectedLesson.locations![0] : `${selectedLesson.locations![0]}, ${selectedLesson.locations![1]}${selectedLesson.locations!.length > 2 ? "+" : ""}`}<span className='change'>{selectedLesson.locationChanged && "!"}</span></span>}</div>
-                  <div><span>{lng === "nl" ? "Tijden" : lng === "en" ? "Times" : "Times"}</span>: <span className='times'><time aria-label='lesson start' dateTime={`${new Date(selectedLesson.start * 1000)}`}>{String(new Date(selectedLesson.start * 1000).getHours())}:{String(new Date(selectedLesson.start * 1000).getMinutes()).padStart(2,'0')}</time>-<time aria-label='lesson end' dateTime={`${new Date(selectedLesson.end * 1000)}`}>{String(new Date(selectedLesson.end * 1000).getHours())}:{String(new Date(selectedLesson.end * 1000).getMinutes()).padStart(2,'0')}</time><span className='change'>{selectedLesson.timeChanged && "!"}</span></span></div>
+                  <span>{selectedLesson.appointmentType}</span>
+                  <div><span>{lng === "nl" ? "Vak" : lng === "en" ? "Subject" : "Subject"}</span>: <span>{selectedLesson.subjects.length <= 1 ? selectedLesson!.subjects[0] : `${selectedLesson.subjects[0]}, ${selectedLesson.subjects[1]}${selectedLesson!.subjects.length > 2 ? "+" : ""}`}<span className='change'>{selectedLesson.status?.some((status) => status.code === 3014)}</span></span></div>
+                  <div><span>{lng === "nl" ? "Docent" : lng === "en" ? "Teacher" : "Teacher"}</span>: {selectedLesson.teachers!.length > 0 && <span aria-label='teacher'>{selectedLesson.teachers!.length <= 1 ? selectedLesson.teachers![0].toUpperCase() : `${selectedLesson.teachers![0].toUpperCase()}, ${selectedLesson.teachers![1].toUpperCase()}${selectedLesson.teachers!.length > 2 ? "+" : ""}`}<span className='change'>{selectedLesson.status?.some((status) => status.code === 3011)}</span></span>}</div>
+                  <div><span>{lng === "nl" ? "Lokaal" : lng === "en" ? "Classroom" : "Classroom"}</span>: {selectedLesson.locations!.length > 0 && <span aria-label='location'>{selectedLesson.locations!.length <= 1 ? selectedLesson.locations![0] : `${selectedLesson.locations![0]}, ${selectedLesson.locations![1]}${selectedLesson.locations!.length > 2 ? "+" : ""}`}<span className='change'>{selectedLesson.status?.some((status) => status.code === 3012)}</span></span>}</div>
+                  <div><span>{lng === "nl" ? "Tijden" : lng === "en" ? "Times" : "Times"}</span>: <span className='times'><time aria-label='lesson start' dateTime={`${new Date(selectedLesson.start * 1000)}`}>{String(new Date(selectedLesson.start * 1000).getHours())}:{String(new Date(selectedLesson.start * 1000).getMinutes()).padStart(2,'0')}</time>-<time aria-label='lesson end' dateTime={`${new Date(selectedLesson.end * 1000)}`}>{String(new Date(selectedLesson.end * 1000).getHours())}:{String(new Date(selectedLesson.end * 1000).getMinutes()).padStart(2,'0')}</time><span className='change'>{selectedLesson.status?.some((status) => status.code === 3015)}</span></span></div>
+                  {(selectedLesson.changeDescription || selectedLesson.schedulerRemark) &&<div className='remarks'>
+                  <span className='title'>{lng === "nl" ? "Opmerking" : lng === "en" ? "Remark" : "Remark"}:</span>
+                  {selectedLesson.changeDescription && <span>{selectedLesson.changeDescription}</span>}
+                  {selectedLesson.schedulerRemark && <span>{selectedLesson.schedulerRemark}</span>}
+                  </div>}
                 </>
               )}
             </div>
           </dialog>
+
+          <ChoiceModal currentAccount={accounts[currentAccount]} choiceModalOpen={choiceModalOpen} lng={lng} closeChoiceModal={closeChoiceModal} isDesktop={isDesktop} selectedLesson={selectedLesson}/>
         </main>
     </div>
   );
+}
+
+const ChoiceModal = ({currentAccount, closeChoiceModal, choiceModalOpen, isDesktop, lng, selectedLesson}: {currentAccount: {accountName: string,school: string,accessToken: string}, closeChoiceModal: () => void, choiceModalOpen: boolean, isDesktop: boolean, lng: string, selectedLesson: Appointment | null | undefined}) => {
+  const [currentValue, setCurrentValue] = useState<string>();
+  const school = currentAccount.school, token = currentAccount.accessToken;
+
+  const enrollInChoice = async (e: FormEvent) => {
+    e.preventDefault();
+    if(!currentValue) return;
+    const abortController = new AbortController();
+    await postEnroll(token, school, currentValue, abortController);
+    closeChoiceModal();
+  }
+
+  return ( <>
+    <dialog onClick={(e) => {(e.target as HTMLElement).classList.contains("choice-modal") && closeChoiceModal()}} aria-modal="true" open={choiceModalOpen} className={`${(choiceModalOpen && selectedLesson) ? "open " : ""}choice-modal`} aria-label='choice info'>
+      <form onSubmit={enrollInChoice} className={`${selectedLesson ? (selectedLesson.appointmentType + " ") : ""}${selectedLesson?.cancelled ? "cancelled " : ""}content`}>
+        {selectedLesson && <><div className='form-scroller'>{(selectedLesson && selectedLesson.actions && selectedLesson.actions.length !== 0) && (
+          selectedLesson.actions.map((action) => {
+            return <div key={action.appointment.id}>
+              <input type="radio" name="enroll" id="enroll" value={action.post} checked={currentValue === action.post} onChange={() => {setCurrentValue(action.post)}}/>
+              <LessonBlock lesson={action.appointment} onClick={() => {}} isDesktop={isDesktop}/>
+            </div>
+          })
+        )}</div>
+        <button type='submit' aria-label='enroll'>{lng === "nl" ? "Inschrijven" : lng === "en" ? "Enroll" : "Enroll"}</button></>}
+      </form>
+    </dialog>
+    </>
+  )
 }
 
 const LinesAndTimes = () => {
   return (
     <>
       <div></div>
-      <div>
+      <div className='time'>
         <time dateTime={"8:00"}>8:00</time>
       </div>
       <span className="line">
         <div></div>
       </span>
-      <div>
+      <div className='time'>
         <time dateTime={"9:00"}>9:00</time>
       </div>
       <span className="line">
         <div></div>
       </span>
-      <div>
+      <div className='time'>
         <time dateTime={"10:00"}>10:00</time>
       </div>
       <span className="line">
         <div></div>
       </span>
-      <div>
+      <div className='time'>
         <time dateTime={"11:00"}>11:00</time>
       </div>
       <span className="line">
         <div></div>
       </span>
-      <div>
+      <div className='time'>
         <time dateTime={"12:00"}>12:00</time>
       </div>
       <span className="line">
         <div></div>
       </span>
-      <div>
+      <div className='time'>
         <time dateTime={"13:00"}>13:00</time>
       </div>
       <span className="line">
         <div></div>
       </span>
-      <div>
+      <div className='time'>
         <time dateTime={"14:00"}>14:00</time>
       </div>
       <span className="line">
         <div></div>
       </span>
-      <div>
+      <div className='time'>
         <time dateTime={"15:00"}>15:00</time>
       </div>
       <span className="line">
         <div></div>
       </span>
-      <div>
+      <div className='time'>
         <time dateTime={"16:00"}>16:00</time>
       </div>
       <span className="line">
         <div></div>
       </span>
-      <div>
+      <div className='time'>
         <time dateTime={"17:00"}>17:00</time>
       </div>
       <span className="line">
@@ -433,20 +499,22 @@ const LinesAndTimes = () => {
   )
 }
 
-const Day = ({dayNumber, schedule, isDesktop, openLessonModal}: {dayNumber: number, schedule: Lesson[][], isDesktop: boolean, openLessonModal: (lesson: Lesson) => void}) => {
+const Day = ({dayNumber, schedule, isDesktop, openLessonModal, openChoiceModal}: {dayNumber: number, schedule: Appointment[][], isDesktop: boolean, openLessonModal: (lesson: Appointment) => void, openChoiceModal: (lesson: Appointment) => void}) => {
   return (
   <>
     {schedule[dayNumber] && schedule[dayNumber].length !== 0 ? schedule[dayNumber].map((lesson) => {
       let rowStart = (new Date(lesson.start * 1000).getHours() - 8) * 12 + new Date(lesson.start * 1000).getMinutes() / 5 + 3;
       let rowEnd = (new Date(lesson.end * 1000).getHours() - 8) * 12 + new Date(lesson.end * 1000).getMinutes() / 5 + 3
 
+      const onClick = lesson.appointmentType === "choice" ? () => {openChoiceModal(lesson)} : () => {openLessonModal(lesson)};
+
       return (
         <LessonBlock
-          key={lesson.id}
+          key={lesson.id ? lesson.id : `choice-${lesson.endTimeSlotName}`}
           lesson={lesson}
           className={`${rowEnd - rowStart <= 5 ? "wrap" : ""}`}
           isDesktop={isDesktop}
-          onClick={() => {openLessonModal(lesson)}}
+          onClick={onClick}
           style={{
             gridRow: `${rowStart} / ${rowEnd}`,
             gridColumn: `${dayNumber+2}/${dayNumber+3}`,

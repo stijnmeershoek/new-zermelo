@@ -1,8 +1,9 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from "react";
-import { getAccessToken } from '../api/Zermelo';
+import { getAccessToken, getUserData, Current } from '../api/Zermelo';
 import { Login } from "../pages/login";
 
 type Values = {
+  user: string,
   accounts: Account[],
   currentAccount: number,
   logOut: () => void,
@@ -12,6 +13,8 @@ type Values = {
   switchAccount: (i: number) => void;
   theme: string,
   setTheme: React.Dispatch<React.SetStateAction<string>>
+  showChoices: string,
+  setShowChoices: React.Dispatch<React.SetStateAction<string>>
 }
 
 type Account = {
@@ -20,7 +23,7 @@ type Account = {
   accessToken: string
 }
 
-const defaultValues: Values = {accounts: [], currentAccount: 0, logOut: () => {}, lng: "nl", addNewAccount: () => {}, switchAccount: () => {}, setLng: () => {}, theme: "light", setTheme: () => {}};
+const defaultValues: Values = {user: "", accounts: [], currentAccount: 0, logOut: () => {}, lng: "nl", addNewAccount: () => {}, switchAccount: () => {}, setLng: () => {}, theme: "light", setTheme: () => {}, showChoices: "0", setShowChoices: () => {}};
 const AppContext = createContext(defaultValues);
 
 export function useAppState() {
@@ -36,9 +39,11 @@ export function AppProvider({ children }: Props) {
   const [loading, setLoading] = useState(true);
   const [loggedIn, setLoggedIn] = useState(false);
   const [currentAccount, setCurrentAccount] = useState<number>(0);
+  const [user, setUser] = useState("");
   const [accounts, setAccounts] = useState<Account[]>([]);
   const [lng, setLng] = useState("");
   const [theme, setTheme] = useState("");
+  const [showChoices, setShowChoices] = useState("");
 
   useEffect(() => {
     const accounts: Account[] = JSON.parse(localStorage.getItem('zermelo-accounts') || "[]");
@@ -57,10 +62,27 @@ export function AppProvider({ children }: Props) {
 
     const lng = localStorage.getItem('zermelo-lng') || Intl.DateTimeFormat().resolvedOptions().locale.slice(0,2);
     const theme = localStorage.getItem('zermelo-theme') || "light";
+    const showChoices = localStorage.getItem('zermelo-showchoices') || "0";
     setLng(lng);
     setTheme(theme);
+    setShowChoices(showChoices);
     setLoading(false)
   }, [])
+
+  useEffect(() => {
+    if(!loggedIn || !accounts[currentAccount]) return;
+    let abortController = new AbortController()
+    const fetchData = async () => {
+        const res: Current = await getUserData(accounts[currentAccount].accessToken, accounts[currentAccount].school, abortController);
+        setUser(res.data[0].user);
+    }
+
+    fetchData();
+
+    return () => {
+      abortController.abort();
+    }
+  }, [loggedIn, currentAccount, accounts])
 
   useEffect(() => {
     if(!lng) return;
@@ -71,6 +93,11 @@ export function AppProvider({ children }: Props) {
     if(!theme) return;
     localStorage.setItem('zermelo-theme', theme)
   }, [theme])
+
+  useEffect(() => {
+    if(!showChoices) return;
+    localStorage.setItem('zermelo-showchoices', showChoices)
+  }, [showChoices])
 
   const addNewAccount = () => {
     setLoggedIn(false);
@@ -117,5 +144,5 @@ export function AppProvider({ children }: Props) {
   }
   
 
-  return <AppContext.Provider value={{accounts, currentAccount, logOut, lng, setLng, addNewAccount, switchAccount, theme, setTheme}}>{loading ? <></> : loggedIn ? children : <Login err={errMessage} onSubmit={onSubmit}/>}</AppContext.Provider>;
+  return <AppContext.Provider value={{user, accounts, currentAccount, logOut, lng, setLng, addNewAccount, switchAccount, theme, setTheme, showChoices, setShowChoices}}>{loading ? <></> : loggedIn ? children : <Login err={errMessage} onSubmit={onSubmit}/>}</AppContext.Provider>;
 }

@@ -65,6 +65,10 @@ body {
             
             &.add-account {
                 @apply text-5xl font-light mb-2;
+
+                & > svg {
+                    @apply w-6;
+                }
             }
             
             &:hover, &:focus {
@@ -180,11 +184,48 @@ body {
 .schedule {
     @apply relative h-full flex-grow flex flex-col dsk:max-w-[min(75vw,calc(100vw-325px))] max-w-[100vw] bg-themeWhite dark:bg-themeDark;
 
-    & > .lesson-modal {
+    & > [class$="modal"] {
         @apply will-change-auto pointer-events-none flex opacity-0 absolute top-0 left-0 w-full h-full bg-black bg-opacity-60 z-40 justify-center items-center transition-opacity;
 
         & > .content {
-            @apply w-[17rem] px-5 py-6 rounded-xl flex flex-col gap-2 text-xl;
+            @apply w-[clamp(17rem,90%,27rem)] overflow-hidden px-5 py-6 rounded-xl flex flex-col gap-2 text-xl;
+
+            &.choice {
+                @apply !bg-themeWhite !text-black dark:!bg-themeDark dark:!text-white max-h-[90%] w-[clamp(25rem,90%,30rem)]; 
+
+                & > button {
+                    @apply dark:bg-[rgb(255,255,255,.15)] bg-[rgb(0,0,0,0.15)] dark:text-white text-black font-bold rounded-lg py-3 mt-4 dark:hover:bg-[rgb(255,255,255,.25)] hover:bg-[rgb(0,0,0,0.25)];
+                }
+
+                & > div {
+                    @apply flex flex-col gap-3 max-h-full overflow-y-auto pr-4;
+
+                    &::-webkit-scrollbar-track {
+                        @apply bg-transparent;
+                    }
+            
+                    &::-webkit-scrollbar {
+                        @apply w-2;
+                
+                    }
+            
+                    &::-webkit-scrollbar-thumb {
+                        @apply dark:bg-[rgb(255,255,255,.15)] bg-[rgb(0,0,0,0.15)] rounded-lg;
+                    }
+
+                    & > div {
+                        @apply flex gap-5;
+
+                        & > input#enroll {
+                            @apply w-7 cursor-pointer;
+                        }
+
+                        & > article {
+                            @apply max-h-fit !aspect-auto pointer-events-none select-none;
+                        }
+                    }
+                }
+            }
 
             &.lesson {
                 @apply text-black dark:text-white;
@@ -194,7 +235,7 @@ body {
                 @apply font-bold underline;
             }
 
-            & > div {
+            & > div:not(.remarks) {
                 & span:nth-of-type(1) {
                     @apply text-lg;
                 }
@@ -208,6 +249,19 @@ body {
                 }
             }
 
+
+            .remarks {
+                @apply mt-3;
+
+                & span:not(.title) {
+                    @apply whitespace-normal;
+                    overflow-wrap: anywhere;
+                }
+
+                & > span.title {
+                    @apply block text-xl font-bold underline;
+                }
+            }
 
             .times {
                 @apply text-lg
@@ -350,7 +404,7 @@ body {
         @apply relative h-fit flex-shrink-0 overflow-x-visible w-auto grid grid-rows-[auto,repeat(110,minmax(0,1fr))];
     
         & .time-indicator {
-            @apply absolute z-50 top-[0px] flex items-center h-[1px] overflow-visible left-1/2 -translate-x-1/2 w-[calc(100%+15px)] col-[span_5/7];
+            @apply absolute z-40 top-[0px] flex items-center h-[1px] overflow-visible left-1/2 -translate-x-1/2 w-[calc(100%+15px)] col-[span_5/7];
     
             & > div {
                 @apply bg-[rgb(0,0,0,0.5)] dark:bg-[rgb(255,255,255,0.5)] mt-1;
@@ -373,11 +427,11 @@ body {
             }
         }
     
-        & > div:nth-of-type(-n+10) {
+        & > .time {
             @apply dsk:pl-[0.375rem] dsk:pr-5 pr-2 flex items-center text-black dark:text-white z-10;
         }
     
-        & > div:nth-of-type(-n+10):not(:first-child) {
+        & > .time:not(:first-child) {
             @apply col-start-1 text-[clamp(0.75rem,3.5vw,1rem)];
         }
     
