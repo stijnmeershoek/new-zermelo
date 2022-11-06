@@ -201,20 +201,13 @@ export function AppProvider({ children }: Props) {
     setDates(dates);
 
     const livescheduleRes: LiveSchedule = await getLiveSchedule(school, token, week, user, abortController);
-    
-    let schedule: Appointment[][];
-    if(perWeek) {        
-      const day0 = livescheduleRes.data[0].appointments.filter((lesson) =>new Date(lesson.start * 1000).toDateString() === dates[0].toDateString() && new Date(lesson.end * 1000).toDateString() === dates[0].toDateString()).sort((a, b) => (a.start > b.start ? 1 : -1)).filter((lesson) => showChoices !== "1" ? lesson.appointmentType !== "choice" : lesson);
-      const day1 = livescheduleRes.data[0].appointments.filter((lesson) =>new Date(lesson.start * 1000).toDateString() === dates[1].toDateString() && new Date(lesson.end * 1000).toDateString() === dates[1].toDateString()).sort((a, b) => (a.start > b.start ? 1 : -1)).filter((lesson) => showChoices !== "1" ? lesson.appointmentType !== "choice" : lesson);
-      const day2 = livescheduleRes.data[0].appointments.filter((lesson) =>new Date(lesson.start * 1000).toDateString() === dates[2].toDateString() && new Date(lesson.end * 1000).toDateString() === dates[2].toDateString()).sort((a, b) => (a.start > b.start ? 1 : -1)).filter((lesson) => showChoices !== "1" ? lesson.appointmentType !== "choice" : lesson);
-      const day3 = livescheduleRes.data[0].appointments.filter((lesson) =>new Date(lesson.start * 1000).toDateString() === dates[3].toDateString() && new Date(lesson.end * 1000).toDateString() === dates[3].toDateString()).sort((a, b) => (a.start > b.start ? 1 : -1)).filter((lesson) => showChoices !== "1" ? lesson.appointmentType !== "choice" : lesson);
-      const day4 = livescheduleRes.data[0].appointments.filter((lesson) =>new Date(lesson.start * 1000).toDateString() === dates[4].toDateString() && new Date(lesson.end * 1000).toDateString() === dates[4].toDateString()).sort((a, b) => (a.start > b.start ? 1 : -1)).filter((lesson) => showChoices !== "1" ? lesson.appointmentType !== "choice" : lesson);
-      schedule = [day0, day1, day2, day3, day4];
-    } else {
-      const day = livescheduleRes.data[0].appointments.filter((lesson) => !showChoices ? lesson.appointmentType !== "choice" : lesson);
-
-      schedule = [day];
-    }
+         
+    const day0 = livescheduleRes.data[0].appointments.filter((lesson) =>new Date(lesson.start * 1000).toDateString() === dates[0].toDateString() && new Date(lesson.end * 1000).toDateString() === dates[0].toDateString()).sort((a, b) => (a.start > b.start ? 1 : -1)).filter((lesson) => showChoices !== "1" ? lesson.appointmentType !== "choice" : lesson);
+    const day1 = livescheduleRes.data[0].appointments.filter((lesson) =>new Date(lesson.start * 1000).toDateString() === dates[1].toDateString() && new Date(lesson.end * 1000).toDateString() === dates[1].toDateString()).sort((a, b) => (a.start > b.start ? 1 : -1)).filter((lesson) => showChoices !== "1" ? lesson.appointmentType !== "choice" : lesson);
+    const day2 = livescheduleRes.data[0].appointments.filter((lesson) =>new Date(lesson.start * 1000).toDateString() === dates[2].toDateString() && new Date(lesson.end * 1000).toDateString() === dates[2].toDateString()).sort((a, b) => (a.start > b.start ? 1 : -1)).filter((lesson) => showChoices !== "1" ? lesson.appointmentType !== "choice" : lesson);
+    const day3 = livescheduleRes.data[0].appointments.filter((lesson) =>new Date(lesson.start * 1000).toDateString() === dates[3].toDateString() && new Date(lesson.end * 1000).toDateString() === dates[3].toDateString()).sort((a, b) => (a.start > b.start ? 1 : -1)).filter((lesson) => showChoices !== "1" ? lesson.appointmentType !== "choice" : lesson);
+    const day4 = livescheduleRes.data[0].appointments.filter((lesson) =>new Date(lesson.start * 1000).toDateString() === dates[4].toDateString() && new Date(lesson.end * 1000).toDateString() === dates[4].toDateString()).sort((a, b) => (a.start > b.start ? 1 : -1)).filter((lesson) => showChoices !== "1" ? lesson.appointmentType !== "choice" : lesson);
+    let schedule = [day0, day1, day2, day3, day4];
 
     if(!schedule.every((a) => a.length < 1)) {
       const newGroup = [...new Set(livescheduleRes.data[0].appointments.map((lesson) => lesson.groups ? lesson.groups[0] : "").filter((group) => group?.includes(".")))].map((item) => item.split("."))[0].filter(item => possibleGroups.some(group => item == group))[0];

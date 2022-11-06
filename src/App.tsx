@@ -189,9 +189,10 @@ const Schedule = ({currentDay, isDesktop, openChoiceModal, openLessonModal, choi
   const scheduleRef = useRef(null);
   const timeIndicatorRef = useRef(null);
 
+  // !TODO: Fix not re-fetching on settings change!!
   useEffect(() => {
     if(choiceModalOpen !== false) return;
-    
+
     if(offset === 0) {
       setSchedule(scheduleLoad);
       return;
@@ -277,28 +278,28 @@ const Schedule = ({currentDay, isDesktop, openChoiceModal, openLessonModal, choi
       <div className="space">10:00</div>
       <div>
         <div className={`date ${currentDay.toDateString() === dates[0]?.toDateString() ? "current" : ""}`}>
-        <span>{dates[0].getDate().toString().padStart(2, '0')}</span>
-        <span>{dates[0].toLocaleDateString((lng !== "en" && lng !== "nl") ? "default" : lng, {weekday: 'short'})}</span>
+        <span>{dates[0]?.getDate().toString().padStart(2, '0')}</span>
+        <span>{dates[0]?.toLocaleDateString((lng !== "en" && lng !== "nl") ? "default" : lng, {weekday: 'short'})}</span>
         <div></div>
       </div>
       <div className={`date ${currentDay.toDateString() === dates[1]?.toDateString() ? "current" : ""}`}>
-        <span>{dates[1].getDate().toString().padStart(2, '0')}</span>
-        <span>{dates[1].toLocaleDateString((lng !== "en" && lng !== "nl") ? "default" : lng, {weekday: 'short'})}</span>
+        <span>{dates[1]?.getDate().toString().padStart(2, '0')}</span>
+        <span>{dates[1]?.toLocaleDateString((lng !== "en" && lng !== "nl") ? "default" : lng, {weekday: 'short'})}</span>
         <div></div>
       </div>
       <div className={`date ${currentDay.toDateString() === dates[2]?.toDateString() ? "current" : ""}`}>
-        <span>{dates[2].getDate().toString().padStart(2, '0')}</span>
-        <span>{dates[2].toLocaleDateString((lng !== "en" && lng !== "nl") ? "default" : lng, {weekday: 'short'})}</span>
+        <span>{dates[2]?.getDate().toString().padStart(2, '0')}</span>
+        <span>{dates[2]?.toLocaleDateString((lng !== "en" && lng !== "nl") ? "default" : lng, {weekday: 'short'})}</span>
         <div></div>
       </div>
       <div className={`date ${currentDay.toDateString() === dates[3]?.toDateString() ? "current" : ""}`}>
-        <span>{dates[3].getDate().toString().padStart(2, '0')}</span>
-        <span>{dates[3].toLocaleDateString((lng !== "en" && lng !== "nl") ? "default" : lng, {weekday: 'short'})}</span>
+        <span>{dates[3]?.getDate().toString().padStart(2, '0')}</span>
+        <span>{dates[3]?.toLocaleDateString((lng !== "en" && lng !== "nl") ? "default" : lng, {weekday: 'short'})}</span>
         <div></div>
       </div>
       <div className={`date ${currentDay.toDateString() === dates[4]?.toDateString() ? "current" : ""}`}>
-        <span>{dates[4].getDate().toString().padStart(2, '0')}</span>
-        <span>{dates[4].toLocaleDateString((lng !== "en" && lng !== "nl") ? "default" : lng, {weekday: 'short'})}</span>
+        <span>{dates[4]?.getDate().toString().padStart(2, '0')}</span>
+        <span>{dates[4]?.toLocaleDateString((lng !== "en" && lng !== "nl") ? "default" : lng, {weekday: 'short'})}</span>
         <div></div>
       </div>
       </div>
@@ -310,15 +311,15 @@ const Schedule = ({currentDay, isDesktop, openChoiceModal, openLessonModal, choi
       <div ref={scheduleRef} aria-label='schedule grid' className="schedule-grid-week">
         <LinesAndTimes />
 
-        <Day schedule={schedule} dayNumber={0} isDesktop={isDesktop} openLessonModal={openLessonModal} openChoiceModal={openChoiceModal}/>
+        <Day schedule={schedule} dayNumber={0} isDesktop={isDesktop} perWeek={perWeek} openLessonModal={openLessonModal} openChoiceModal={openChoiceModal}/>
 
-        <Day schedule={schedule} dayNumber={1} isDesktop={isDesktop} openLessonModal={openLessonModal} openChoiceModal={openChoiceModal}/>
+        <Day schedule={schedule} dayNumber={1} isDesktop={isDesktop} perWeek={perWeek} openLessonModal={openLessonModal} openChoiceModal={openChoiceModal}/>
 
-        <Day schedule={schedule} dayNumber={2} isDesktop={isDesktop} openLessonModal={openLessonModal} openChoiceModal={openChoiceModal}/>
+        <Day schedule={schedule} dayNumber={2} isDesktop={isDesktop} perWeek={perWeek} openLessonModal={openLessonModal} openChoiceModal={openChoiceModal}/>
 
-        <Day schedule={schedule} dayNumber={3} isDesktop={isDesktop} openLessonModal={openLessonModal} openChoiceModal={openChoiceModal}/>
+        <Day schedule={schedule} dayNumber={3} isDesktop={isDesktop} perWeek={perWeek} openLessonModal={openLessonModal} openChoiceModal={openChoiceModal}/>
 
-        <Day schedule={schedule} dayNumber={4} isDesktop={isDesktop} openLessonModal={openLessonModal} openChoiceModal={openChoiceModal}/>
+        <Day schedule={schedule} dayNumber={4} isDesktop={isDesktop} perWeek={perWeek} openLessonModal={openLessonModal} openChoiceModal={openChoiceModal}/>
 
         <div ref={timeIndicatorRef} className="time-indicator">
           <div></div>
@@ -331,7 +332,7 @@ const Schedule = ({currentDay, isDesktop, openChoiceModal, openLessonModal, choi
       {!loading ? <div className='scroller'>
         <div ref={scheduleRef} aria-label='schedule grid' className='schedule-grid-day'>
           <LinesAndTimes />
-          <Day schedule={schedule} dayNumber={0} isDesktop={isDesktop} openLessonModal={openLessonModal} openChoiceModal={openChoiceModal}/>
+          <Day schedule={schedule} dayNumber={(getCurrentDate(currentDay, perWeek, offset).getDay() || 6) - 1} isDesktop={isDesktop} perWeek={perWeek} openLessonModal={openLessonModal} openChoiceModal={openChoiceModal}/>
 
           <div ref={timeIndicatorRef} className="time-indicator">
             <div></div>
@@ -443,7 +444,7 @@ const LinesAndTimes = () => {
   )
 }
 
-const Day = ({dayNumber, schedule, isDesktop, openLessonModal, openChoiceModal}: {dayNumber: number, schedule: Appointment[][], isDesktop: boolean, openLessonModal: (lesson: Appointment) => void, openChoiceModal: (lesson: Appointment) => void}) => {
+const Day = ({dayNumber, schedule, isDesktop, perWeek, openLessonModal, openChoiceModal}: {dayNumber: number, schedule: Appointment[][], isDesktop: boolean, perWeek: boolean, openLessonModal: (lesson: Appointment) => void, openChoiceModal: (lesson: Appointment) => void}) => {
   return (
   <>
     {schedule[dayNumber] && schedule[dayNumber].length !== 0 ? schedule[dayNumber].map((lesson) => {
@@ -461,7 +462,7 @@ const Day = ({dayNumber, schedule, isDesktop, openLessonModal, openChoiceModal}:
           onClick={onClick}
           style={{
             gridRow: `${rowStart} / ${rowEnd}`,
-            gridColumn: `${dayNumber+2}/${dayNumber+3}`,
+            gridColumn: `${perWeek ? `${dayNumber+2}/${dayNumber+3}` : `2/3`}`,
           }}
         />
       );
