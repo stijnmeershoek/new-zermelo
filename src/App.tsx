@@ -188,12 +188,13 @@ const Schedule = ({currentDay, isDesktop, openChoiceModal, openLessonModal, choi
   const [schedule, setSchedule] = useState<Appointment[][]>(scheduleLoad);
   const scheduleRef = useRef(null);
   const timeIndicatorRef = useRef(null);
+  const showChoicesRef = useRef(showChoices);
+  const choiceModalOpenRef = useRef(choiceModalOpen);
 
-  // !TODO: Fix not re-fetching on settings change!!
   useEffect(() => {
     if(choiceModalOpen !== false) return;
 
-    if(offset === 0) {
+    if(offset === 0 && showChoicesRef.current === showChoices && choiceModalOpenRef.current === choiceModalOpen) {
       setSchedule(scheduleLoad);
       return;
     }
