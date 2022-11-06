@@ -1,4 +1,3 @@
-import {Appointment} from '../../api/Zermelo'
 import { useAppState } from '../../context';
 import './LessonBlock.css'
 

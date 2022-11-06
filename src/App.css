@@ -1,44 +1,8 @@
-body, #root, .app {
-    @apply overflow-hidden;
-}
-
-body {
-    @apply w-screen h-screen relative;
-}
-
-#root {
-    @apply w-full h-full;
-}
-
 .app {
-    @apply will-change-transform dsk:translate-x-0 translate-x-[-5.5rem] absolute dsk:left-0 h-full dsk:w-full w-[calc(100%+5.5rem)] bg-themeWhite dark:bg-themeDark text-black dark:text-white flex font-helvetica transition-all duration-300;
+    @apply will-change-transform dsk:translate-x-0 translate-x-[-5.5rem] absolute dsk:left-0 h-full dsk:w-full w-[calc(100%+5.5rem)] text-black dark:text-white flex font-helvetica transition-all duration-300;
 
     &.show-menu {
         @apply translate-x-0;
-    }
-}
-
-.loader {
-    @apply relative m-auto w-12 aspect-square inline-block;
-
-    &::after, &::before {
-        content: "";
-        @apply box-border w-full h-full rounded-full bg-black dark:bg-themeWhite absolute left-0 top-0 animate-[animloader_2s_linear_infinite];
-    }
-
-    &::after {
-        animation-delay: -1s;
-    }
-} 
-
-@keyframes animloader {
-    0% {
-      transform: scale(0);
-      opacity: 1;
-    }
-    100% {
-      transform: scale(1);
-      opacity: 0;
     }
 }
 
@@ -103,7 +67,7 @@ body {
         @apply mt-2 text-lg;
 
         & select {
-            @apply rounded-lg bg-themeWhite dark:bg-themeDark dsk:!bg-black outline-none ml-3 font-bold;
+            @apply rounded-lg bg-themeWhite dark:bg-themeDark dsk:!bg-black outline-none ml-3 font-bold px-1;
         }
     }
 
@@ -339,144 +303,149 @@ body {
         }
     }
 
-    & > .dates {
-        @apply relative flex w-full justify-evenly dsk:px-12 dsk:w-[calc(100%-8px)] pl-5 pr-4 bg-transparent;
+    & > .schedule-container {
+        @apply overflow-hidden mx-auto flex flex-col flex-grow w-[min(1110px,100%)];
 
-        &::after {
-            content: "";
-            @apply absolute z-10 w-full -bottom-3 h-3 bg-gradient-to-b from-themeWhite dark:from-themeDark;
-        }
-
-        & > .space {
-            @apply text-transparent dsk:pl-[0.375rem] dsk:pr-5 flex-grow-0 pr-2;
-        }
-
-        & > div {
-            @apply flex flex-grow justify-evenly z-10 bg-transparent;
-
-            & .date {
-                @apply w-full flex flex-col justify-center items-center row-start-1 pb-3 pt-[0.1875rem] -z-10 text-[rgb(0,0,0,0.3)] dark:text-[rgb(255,255,255,.6)];
-        
-                &.current {
-                    & > span {
-                        @apply !text-black dark:!text-white;
+        & > .dates {
+            @apply relative flex w-full justify-evenly dsk:px-12 dsk:w-[calc(100%-8px)] pl-5 pr-4 bg-transparent;
+    
+            &::after {
+                content: "";
+                @apply absolute z-10 w-full -bottom-3 h-3 bg-gradient-to-b from-themeWhite dark:from-themeDark;
+            }
+    
+            & > .space {
+                @apply text-transparent dsk:pl-[0.375rem] dsk:pr-5 flex-grow-0 pr-2;
+            }
+    
+            & > div {
+                @apply flex flex-grow justify-evenly z-10 bg-transparent;
+    
+                & .date {
+                    @apply w-full flex flex-col justify-center items-center row-start-1 pb-3 pt-[0.1875rem] -z-10 text-[rgb(0,0,0,0.3)] dark:text-[rgb(255,255,255,.6)];
+            
+                    &.current {
+                        & > span {
+                            @apply !text-black dark:!text-white;
+                        }
+    
+                        & > div:last-child {
+                            @apply bg-black dark:bg-white;
+                        }
                     }
-
+    
+                    & > span:first-child {
+                        @apply font-bold dsk:text-6xl dsk:mb-2 text-[clamp(2.25rem,8vw,2.5rem)] -mb-2;
+                    }
+    
+                    & > span:not(:first-child) {
+                        @apply text-[clamp(0.9rem,4vw,1.1rem)] font-medium lowercase text-[rgb(0,0,0,0.4)] dark:text-[rgb(255,255,255,0.6)];
+                    }
+            
                     & > div:last-child {
-                        @apply bg-black dark:bg-white;
+                        @apply h-5 bg-[rgb(0,0,0,0.25)] dark:bg-[rgb(255,255,255,0.5)] w-[2px] dsk:mt-4 mt-2;
                     }
                 }
-
-                & > span:first-child {
-                    @apply font-bold dsk:text-6xl dsk:mb-2 text-[clamp(2.25rem,8vw,2.5rem)] -mb-2;
-                }
-
-                & > span:not(:first-child) {
-                    @apply text-[clamp(0.9rem,4vw,1.1rem)] font-medium lowercase text-[rgb(0,0,0,0.4)] dark:text-[rgb(255,255,255,0.6)];
-                }
+            }
+        }
+    
+        & .scroller {
+            @apply flex-grow overflow-y-auto overflow-x-hidden dsk:px-12 pl-5 pr-2 pb-5;
+    
+            &::-webkit-scrollbar-track {
+                @apply bg-themeWhite dark:bg-themeDark;
+            }
+    
+            &::-webkit-scrollbar {
+                @apply w-2;
         
-                & > div:last-child {
-                    @apply h-5 bg-[rgb(0,0,0,0.25)] dark:bg-[rgb(255,255,255,0.5)] w-[2px] dsk:mt-4 mt-2;
+            }
+    
+            &::-webkit-scrollbar-thumb {
+                @apply bg-[rgb(0,0,0,0.0)];
+            }
+    
+        }
+    
+        & .schedule-grid-week, & .schedule-grid-day {
+            @apply relative h-fit flex-shrink-0 overflow-x-visible w-auto grid grid-rows-[auto,repeat(110,minmax(0,1fr))];
+        
+            & .time-indicator {
+                @apply absolute z-40 top-[0px] flex items-center h-[1px] overflow-visible left-1/2 -translate-x-1/2 w-[calc(100%+15px)] col-[span_5/7];
+        
+                & > div {
+                    @apply bg-[rgb(0,0,0,0.5)] dark:bg-[rgb(255,255,255,0.5)] mt-1;
+                }
+    
+                & > div:first-child {
+                    @apply w-[2px] h-[25px];
+                }
+    
+                & > div:nth-child(2) {
+                    @apply h-[2px] w-full;
                 }
             }
-        }
-    }
-
-    & .scroller {
-        @apply flex-grow overflow-y-auto overflow-x-hidden dsk:px-12 pl-5 pr-2;
-
-        &::-webkit-scrollbar-track {
-            @apply bg-themeWhite dark:bg-themeDark;
-        }
-
-        &::-webkit-scrollbar {
-            @apply w-2;
-    
-        }
-
-        &::-webkit-scrollbar-thumb {
-            @apply bg-[rgb(0,0,0,0.0)];
-        }
-
-    }
-
-    & .schedule-grid-week, & .schedule-grid-day {
-        @apply relative h-fit flex-shrink-0 overflow-x-visible w-auto grid grid-rows-[auto,repeat(110,minmax(0,1fr))];
-    
-        & .time-indicator {
-            @apply absolute z-40 top-[0px] flex items-center h-[1px] overflow-visible left-1/2 -translate-x-1/2 w-[calc(100%+15px)] col-[span_5/7];
-    
-            & > div {
-                @apply bg-[rgb(0,0,0,0.5)] dark:bg-[rgb(255,255,255,0.5)] mt-1;
-            }
-
-            & > div:first-child {
-                @apply w-[2px] h-[25px];
-            }
-
-            & > div:nth-child(2) {
-                @apply h-[2px] w-full;
-            }
-        }
+            
+            & .line {
+                @apply absolute flex items-center h-full left-1/2 -translate-x-1/2 dsk:w-[calc(100%+16px)] w-full col-[span_5/7];
         
-        & .line {
-            @apply absolute flex items-center h-full left-1/2 -translate-x-1/2 dsk:w-[calc(100%+16px)] w-full col-[span_5/7];
-    
-            & > div {
-                @apply bg-[rgb(0,0,0,0.25)] dark:bg-[rgb(255,255,255,0.25)] h-[1px] w-full mt-[1px];
+                & > div {
+                    @apply bg-[rgb(0,0,0,0.25)] dark:bg-[rgb(255,255,255,0.25)] h-[1px] w-full mt-[1px];
+                }
+            }
+        
+            & > .time {
+                @apply dsk:pl-[0.375rem] dsk:pr-5 pr-2 flex items-center text-black dark:text-white z-10;
+            }
+        
+            & > .time:not(:first-child) {
+                @apply col-start-1 text-[clamp(0.75rem,3.5vw,1rem)];
+            }
+        
+            & > div:nth-of-type(2) {
+                @apply row-[2/4];
+            }
+        
+            & .line:nth-of-type(1) {
+                @apply row-[2/4];
+            }
+        
+            & .line:nth-of-type(2), & > div:nth-of-type(3) {
+                @apply row-[14/16];
+            }
+            & .line:nth-of-type(3), & > div:nth-of-type(4) {
+                @apply row-[26/28];
+            }
+            & .line:nth-of-type(4), & > div:nth-of-type(5) {
+                @apply row-[38/40];
+            }
+            & .line:nth-of-type(5), & > div:nth-of-type(6) {
+                @apply row-[50/52];
+            }
+            & .line:nth-of-type(6), & > div:nth-of-type(7) {
+                @apply row-[62/64];
+            }
+            & .line:nth-of-type(7), & > div:nth-of-type(8) {
+                @apply row-[74/76];
+            }
+            & .line:nth-of-type(8), & > div:nth-of-type(9) {
+                @apply row-[86/88];
+            }
+            & .line:nth-of-type(9), & > div:nth-of-type(10)  {
+                @apply row-[98/100];
+            }
+            & .line:nth-of-type(10), & > div:nth-of-type(11)  {
+                @apply row-[110/112];
             }
         }
     
-        & > .time {
-            @apply dsk:pl-[0.375rem] dsk:pr-5 pr-2 flex items-center text-black dark:text-white z-10;
+        & .schedule-grid-week {
+            @apply grid-cols-[auto,repeat(5,minmax(0,1fr))];
         }
     
-        & > .time:not(:first-child) {
-            @apply col-start-1 text-[clamp(0.75rem,3.5vw,1rem)];
-        }
-    
-        & > div:nth-of-type(2) {
-            @apply row-[2/4];
-        }
-    
-        & .line:nth-of-type(1) {
-            @apply row-[2/4];
-        }
-    
-        & .line:nth-of-type(2), & > div:nth-of-type(3) {
-            @apply row-[14/16];
-        }
-        & .line:nth-of-type(3), & > div:nth-of-type(4) {
-            @apply row-[26/28];
-        }
-        & .line:nth-of-type(4), & > div:nth-of-type(5) {
-            @apply row-[38/40];
-        }
-        & .line:nth-of-type(5), & > div:nth-of-type(6) {
-            @apply row-[50/52];
-        }
-        & .line:nth-of-type(6), & > div:nth-of-type(7) {
-            @apply row-[62/64];
-        }
-        & .line:nth-of-type(7), & > div:nth-of-type(8) {
-            @apply row-[74/76];
-        }
-        & .line:nth-of-type(8), & > div:nth-of-type(9) {
-            @apply row-[86/88];
-        }
-        & .line:nth-of-type(9), & > div:nth-of-type(10)  {
-            @apply row-[98/100];
-        }
-        & .line:nth-of-type(10), & > div:nth-of-type(11)  {
-            @apply row-[110/112];
+        & .schedule-grid-day {
+            @apply grid-cols-[max-content,1fr]
         }
     }
 
-    & .schedule-grid-week {
-        @apply grid-cols-[auto,repeat(5,minmax(0,1fr))];
-    }
-
-    & .schedule-grid-day {
-        @apply grid-cols-[max-content,1fr]
-    }
 }

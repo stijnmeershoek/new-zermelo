@@ -25,7 +25,7 @@
         }
 
         &.allowed {
-            @apply !bg-[#77DD77] bg-opacity-20;
+            @apply !bg-[#77DD77] !bg-opacity-20;
 
             & > .content-right > svg {
                 @apply bg-[hsl(120,60%,40%,0.15)] dark:bg-[hsl(120,60%,80%,0.15)];
@@ -33,7 +33,7 @@
         }
 
         & > .content-right > svg {
-            @apply absolute bottom-0 mb-2 mr-1 right-1 w-8 text-inherit bg-[rgba(0,0,0,0.10)] dark:bg-[rgb(255,255,255,0.3)] p-2 rounded-full;
+            @apply absolute bottom-0 mb-2 mr-1 right-1 w-8 text-inherit bg-[#E9E9E9] dark:bg-[#4D4D4D] p-2 rounded-full;
         }
     }
 
@@ -81,9 +81,10 @@
     }
 }
 
-.lesson, .choice {
+.lesson{
     @apply bg-[#E9E9E9] dark:bg-[#4d4d4d];
-
+}
+.lesson, .choice {
     & > section {
         @apply dark:text-[rgb(255,255,255,0.75)];
     }
@@ -104,7 +105,7 @@
     @apply !bg-[#77DD77];
 }
 .choice {
-    @apply dark:!bg-[rgb(0,0,0,0.3)] !bg-[#4d4d4d4d];
+    @apply dark:!bg-[rgb(0,0,0,0.3)] !bg-themeWhite;
 }
 .talk {
     @apply !bg-[#ff9361];

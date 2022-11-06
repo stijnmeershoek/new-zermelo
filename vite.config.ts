@@ -18,13 +18,14 @@ export default defineConfig({
           local: 'HelveticaNowDisplay',
           src: './src/assets/fonts/HelveticaNow/*.woff2',
         }],
-        display: 'auto',
+        display: 'swap',
         preload: true,
         prefetch: false,
         injectTo: 'head-prepend',
       },
     }),
     VitePWA({
+      registerType: 'autoUpdate',
       includeAssets: ['favicon.ico', 'apple-touch-icon.png', 'masked-icon.svg'],
       manifest: {
         start_url: "/new-zermelo/",
