@@ -18,7 +18,7 @@ export async function getAccessToken(school: string, code: string) {
     };
 }
 
-export async function getSchedule(school: string, access_token: string, start: number, end:number, abortController: AbortController) {
+export async function getSchedule(school: string, access_token: string, start: number, end:number, signal: AbortSignal) {
     const url = getApiURL(school);
     let response;
     await fetch(`${url}/api/v3/appointments?valid=true&start=${start}&end=${end}&user=~me`, { 
@@ -26,7 +26,7 @@ export async function getSchedule(school: string, access_token: string, start: n
         headers: {
             "Authorization": `Bearer ${access_token}`
         },
-        signal: abortController.signal
+        signal: signal
     }).then(async (res) => {
         if (!res.ok) {
             return Promise.reject(Error(`Server returned with an error (${res.status})`))
@@ -35,7 +35,7 @@ export async function getSchedule(school: string, access_token: string, start: n
         const json = await res.json();
         response = json.response;
     }).catch(() => {
-        if(abortController.signal.aborted) {
+        if(signal.aborted) {
             return Promise.reject(`The user aborted the request`);
         }
     })
@@ -47,7 +47,7 @@ export async function getSchedule(school: string, access_token: string, start: n
     return Promise.reject(Error(`Server returned with an error`))
 }
 
-export async function getLiveSchedule(school: string, access_token: string, week: string, student: string, abortController: AbortController) {
+export async function getLiveSchedule(school: string, access_token: string, week: string, student: string, signal: AbortSignal) {
     const url = getApiURL(school);
     let response;
     await fetch(`${url}/api/v3/liveschedule?student=${student}&week=${week}&fields=appointmentInstance,start,end,startTimeSlotName,endTimeSlotName,subjects,groups,locations,teachers,cancelled,changeDescription,schedulerRemark,content,appointmentType`, { 
@@ -55,7 +55,7 @@ export async function getLiveSchedule(school: string, access_token: string, week
         headers: {
             "Authorization": `Bearer ${access_token}`
         },
-        signal: abortController.signal
+        signal: signal
     }).then(async (res) => {
         if (!res.ok) {
             return Promise.reject(Error(`Server returned with an error (${res.status})`))
@@ -64,7 +64,7 @@ export async function getLiveSchedule(school: string, access_token: string, week
         const json = await res.json();
         response = json.response;
     }).catch(() => {
-        if(abortController.signal.aborted) {
+        if(signal.aborted) {
             return Promise.reject(`The user aborted the request`);
         }
     })
@@ -76,7 +76,7 @@ export async function getLiveSchedule(school: string, access_token: string, week
     return Promise.reject(Error(`Server returned with an error`))
 }
 
-export async function getAnnouncements(school: string, access_token:string, abortController: AbortController) {
+export async function getAnnouncements(school: string, access_token:string, signal: AbortSignal) {
     const url = getApiURL(school)
     let response;
     await fetch(`${url}/api/v3/announcements?user=~me&current=true`, { 
@@ -84,7 +84,7 @@ export async function getAnnouncements(school: string, access_token:string, abor
         headers: {
             "Authorization": `Bearer ${access_token}`
         },
-        signal: abortController.signal
+        signal: signal
     }).then(async (res) => {
         if (!res.ok) {
             return Promise.reject(Error(`Server returned with an error (${res.status})`))
@@ -93,7 +93,7 @@ export async function getAnnouncements(school: string, access_token:string, abor
         const json = await res.json();
         response = json.response;
     }).catch(() => {
-        if(abortController.signal.aborted) {
+        if(signal.aborted) {
             return Promise.reject(`The user aborted the request`);
         }
     })
@@ -105,7 +105,7 @@ export async function getAnnouncements(school: string, access_token:string, abor
     return Promise.reject(Error(`Server returned with an error`))
 }
 
-export async function getUserData(access_token:string, school: string, abortController: AbortController) {
+export async function getUserData(access_token:string, school: string, signal: AbortSignal) {
     const url = getApiURL(school)
     let response;
     await fetch(`${url}/api/v3/tokens/~current`, {
@@ -113,7 +113,7 @@ export async function getUserData(access_token:string, school: string, abortCont
         headers: {
             "Authorization": `Bearer ${access_token}`
         },
-        signal: abortController.signal
+        signal: signal
     }).then(async (res) => {
         if (!res.ok) {
             return Promise.reject(Error(`Server returned with an error (${res.status})`))
@@ -122,7 +122,7 @@ export async function getUserData(access_token:string, school: string, abortCont
         const json = await res.json();
         response = json.response;
     }).catch(() => {
-        if(abortController.signal.aborted) {
+        if(signal.aborted) {
             return Promise.reject(`The user aborted the request`);
         }
     });
@@ -134,7 +134,7 @@ export async function getUserData(access_token:string, school: string, abortCont
     return Promise.reject(Error(`Server returned with an error`))
 }
 
-export async function postEnroll(access_token:string, school: string, post: string, abortController: AbortController) {
+export async function postEnroll(access_token:string, school: string, post: string, signal: AbortSignal) {
     const url = getApiURL(school)
     let response;
     await fetch(`${url}${post}`, {
@@ -142,7 +142,7 @@ export async function postEnroll(access_token:string, school: string, post: stri
         headers: {
             "Authorization": `Bearer ${access_token}`
         },
-        signal: abortController.signal
+        signal: signal
     }).then(async (res) => {
         if (!res.ok) {
             return Promise.reject(Error(`Server returned with an error (${res.status})`))
@@ -151,7 +151,7 @@ export async function postEnroll(access_token:string, school: string, post: stri
         const json = await res.json();
         response = json.response;
     }).catch(() => {
-        if(abortController.signal.aborted) {
+        if(signal.aborted) {
             return Promise.reject(`The user aborted the request`);
         }
     });

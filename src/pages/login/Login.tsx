@@ -1,17 +1,15 @@
 import { useState } from "react"
-import { useAppState } from "../../context";
-import './Login.css';
 
 interface Props {
+    lng: string,
     onSubmit: (school: string, code: string, name: string) => void,
     err: string
 }
 
-export function Login({onSubmit, err}: Props) {
+export function Login({lng, onSubmit, err}: Props) {
     const [name, setName] = useState<string>("");
     const [school, setSchool] = useState<string>("");
     const [code, setCode] = useState<string>("");
-    const { lng } = useAppState();
 
   return (
     <div className="login">

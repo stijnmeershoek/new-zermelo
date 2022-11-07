@@ -1,7 +1,6 @@
-import { useAppState } from '../../context';
-import './LessonBlock.css'
-
 interface Props {
+    lng: string,
+    perWeek?: boolean,
     lesson: Appointment
     style?: React.CSSProperties,
     className?: string,
@@ -9,9 +8,8 @@ interface Props {
     onClick: () => void,
 }
 
-export const LessonBlock = ({lesson, style, className, isDesktop, onClick}: Props) => {
-  const classes = `block ${lesson.appointmentType} ${className} ${lesson.cancelled ? "cancelled" : ""} ${lesson.appointmentType === "choice" ? lesson.actions?.some((appointment) => appointment.allowed === true) ? "allowed" : "locked" : ""}`;
-  const {lng} = useAppState();
+export const LessonBlock = ({lng, perWeek = true, lesson, style, className, isDesktop, onClick}: Props) => {
+  const classes = `lesson-block ${lesson.appointmentType} ${className} ${lesson.cancelled ? "cancelled" : ""} ${lesson.appointmentType === "choice" ? lesson.actions?.some((appointment) => appointment.allowed === true) ? "allowed" : "locked" : ""}`;
 
   return (
     <article onClick={onClick} className={classes.replace(/\s+/g,' ').trim()} style={style}>
@@ -19,10 +17,10 @@ export const LessonBlock = ({lesson, style, className, isDesktop, onClick}: Prop
         <h1 aria-label='subject'>{lesson.appointmentType === "choice" ? `${lng === "nl" ? "keuze" : lng === "en" ? "choice" : "choice"}`:""}{lesson.subjects.length <= 1 ? lesson.subjects[0] : `${lesson.subjects[0]}, ${lesson.subjects[1]}${lesson.subjects.length > 2 ? "+" : ""}`}</h1>
         {isDesktop && lesson.teachers && lesson.teachers.length > 0 && <div aria-label='teacher'>{lesson.teachers.length <= 1 ? lesson.teachers[0].toUpperCase() : `${lesson.teachers[0].toUpperCase()}, ${lesson.teachers[1].toUpperCase()}${lesson.teachers.length > 2 ? "+" : ""}`}<span className='change'>{lesson.status?.some((status) => status.code === 3011)}</span></div>}
         {lesson.locations && lesson.locations.length > 0 && <div aria-label='location'>{lesson.locations.length <= 1 ? lesson.locations[0] : `${lesson.locations[0]}, ${lesson.locations[1]}${lesson.locations.length > 2 ? "+" : ""}`}<span className='change'>{lesson.status?.some((status) => status.code === 3012)}</span></div>}
-        {isDesktop && <div className='times'><time aria-label='lesson start' dateTime={`${new Date(lesson.start * 1000)}`}>{String(new Date(lesson.start * 1000).getHours())}:{String(new Date(lesson.start * 1000).getMinutes()).padStart(2,'0')}</time>-<time aria-label='lesson end' dateTime={`${new Date(lesson.end * 1000)}`}>{String(new Date(lesson.end * 1000).getHours())}:{String(new Date(lesson.end * 1000).getMinutes()).padStart(2,'0')}</time><span className='change'>{lesson.status?.some((status) => status.code === 3015)}</span></div>}
+        {isDesktop && perWeek && <div className='times'><time aria-label='lesson start' dateTime={`${new Date(lesson.start * 1000)}`}>{String(new Date(lesson.start * 1000).getHours())}:{String(new Date(lesson.start * 1000).getMinutes()).padStart(2,'0')}</time>-<time aria-label='lesson end' dateTime={`${new Date(lesson.end * 1000)}`}>{String(new Date(lesson.end * 1000).getHours())}:{String(new Date(lesson.end * 1000).getMinutes()).padStart(2,'0')}</time><span className='change'>{lesson.status?.some((status) => status.code === 3015)}</span></div>}
       </section>
       <section className="content-right">
-        {isDesktop && <span aria-label='hour'>{lesson.startTimeSlotName}</span>}
+        {isDesktop && <span>{lesson.startTimeSlotName}</span>}
         {(lesson.changeDescription || lesson.cancelled || lesson.schedulerRemark || lesson.status?.some((item) => (item.code.toString().startsWith("4") && item.code !== 4009) || item.code.toString().startsWith("3"))) && (
           <svg viewBox="0 0 123.996 123.996">
           <g>

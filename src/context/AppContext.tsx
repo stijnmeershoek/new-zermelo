@@ -2,47 +2,50 @@ import { createContext, useContext, useState, useEffect, ReactNode } from "react
 import { getAccessToken, getUserData, getLiveSchedule, getAnnouncements } from '../api/Zermelo';
 import { Login } from "../pages/login";
 import { getCurrentDate, getDates } from "../utils/functions";
+import {useMediaQuery} from '../hooks';
 
 type Values = {
   user: string,
+  isDesktop: boolean,
   accounts: Account[],
   currentAccount: number,
+  settings: Settings,
+  setSettings: React.Dispatch<React.SetStateAction<Settings>>,
   logOut: () => void,
-  lng: string,
-  setLng: React.Dispatch<React.SetStateAction<string>>,
   addNewAccount: () => void;
   switchAccount: (i: number) => void;
-  theme: string,
-  setTheme: React.Dispatch<React.SetStateAction<string>>
-  showChoices: string,
-  setShowChoices: React.Dispatch<React.SetStateAction<string>>
-  perWeek: boolean,
-  setPerWeek: React.Dispatch<React.SetStateAction<boolean>>
   offset: number,
   setOffset: React.Dispatch<React.SetStateAction<number>>,
   scheduleLoad: Appointment[][],
   announcementsLoad: Announcement[],
   group: string, 
   dates: Date[],
-  fetchLiveSchedule: (user: string, abortController: AbortController) => Promise<Appointment[][]>,
-  fetchAnnouncements: (abortController: AbortController) => Promise<Announcement[]>
+  fetchLiveSchedule: (user: string, signal: AbortSignal) => Promise<Appointment[][]>,
+  fetchAnnouncements: (signal: AbortSignal) => Promise<Announcement[]>
+}
+
+type Settings = {
+  lng: string,
+  theme: string,
+  showChoices: boolean,
+  perWeek: boolean,
 }
 
 const defaultValues: Values = {
   user: "",
+  isDesktop: true,
   accounts: [],
   currentAccount: 0,
   logOut: () => {},
-  lng: "nl",
   addNewAccount: () => {},
   switchAccount: () => {},
-  setLng: () => {},
-  theme: "light",
-  setTheme: () => {},
-  showChoices: "0",
-  setShowChoices: () => {},
-  perWeek: true,
-  setPerWeek: () => {},
+  settings: {
+    lng: "nl",
+    showChoices: false,
+    theme: "light",
+    perWeek: true,
+  },
+  setSettings: () => {},
   offset: 0,
   setOffset: () => {},
   scheduleLoad: [],
@@ -67,18 +70,16 @@ export function AppProvider({ children }: Props) {
   const localPREFIX = "zermelo"
   const currentDay = new Date(); 
   const possibleGroups = ["1a","1b","1c","1d","1s","1k","1l","1m","1f","1g","2a","2b","2c","2d","2s","2k","2l","2m","2f","2g","3h","3v","4v","4h","5v","5h","6v"];
-  
+  const isDesktop = useMediaQuery('(min-width: 1110px)');
+
   const [errMessage, setErrMessage] = useState("");
   const [loading, setLoading] = useState(true);
   const [loggedIn, setLoggedIn] = useState(false);
-  const [currentAccount, setCurrentAccount] = useState<number>(0);
+  const [currentAccount, setCurrentAccount] = useState<number>(Number(localStorage.getItem(`${localPREFIX}-current`) || 0));
   const [user, setUser] = useState("");
-  const [accounts, setAccounts] = useState<Account[]>([]);
-  const [lng, setLng] = useState("");
-  const [theme, setTheme] = useState("");
-  const [showChoices, setShowChoices] = useState("");
+  const [accounts, setAccounts] = useState<Account[]>(JSON.parse(localStorage.getItem(`${localPREFIX}-accounts`) || "[]"));
+  const [settings, setSettings] = useState<Settings>(JSON.parse(localStorage.getItem(`${localPREFIX}-settings`) || '{"lng": "nl", "theme": "light", "showChoices": false, "perWeek": true}'));
 
-  const [perWeek, setPerWeek] = useState(true);
   const [offset, setOffset] = useState(0);
   const [group, setGroup] = useState("");
   const [dates, setDates] = useState<Date[]>([]);
@@ -86,42 +87,33 @@ export function AppProvider({ children }: Props) {
   const [announcementsLoad, setAnnouncementsLoad] = useState<Announcement[]>([])
 
   useEffect(() => {
-    const accounts: Account[] = JSON.parse(localStorage.getItem(`${localPREFIX}-accounts`) || "[]");
-    const current = localStorage.getItem(`${localPREFIX}-current`);
-    const lng = localStorage.getItem(`${localPREFIX}-lng`) || Intl.DateTimeFormat().resolvedOptions().locale.slice(0,2);
-    const theme = localStorage.getItem(`${localPREFIX}-theme`) || "light";
-    const showChoices = localStorage.getItem(`${localPREFIX}-showchoices`) || "0";
-    setLng(lng);
-    setTheme(theme);
-    setShowChoices(showChoices);
-
     if(!Array.isArray(accounts) || accounts.length === 0) {
       setLoggedIn(false)
       setLoading(false);
     } else {
-      if(!current) {
-        setCurrentAccount(0)
-      } else {
-        setCurrentAccount(Number(current))
-      }
-      setAccounts(accounts)
       setLoggedIn(true);
     }
   }, [])
 
   useEffect(() => {
     if(!loggedIn || !accounts[currentAccount]) return;
-    let abortController = new AbortController()
-    const fetchData = async () => {
-        const res: Current = await getUserData(accounts[currentAccount].accessToken, accounts[currentAccount].school, abortController);
-        const user = res.data[0].user;
-        setUser(user);
+    setLoading(true);
+    const abortController = new AbortController();
+    const signal = abortController.signal;
 
-        const schedule = await fetchLiveSchedule(user, abortController);
-        const announcements = await fetchAnnouncements(abortController)
+    const fetchData = async () => {
+        let userNew = user;
+        if(!userNew) {
+          userNew = (await fetchUserData(accounts, currentAccount, signal)).data[0].user;
+          setUser(userNew);
+        }
+
+        const schedule = await fetchLiveSchedule(userNew, signal);
+        const announcements = await fetchAnnouncements(signal);
         
         setScheduleLoad(schedule);
-        setAnnouncementsLoad(announcements)
+        setAnnouncementsLoad(announcements);
+        setLoggedIn(true);
         setLoading(false);
     }
 
@@ -133,20 +125,14 @@ export function AppProvider({ children }: Props) {
   }, [loggedIn, accounts[currentAccount]])
 
   useEffect(() => {
-    if(!lng) return;
-    localStorage.setItem(`${localPREFIX}-lng`, lng)
-  }, [lng])
+    if(!settings) return;
+    localStorage.setItem(`${localPREFIX}-settings`, JSON.stringify(settings));
+  }, [settings])
 
   useEffect(() => {
-    if(!theme) return;
-    document.body.classList.value = theme;
-    localStorage.setItem(`${localPREFIX}-theme`, theme)
-  }, [theme])
-
-  useEffect(() => {
-    if(!showChoices) return;
-    localStorage.setItem(`${localPREFIX}-showchoices`, showChoices)
-  }, [showChoices])
+    if(!settings) return;
+    document.body.classList.value = settings.theme;
+  }, [settings.theme])
 
   const addNewAccount = () => {
     setLoggedIn(false);
@@ -170,11 +156,15 @@ export function AppProvider({ children }: Props) {
   }
   
   const onSubmit = (school: string, code: string, name: string) => {
+    const abortController = new AbortController();
     setErrMessage("");
+    const oldAccounts: Account[] = JSON.parse(localStorage.getItem(`${localPREFIX}-accounts`) || "[]");
+    if(oldAccounts.some(account => account.accountName === name)) {
+      setErrMessage(`${settings.lng === "nl" ? "Er bestaat al een account met deze naam." : settings.lng === "en" ? "An account with this name already exists." : "An account with this name already exists."}`);
+      return;
+    }
     getAccessToken(school, code)
-    .then((accessToken: string) => {
-      const localAccounts = localStorage.getItem(`${localPREFIX}-accounts`);
-      const oldAccounts: Account[] = JSON.parse(localAccounts || "[]");
+    .then(async (accessToken: string) => {
       const newAccount = {
         accountName: name,
         school: school,
@@ -186,27 +176,35 @@ export function AppProvider({ children }: Props) {
       localStorage.setItem(`${localPREFIX}-current`, JSON.stringify(current));
       setAccounts(newAccounts);
       setCurrentAccount(current);
-      setLoggedIn(true)
+
+      const res = await fetchUserData(newAccounts, current, abortController.signal);
+      const user = res.data[0].user;
+      setUser(user);
+      setLoggedIn(true);
     }).catch((err: Error) => {
       setErrMessage(err.message);
     });
   }
 
+  async function fetchUserData(accounts: Account[], currentAccount: number, signal: AbortSignal): Promise<Current> {
+    const res: Current = await getUserData(accounts[currentAccount].accessToken, accounts[currentAccount].school, signal);
+    return Promise.resolve(res);
+  }
 
-  async function fetchLiveSchedule(user: string ,abortController: AbortController): Promise<Appointment[][]>  {
+  async function fetchLiveSchedule(user: string, signal: AbortSignal): Promise<Appointment[][]>  {
     const school = accounts[currentAccount].school, token = accounts[currentAccount].accessToken;
-    const dates = await getDates(currentDay, perWeek, offset);
-    const date = getCurrentDate(currentDay, perWeek, offset);
+    const dates = await getDates(currentDay, settings.perWeek, offset);
+    const date = getCurrentDate(currentDay, settings.perWeek, offset);
     const week = `${date.getFullYear()}${Math.ceil(Math.floor((Number(date) - Number(new Date(date.getFullYear(), 0, 1))) / (24 * 60 * 60 * 1000)) / 7)}`
     setDates(dates);
 
-    const livescheduleRes: LiveSchedule = await getLiveSchedule(school, token, week, user, abortController);
+    const livescheduleRes: LiveSchedule = await getLiveSchedule(school, token, week, user, signal);
          
-    const day0 = livescheduleRes.data[0].appointments.filter((lesson) =>new Date(lesson.start * 1000).toDateString() === dates[0].toDateString() && new Date(lesson.end * 1000).toDateString() === dates[0].toDateString()).sort((a, b) => (a.start > b.start ? 1 : -1)).filter((lesson) => showChoices !== "1" ? lesson.appointmentType !== "choice" : lesson);
-    const day1 = livescheduleRes.data[0].appointments.filter((lesson) =>new Date(lesson.start * 1000).toDateString() === dates[1].toDateString() && new Date(lesson.end * 1000).toDateString() === dates[1].toDateString()).sort((a, b) => (a.start > b.start ? 1 : -1)).filter((lesson) => showChoices !== "1" ? lesson.appointmentType !== "choice" : lesson);
-    const day2 = livescheduleRes.data[0].appointments.filter((lesson) =>new Date(lesson.start * 1000).toDateString() === dates[2].toDateString() && new Date(lesson.end * 1000).toDateString() === dates[2].toDateString()).sort((a, b) => (a.start > b.start ? 1 : -1)).filter((lesson) => showChoices !== "1" ? lesson.appointmentType !== "choice" : lesson);
-    const day3 = livescheduleRes.data[0].appointments.filter((lesson) =>new Date(lesson.start * 1000).toDateString() === dates[3].toDateString() && new Date(lesson.end * 1000).toDateString() === dates[3].toDateString()).sort((a, b) => (a.start > b.start ? 1 : -1)).filter((lesson) => showChoices !== "1" ? lesson.appointmentType !== "choice" : lesson);
-    const day4 = livescheduleRes.data[0].appointments.filter((lesson) =>new Date(lesson.start * 1000).toDateString() === dates[4].toDateString() && new Date(lesson.end * 1000).toDateString() === dates[4].toDateString()).sort((a, b) => (a.start > b.start ? 1 : -1)).filter((lesson) => showChoices !== "1" ? lesson.appointmentType !== "choice" : lesson);
+    const day0 = livescheduleRes.data[0].appointments.filter((lesson) =>new Date(lesson.start * 1000).toDateString() === dates[0].toDateString() && new Date(lesson.end * 1000).toDateString() === dates[0].toDateString()).sort((a, b) => (a.start > b.start ? 1 : -1)).filter((lesson) => !settings.showChoices ? lesson.appointmentType !== "choice" : lesson);
+    const day1 = livescheduleRes.data[0].appointments.filter((lesson) =>new Date(lesson.start * 1000).toDateString() === dates[1].toDateString() && new Date(lesson.end * 1000).toDateString() === dates[1].toDateString()).sort((a, b) => (a.start > b.start ? 1 : -1)).filter((lesson) => !settings.showChoices ? lesson.appointmentType !== "choice" : lesson);
+    const day2 = livescheduleRes.data[0].appointments.filter((lesson) =>new Date(lesson.start * 1000).toDateString() === dates[2].toDateString() && new Date(lesson.end * 1000).toDateString() === dates[2].toDateString()).sort((a, b) => (a.start > b.start ? 1 : -1)).filter((lesson) => !settings.showChoices ? lesson.appointmentType !== "choice" : lesson);
+    const day3 = livescheduleRes.data[0].appointments.filter((lesson) =>new Date(lesson.start * 1000).toDateString() === dates[3].toDateString() && new Date(lesson.end * 1000).toDateString() === dates[3].toDateString()).sort((a, b) => (a.start > b.start ? 1 : -1)).filter((lesson) => !settings.showChoices ? lesson.appointmentType !== "choice" : lesson);
+    const day4 = livescheduleRes.data[0].appointments.filter((lesson) =>new Date(lesson.start * 1000).toDateString() === dates[4].toDateString() && new Date(lesson.end * 1000).toDateString() === dates[4].toDateString()).sort((a, b) => (a.start > b.start ? 1 : -1)).filter((lesson) => !settings.showChoices ? lesson.appointmentType !== "choice" : lesson);
     let schedule = [day0, day1, day2, day3, day4];
 
     if(!schedule.every((a) => a.length < 1)) {
@@ -219,9 +217,9 @@ export function AppProvider({ children }: Props) {
     return Promise.resolve(schedule);
   }
 
-  async function fetchAnnouncements(abortController: AbortController): Promise<Announcement[]> {
+  async function fetchAnnouncements(signal: AbortSignal): Promise<Announcement[]> {
     const school = accounts[currentAccount].school, token = accounts[currentAccount].accessToken
-    const announcementsRes: Announcements = await getAnnouncements(school, token, abortController);
+    const announcementsRes: Announcements = await getAnnouncements(school, token, signal);
 
     if(!group) {
       return Promise.resolve(announcementsRes.data);
@@ -231,5 +229,5 @@ export function AppProvider({ children }: Props) {
     return Promise.resolve(announcements);
   }
   
-  return <AppContext.Provider value={{user, accounts, currentAccount, logOut, lng, setLng, addNewAccount, switchAccount, theme, setTheme, showChoices, setShowChoices, perWeek, setPerWeek, offset, setOffset, scheduleLoad, announcementsLoad, group, dates, fetchLiveSchedule, fetchAnnouncements}}>{loading ? (<div className="loader-div"><span className='loader'></span></div>) : (loggedIn ? children : <Login err={errMessage} onSubmit={onSubmit}/>)}</AppContext.Provider>;
+  return <AppContext.Provider value={{user, isDesktop, accounts, currentAccount, logOut, settings, setSettings, addNewAccount, switchAccount, offset, setOffset, scheduleLoad, announcementsLoad, group, dates, fetchLiveSchedule, fetchAnnouncements}}>{loading ? (<div className="loader-div"><span className='loader'></span></div>) : (loggedIn ? children : <Login lng={settings.lng} err={errMessage} onSubmit={onSubmit}/>)}</AppContext.Provider>;
 }

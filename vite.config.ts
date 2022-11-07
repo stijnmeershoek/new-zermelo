@@ -21,7 +21,7 @@ export default defineConfig({
         display: 'swap',
         preload: true,
         prefetch: false,
-        injectTo: 'head-prepend',
+        injectTo: 'head',
       },
     }),
     VitePWA({

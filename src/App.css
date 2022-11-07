@@ -6,6 +6,38 @@
     }
 }
 
+.login {
+    @apply w-full h-full flex flex-col justify-center items-center text-black dark:text-white;
+
+    & h1 {
+        @apply font-bold text-4xl;
+    }
+
+    & > form {
+        @apply relative w-[clamp(280px,25vw,24rem)] flex flex-col gap-1;
+
+        & > label {
+            @apply mt-4;
+        }
+
+        & input {
+            @apply w-full text-xl text-themeDark dark:text-themeWhite dark:bg-[#0a0a0a] outline-none shadow-md rounded-md px-2 py-[2px];
+
+            &.err {
+                @apply border-theme;
+            }
+        }
+
+        & span.err {
+            @apply absolute bottom-0 translate-y-full pt-5 whitespace-pre-wrap text-theme font-bold;
+        }
+    
+        & button {
+            @apply bg-theme text-white px-3 py-2 rounded-lg mt-4 font-bold shadow-lg;
+        }
+    }
+}
+
 .navbar {
     @apply py-7 px-4 bg-black border-r-[1px] border-[rgb(255,255,255,0.2)] max-w-min text-white h-full flex flex-col items-center z-50;
 
@@ -28,7 +60,7 @@
             @apply relative bg-themeDark text-[rgb(255,255,255,0.9)] w-full aspect-square rounded-[50%] capitalize text-2xl font-medium outline-none focus:text-theme hover:text-theme hover:rounded-[21%] focus:rounded-[21%] transition-all duration-100 ease-linear;
             
             &.add-account {
-                @apply text-5xl font-light mb-2;
+                @apply mb-2;
 
                 & > svg {
                     @apply w-6;
@@ -54,6 +86,10 @@
     & > button {
         @apply mt-auto w-1/2 mx-auto text-[rgb(255,255,255,0.5)] hover:text-theme outline-none focus:text-theme transition-colors;
     }
+
+    & button.active {
+        @apply text-theme;
+    }
 }
 
 .settings {
@@ -74,10 +110,10 @@
 }
 
 .announcements {
-    @apply mb-5 overflow-y-auto overflow-x-hidden bg-themeWhite dark:bg-themeDark;
+    @apply mb-5 w-[max(25vw,325px)] overflow-y-auto overflow-x-hidden bg-themeWhite dark:bg-themeDark z-20;
 
     &:not(.mobile) {
-        @apply py-7 px-4 w-1/4 bg-black text-white min-w-[325px] h-full flex flex-col;
+        @apply py-7 px-4 bg-black text-white h-full flex flex-col;
 
         & .announcement {
             @apply !bg-themeDark text-white;
@@ -143,10 +179,14 @@
     & > h1 {
         @apply font-bold text-3xl dsk:mt-0 mt-4 mb-5 ml-1;
     }
+
+    & > h2 {
+        @apply ml-1;
+    }
 }
 
 .schedule {
-    @apply relative h-full flex-grow flex flex-col dsk:max-w-[min(75vw,calc(100vw-325px))] max-w-[100vw] bg-themeWhite dark:bg-themeDark;
+    @apply relative h-full ml-auto flex-grow flex flex-col dsk:max-w-[min(75vw,calc(100vw-325px))] max-w-[100vw] bg-themeWhite dark:bg-themeDark;
 
     & > [class$="modal"] {
         @apply will-change-auto pointer-events-none flex opacity-0 absolute top-0 left-0 w-full h-full bg-black bg-opacity-60 z-40 justify-center items-center transition-opacity;
@@ -159,6 +199,10 @@
 
                 & > button {
                     @apply dark:bg-[rgb(255,255,255,.15)] bg-[rgb(0,0,0,0.15)] dark:text-white text-black font-bold rounded-lg py-3 mt-4 dark:hover:bg-[rgb(255,255,255,.25)] hover:bg-[rgb(0,0,0,0.25)];
+                
+                    &:disabled {
+                        @apply pointer-events-none select-none touch-none opacity-20;
+                    }
                 }
 
                 & > div {
@@ -282,7 +326,7 @@
             }
 
             & > button {
-                @apply hidden sm:block bg-neutral-200 dark:bg-[#4d4d4d] text-black dark:text-neutral-200 dsk:text-lg text-base font-normal dsk:px-7 dsk:py-3 py-2 px-5 dsk:rounded-xl rounded-lg ml-2 hover:bg-neutral-300 dark:hover:bg-neutral-500;
+                @apply bg-neutral-200 dark:bg-[#4d4d4d] text-black dark:text-neutral-200 text-lg font-normal px-7 py-3 rounded-xl ml-2 hover:bg-neutral-300 dark:hover:bg-neutral-500;
 
                 &.active {
                     @apply bg-black dark:hover:bg-neutral-800 text-neutral-200;
@@ -304,7 +348,15 @@
     }
 
     & > .schedule-container {
-        @apply overflow-hidden mx-auto flex flex-col flex-grow w-[min(1110px,100%)];
+        @apply overflow-hidden mx-auto flex flex-col flex-grow;
+
+        &.perWeek {
+            @apply w-[min(1110px,100%)];
+        }
+
+        &.perDay {
+            @apply w-[min(750px,100%)];
+        }
 
         & > .dates {
             @apply relative flex w-full justify-evenly dsk:px-12 dsk:w-[calc(100%-8px)] pl-5 pr-4 bg-transparent;
@@ -315,7 +367,7 @@
             }
     
             & > .space {
-                @apply text-transparent dsk:pl-[0.375rem] dsk:pr-5 flex-grow-0 pr-2;
+                @apply pointer-events-none select-none touch-none text-transparent dsk:pl-[0.375rem] dsk:pr-5 flex-grow-0 pr-2;
             }
     
             & > div {
@@ -371,7 +423,7 @@
             @apply relative h-fit flex-shrink-0 overflow-x-visible w-auto grid grid-rows-[auto,repeat(110,minmax(0,1fr))];
         
             & .time-indicator {
-                @apply absolute z-40 top-[0px] flex items-center h-[1px] overflow-visible left-1/2 -translate-x-1/2 w-[calc(100%+15px)] col-[span_5/7];
+                @apply absolute z-10 top-[0px] flex items-center h-[1px] overflow-visible left-1/2 -translate-x-1/2 w-[calc(100%+15px)] col-[span_5/7];
         
                 & > div {
                     @apply bg-[rgb(0,0,0,0.5)] dark:bg-[rgb(255,255,255,0.5)] mt-1;
@@ -444,8 +496,134 @@
         }
     
         & .schedule-grid-day {
-            @apply grid-cols-[max-content,1fr]
+            @apply grid-cols-[auto,minmax(0,1fr)];
+
+            & > .lesson-block {
+                @apply aspect-[48/9];
+            }
         }
     }
-
+    
+    .lesson-block {
+        @apply relative mx-auto bg-[#E9E9E9] dark:bg-[#4d4d4d] py-2 dsk:px-[0.375rem] rounded-xl h-[calc(100%-2px)] dsk:w-[calc(100%-10px)] w-[calc(100%-5px)] aspect-[16/10] overflow-hidden flex mt-[1px] font-medium border-[1px] border-black dark:border-white dark:border-opacity-[0.3] border-opacity-[0.15] cursor-pointer;
+    
+        & > section {
+            @apply text-sm text-[rgba(0,0,0,0.75)];
+        }
+    
+        &.choice {
+            & > .choice-content {
+                @apply relative w-full h-full flex justify-center items-center;
+        
+                & > h1 {
+                    @apply text-5xl font-extrabold text-[rgb(0,0,0,0.4)] dark:text-[rgb(255,255,255,0.4)];
+                }
+            }
+    
+            &.locked {
+                @apply pointer-events-none select-none;
+            }
+    
+            &.allowed {
+                @apply !bg-[#77DD77] !bg-opacity-20;
+    
+                & > .content-right > svg {
+                    @apply bg-[hsl(120,60%,40%,0.15)] dark:bg-[hsl(120,60%,80%,0.15)];
+                }
+            }
+    
+            & > .content-right > svg {
+                @apply absolute bottom-0 mb-2 mr-1 right-1 w-8 text-inherit bg-[#E9E9E9] dark:bg-[#4D4D4D] p-2 rounded-full;
+            }
+        }
+    
+    
+        & > .content-left {
+            @apply pb-[2px] dsk:pl-2 dsk:pr-0 px-2 flex flex-col w-full h-full py-1;
+    
+            & span.change {
+                @apply text-theme font-black ml-1;
+            }
+            
+            & > :first-child {
+                @apply font-black text-[clamp(.875rem,3vw,1rem)] text-[rgba(0,0,0,0.65)] max-w-[11ch] break-normal uppercase dsk:normal-case dsk:leading-normal leading-4;
+            }
+    
+            & > :nth-child(2) {
+                @apply dsk:mt-0 mt-1;
+            }
+            
+            & > :not(:last-child) {
+                @apply dsk:-mt-1;
+            }
+    
+            & > .times {
+                @apply mt-auto;
+            }
+        }
+    
+        & > .content-right {
+            @apply absolute text-base inset-0 text-right dsk:pr-3 pr-[0.375rem] pt-2;
+    
+            & > svg {
+                @apply dsk:mb-0 dsk:mr-0 mb-2 mr-1 dsk:relative dsk:right-0 absolute right-1 bottom-0 ml-auto w-4 text-theme;
+            }
+        }
+    
+        &.wrap {
+            & * {
+                @apply !mt-[unset] leading-4 flex-wrap
+            }
+    
+            & > .content-left {
+                @apply justify-center;
+            }
+        }
+    }
+    
+    .lesson{
+        @apply bg-[#E9E9E9] dark:bg-[#4d4d4d];
+    }
+    .lesson, .choice {
+        & > section {
+            @apply dark:text-[rgb(255,255,255,0.75)];
+        }
+    
+        & > .content-left {
+            & > :first-child {
+                @apply dark:text-[rgb(255,255,255,0.85)];
+            }
+        }
+    }
+    .unkown {
+        @apply !bg-[#9EC1CF];
+    }
+    .exam {
+        @apply !bg-yellow-200;
+    }
+    .activity {
+        @apply !bg-[#77DD77];
+    }
+    .choice {
+        @apply dark:!bg-[rgb(0,0,0,0.3)] !bg-themeWhite;
+    }
+    .talk {
+        @apply !bg-[#ff9361];
+    }
+    .other {
+        @apply !bg-[#9EC1CF];
+    }
+    .interlude {
+        @apply !bg-neutral-400;
+    }
+    .meeting {
+        @apply !bg-[#ff9361];
+    }
+    .cancelled:not(.choice) {
+        @apply !bg-theme;
+    
+        & > *,  & > * > * {
+            @apply !text-[rgba(255,255,255,0.9)];
+        }
+    }
 }
