@@ -2,14 +2,16 @@ import { useAppState } from "../../context";
 import { getCurrentDate, getMonday } from "../../utils/functions";
 
 interface Props {
+  offset: number,
+  setOffset: React.Dispatch<React.SetStateAction<number>>,
   currentDay: Date,
   showAnnouncements: boolean, 
   showSettings: boolean, 
   setMenuOpen: React.Dispatch<React.SetStateAction<boolean>>
 }
 
-export const Header = ({currentDay, showAnnouncements, showSettings, setMenuOpen}: Props) => {
-    const { offset, setOffset, settings, isDesktop } = useAppState();
+export const Header = ({offset, setOffset, currentDay, showAnnouncements, showSettings, setMenuOpen}: Props) => {
+    const { settings, isDesktop } = useAppState();
     const currentDate = getCurrentDate(currentDay, offset)
 
     return (

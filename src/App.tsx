@@ -11,6 +11,7 @@ import { Header } from './components/Header';
 
 const App = () => {
   const { isDesktop, announcementsLoad } = useAppState();
+  const [offset, setOffset] = useState(0);
   const [announcements, setAnnouncements] = useState<Announcement[]>(announcementsLoad);
   const [menuOpen, setMenuOpen] = useState(false);
   const [showAnnouncements, setShowAnnouncements] = useState(false);
@@ -57,9 +58,9 @@ const App = () => {
         )}
 
         <main className="schedule">
-          <Header currentDay={currentDay} showAnnouncements={showAnnouncements} showSettings={showSettings} setMenuOpen={setMenuOpen}/>
+          <Header offset={offset} setOffset={setOffset} currentDay={currentDay} showAnnouncements={showAnnouncements} showSettings={showSettings} setMenuOpen={setMenuOpen}/>
 
-          <Schedule currentDay={currentDay} choiceModalOpen={choiceModalOpen} openLessonModal={openLessonModal} openChoiceModal={openChoiceModal} />
+          <Schedule offset={offset} currentDay={currentDay} choiceModalOpen={choiceModalOpen} openLessonModal={openLessonModal} openChoiceModal={openChoiceModal} />
 
           <LessonModal lessonModalOpen={lessonModalOpen} closeLessonModal={closeLessonModal} selectedLesson={selectedLesson}/>
           <ChoiceModal choiceModalOpen={choiceModalOpen} closeChoiceModal={closeChoiceModal} selectedLesson={selectedLesson}/>

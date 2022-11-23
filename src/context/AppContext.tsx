@@ -6,43 +6,39 @@ import {useMediaQuery} from '../hooks';
 
 type Values = {
   localPREFIX: string,
-  user: string,
-  isDesktop: boolean,
-  accounts: Account[],
-  currentAccount: number,
   settings: Settings,
   setSettings: React.Dispatch<React.SetStateAction<Settings>>,
-  datesLoad: Date[],
+  isDesktop: boolean,
+  user: string,
+  accounts: Account[],
+  currentAccount: number,
   logOut: () => void,
   logIn: (newAccount: Account, oldAccounts: Account[]) => Promise<void>
   addNewAccount: () => void;
   switchAccount: (i: number) => void;
-  offset: number,
-  setOffset: React.Dispatch<React.SetStateAction<number>>,
+  datesLoad: Date[],
   scheduleLoad: Appointment[][],
   announcementsLoad: Announcement[],
-  fetchLiveSchedule: (user: string, dates: Date[], signal: AbortSignal) => Promise<Appointment[][]>,
+  fetchLiveSchedule: (user: string, dates: Date[], offset: number, signal: AbortSignal) => Promise<Appointment[][]>,
 }
 
 const defaultValues: Values = {
   localPREFIX: "zermelo",
-  user: "",
+  settings: {
+    lng: "nl",
+    showChoices: false,
+    theme: "light",
+  },
+  setSettings: () => {},
   isDesktop: true,
+  user: "",
   accounts: [],
   currentAccount: 0,
   logOut: () => {},
   logIn: async () => {},
   addNewAccount: () => {},
   switchAccount: () => {},
-  settings: {
-    lng: "nl",
-    showChoices: false,
-    theme: "light",
-  },
   datesLoad: [],
-  setSettings: () => {},
-  offset: 0,
-  setOffset: () => {},
   scheduleLoad: [],
   announcementsLoad: [],
   fetchLiveSchedule: () => {return Promise.resolve([])},
@@ -71,7 +67,6 @@ export function AppProvider({ children }: Props) {
   const [accounts, setAccounts] = useState<Account[]>(JSON.parse(localStorage.getItem(`${localPREFIX}-accounts`) || "[]"));
   const [settings, setSettings] = useState<Settings>(JSON.parse(localStorage.getItem(`${localPREFIX}-settings`) || '{"lng": "nl", "theme": "light", "showChoices": false, "perWeek": true}'));
 
-  const [offset, setOffset] = useState(0);
   const [group, setGroup] = useState("");
   const [scheduleLoad, setScheduleLoad] = useState<Appointment[][]>([])
   const [announcementsLoad, setAnnouncementsLoad] = useState<Announcement[]>([])
@@ -104,8 +99,8 @@ export function AppProvider({ children }: Props) {
           }
         }
 
-        const dates = await getDates(currentDay, offset);
-        const schedule = await fetchLiveSchedule(userNew, dates, signal);
+        const dates = await getDates(currentDay, 0);
+        const schedule = await fetchLiveSchedule(userNew, dates, 0, signal);
         
         if(!schedule.every((a) => a.length < 1)) {
           const newGroup = [...new Set(schedule.flat().map((lesson) => lesson.groups ? lesson.groups[0] : "").filter((group) => group?.includes(".")))].map((item) => item.split("."))[0].filter(item => possibleGroups.some(group => item == group))[0];
@@ -181,7 +176,7 @@ export function AppProvider({ children }: Props) {
     return res.response;
   }
 
-  async function fetchLiveSchedule(user: string, dates: Date[], signal: AbortSignal): Promise<Appointment[][]>  {
+  async function fetchLiveSchedule(user: string, dates: Date[], offset: number, signal: AbortSignal): Promise<Appointment[][]>  {
     const school = accounts[currentAccount].school, token = accounts[currentAccount].accessToken;
     const date = getCurrentDate(currentDay, offset);
     const week = `${date.getFullYear()}${Math.ceil(Math.floor((Number(date) - Number(new Date(date.getFullYear(), 0, 1))) / (24 * 60 * 60 * 1000)) / 7)}`
@@ -207,5 +202,5 @@ export function AppProvider({ children }: Props) {
     return Promise.resolve(announcements);
   }
   
-  return <AppContext.Provider value={{localPREFIX, user, isDesktop, accounts, currentAccount, logOut, logIn, settings, setSettings, addNewAccount, switchAccount, offset, setOffset, scheduleLoad, announcementsLoad, datesLoad, fetchLiveSchedule}}>{loading ? (<div className="loader-div"><span className='loader'></span></div>) : (loggedIn ? children : <Login />)}</AppContext.Provider>;
+  return <AppContext.Provider value={{localPREFIX, user, isDesktop, accounts, currentAccount, logOut, logIn, settings, setSettings, addNewAccount, switchAccount, scheduleLoad, announcementsLoad, datesLoad, fetchLiveSchedule}}>{loading ? (<div className="loader-div"><span className='loader'></span></div>) : (loggedIn ? children : <Login />)}</AppContext.Provider>;
 }

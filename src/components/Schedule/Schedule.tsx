@@ -5,14 +5,15 @@ import { useAppState } from '../../context';
 import { getDates } from '../../utils/functions';
 
 interface Props {
+  offset: number,
   currentDay: Date, 
   openChoiceModal: (lesson: Appointment) => void, 
   openLessonModal: (lesson: Appointment) => void, 
   choiceModalOpen: boolean, 
 }
 
-export const Schedule = ({currentDay, openChoiceModal, openLessonModal, choiceModalOpen}: Props) => {
-    const {user, settings, fetchLiveSchedule, scheduleLoad, datesLoad, offset} = useAppState()
+export const Schedule = ({offset, currentDay, openChoiceModal, openLessonModal, choiceModalOpen}: Props) => {
+    const {user, settings, fetchLiveSchedule, scheduleLoad, datesLoad} = useAppState()
     const [loading, setLoading] = useState(false);
     const [schedule, setSchedule] = useState<Appointment[][]>(scheduleLoad);
     const [dates, setDates] = useState<Date[]>(datesLoad)
@@ -39,7 +40,7 @@ export const Schedule = ({currentDay, openChoiceModal, openLessonModal, choiceMo
   
       const fetchData = async () => {
         const dates = await getDates(currentDay, offset);
-        fetchLiveSchedule(user, dates, signal).then((res) => {
+        fetchLiveSchedule(user, dates, offset, signal).then((res) => {
           setDates(dates)
           setSchedule(res);
           setLoading(false);

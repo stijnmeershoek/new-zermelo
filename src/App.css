@@ -314,8 +314,12 @@
             }
         }
 
-        & button.next > svg {
-            @apply -scale-x-100;
+        & button.next {
+            @apply dsk:ml-8 ml-4;
+
+           & > svg {
+                @apply -scale-x-100;
+            }
         }
 
         & > .right {
@@ -327,7 +331,7 @@
         }
 
         & button.next, button.prev {
-            @apply aspect-square dsk:ml-8 sm:ml-5;
+            @apply aspect-square;
 
             & > svg {
                 @apply dsk:h-7 h-6;
