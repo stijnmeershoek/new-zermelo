@@ -1,5 +1,5 @@
 .app {
-    @apply will-change-transform dsk:translate-x-0 translate-x-[-5.5rem] absolute dsk:left-0 h-full dsk:w-full w-[calc(100%+5.5rem)] text-black dark:text-white flex font-helvetica transition-all duration-300;
+    @apply will-change-transform dsk:translate-x-0 translate-x-[calc(-5.5rem-1px)] absolute dsk:left-0 h-full dsk:w-full w-[calc(100%+5.5rem+1px)] text-black dark:text-white flex font-helvetica transition-all duration-300;
 
     &.show-menu {
         @apply translate-x-0;
