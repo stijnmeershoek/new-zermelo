@@ -87,8 +87,10 @@
 <body>
   <noscript>You need to enable JavaScript to run this app.</noscript>
   <script type="text/javascript">
-    const theme = localStorage.getItem('zermelo-theme');
-    document.body.classList.value = theme;
+    const settings = JSON.parse(localStorage.getItem('zermelo-settings'));
+    if(settings.theme) {
+      document.body.classList.value = settings.theme;
+    }
   </script>
   <div id="root">
     <div class="loader-div"><span class='loader'></span></div>
