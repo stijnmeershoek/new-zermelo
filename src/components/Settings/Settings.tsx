@@ -4,7 +4,7 @@ export const Settings = () => {
     const { settings, setSettings } = useAppState();
 
     return (
-        <section className='settings' aria-labelledby='settings-header'>
+        <aside className='settings' aria-labelledby='settings-header'>
           <h1 id='settings-header'>{settings.lng === "nl" ? "Instellingen" : settings.lng === "en" ? "Settings" : "Settings"}</h1>
           <div>
             <label htmlFor="lng">{settings.lng === "nl" ? "Taal" : settings.lng === "en" ? "Language" : "Language"}:</label>
@@ -27,6 +27,6 @@ export const Settings = () => {
               <option value="true">{settings.lng === "nl" ? "Ja" : settings.lng === "en" ? "Yes" : "Yes"}</option>
             </select>
           </div>
-        </section>
+        </aside>
     )
 }

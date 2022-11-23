@@ -1,6 +1,7 @@
 import './App.css'
 import { useAppState } from './context';
-import { useState } from 'react';
+import { useEventListener } from './hooks';
+import { KeyboardEvent, useState } from 'react';
 import { Schedule } from './components/Schedule';
 import { ChoiceModal } from './components/Modals/ChoiceModal';
 import { LessonModal } from './components/Modals/LessonModal';
@@ -10,9 +11,8 @@ import { Nav } from './components/Nav';
 import { Header } from './components/Header';
 
 const App = () => {
-  const { isDesktop, announcementsLoad } = useAppState();
+  const { isDesktop, announcementsLoad: announcements } = useAppState();
   const [offset, setOffset] = useState(0);
-  const [announcements, setAnnouncements] = useState<Announcement[]>(announcementsLoad);
   const [menuOpen, setMenuOpen] = useState(false);
   const [showAnnouncements, setShowAnnouncements] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
@@ -20,6 +20,19 @@ const App = () => {
   const [choiceModalOpen, setChoiceModalOpen] = useState(false);
   const [selectedLesson, setSelectedLesson] = useState<Appointment | null>();
   const currentDay = new Date();
+
+  useEventListener('keydown', keyHandler);
+
+  function keyHandler(event: KeyboardEvent) {
+    switch (event.key) {
+      case "ArrowLeft":
+        setOffset(prev => prev - 1);
+        break;
+      case "ArrowRight":
+        setOffset(prev => prev + 1);
+        break;
+    }
+  }
 
   const openLessonModal = (lesson: Appointment) => {
     setSelectedLesson(lesson);

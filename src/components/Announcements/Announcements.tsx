@@ -8,7 +8,7 @@ export const Announcements = ({announcements}: Props) => {
   const {isDesktop, settings} = useAppState();
 
     return (
-        <section aria-labelledby='announcements-header' className={`${!isDesktop ? "mobile " : ""}announcements`}>
+        <aside aria-labelledby='announcements-header' className={`${!isDesktop ? "mobile " : ""}announcements`}>
           <h1 id='announcements-header'>{settings.lng === "nl" ? "Mededelingen" : settings.lng === "en" ? "Announcements" : "Announcements"}</h1>
             {announcements.length !== 0 ? announcements.map((announcement) => {
               return (
@@ -27,6 +27,6 @@ export const Announcements = ({announcements}: Props) => {
                 </div>
               </article>)
             }) : <h2>{settings.lng === "nl" ? "Geen actuele mededelingen" : settings.lng === "en" ? "No current announcements" : "No current announcements"}</h2>}
-        </section>
+        </aside>
     )
 }

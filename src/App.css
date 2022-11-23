@@ -13,6 +13,14 @@
         @apply font-bold text-4xl;
     }
 
+    & > button.back {
+        @apply absolute top-5 left-5 aspect-square hover:text-theme transition-colors;
+
+        & > svg {
+            @apply dsk:h-7 h-6;
+        }
+    }
+
     & > form {
         @apply relative w-[clamp(280px,25vw,24rem)] flex flex-col gap-1;
 
@@ -49,19 +57,19 @@
         @apply h-[2px] w-4/5 bg-[rgb(255,255,255,0.2)] rounded-md mt-2 mb-4; 
     }
 
-    & .accounts {
-        @apply w-full flex-grow pb-4 gap-5;
+    & > .buttons {
+        @apply mt-2;
+    }
 
-        & > * + * {
-            @apply mt-2;
-        }
+    & .accounts, & .buttons {    
+        @apply w-full flex flex-col gap-2;
 
-        & > button {
+        & button {
             @apply relative bg-themeDark text-[rgb(255,255,255,0.9)] w-full aspect-square rounded-[50%] capitalize text-2xl font-medium outline-none focus:text-theme hover:text-theme hover:rounded-[21%] focus:rounded-[21%] transition-all duration-100 ease-linear;
             
             &.add-account {
                 @apply mb-2;
-
+    
                 & > svg {
                     @apply w-6;
                 }
@@ -72,11 +80,11 @@
                     @apply scale-100
                 }
             }
-
+    
             & > svg {
                 @apply w-[1.75rem] m-auto;
             }
-
+    
             & > span {
                 @apply absolute w-auto p-2 ml-2 top-1/2 -translate-y-1/2 min-w-max left-14 rounded-md shadow-md text-white bg-themeDark text-xs font-bold transition-all duration-100 scale-0 origin-left;
             }

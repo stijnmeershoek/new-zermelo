@@ -13,9 +13,10 @@ type Values = {
   accounts: Account[],
   currentAccount: number,
   logOut: () => void,
-  logIn: (newAccount: Account, oldAccounts: Account[]) => Promise<void>
-  addNewAccount: () => void;
-  switchAccount: (i: number) => void;
+  logIn: (newAccount: Account, oldAccounts: Account[]) => Promise<void>,
+  goBack: () => void,
+  addNewAccount: () => void,
+  switchAccount: (i: number) => void,
   datesLoad: Date[],
   scheduleLoad: Appointment[][],
   announcementsLoad: Announcement[],
@@ -36,6 +37,7 @@ const defaultValues: Values = {
   currentAccount: 0,
   logOut: () => {},
   logIn: async () => {},
+  goBack: () => {},
   addNewAccount: () => {},
   switchAccount: () => {},
   datesLoad: [],
@@ -62,6 +64,7 @@ export function AppProvider({ children }: Props) {
 
   const [loading, setLoading] = useState(true);
   const [loggedIn, setLoggedIn] = useState(false);
+  const [addAccount, setAddAccount] = useState(false);
   const [currentAccount, setCurrentAccount] = useState<number>(Number(localStorage.getItem(`${localPREFIX}-current`) || 0));
   const [user, setUser] = useState("");
   const [accounts, setAccounts] = useState<Account[]>(JSON.parse(localStorage.getItem(`${localPREFIX}-accounts`) || "[]"));
@@ -100,14 +103,24 @@ export function AppProvider({ children }: Props) {
         }
 
         const dates = await getDates(currentDay, 0);
-        const schedule = await fetchLiveSchedule(userNew, dates, 0, signal);
+
+        const responses = await Promise.all([
+          fetchLiveSchedule(userNew, dates, 0, signal),
+          fetchAnnouncements(signal),
+        ])
+
+        // !TODO || Make sure appointments with conflict get handled properly.
+        let schedule: Appointment[][] = responses[0];
+        let announcements: Announcement[] = responses[1];
         
         if(!schedule.every((a) => a.length < 1)) {
           const newGroup = [...new Set(schedule.flat().map((lesson) => lesson.groups ? lesson.groups[0] : "").filter((group) => group?.includes(".")))].map((item) => item.split("."))[0].filter(item => possibleGroups.some(group => item == group))[0];
           if(newGroup !== group && newGroup !== "") {
-            const announcements = await fetchAnnouncements(newGroup, signal);
+            const filteredAnnouncements = announcements.filter(announcement => (possibleGroups.some(element => announcement.title.toLowerCase().includes(element)) && announcement.title.toLowerCase().includes(group.slice(0,2))) || !possibleGroups.some(element => announcement.title.toLowerCase().includes(element)) || !group);
             setGroup(newGroup)
-            setAnnouncementsLoad(announcements);
+            setAnnouncementsLoad(filteredAnnouncements);
+          } else {
+            setAnnouncementsLoad(announcements)
           }
         }
 
@@ -134,7 +147,14 @@ export function AppProvider({ children }: Props) {
   }, [settings.theme])
 
   const addNewAccount = () => {
+    setAddAccount(true);
     setLoggedIn(false);
+  }
+
+  const goBack = () => {
+    setLoading(true)
+    setAddAccount(false);
+    setLoggedIn(true);
   }
 
   const switchAccount = (i: number) => {
@@ -155,6 +175,7 @@ export function AppProvider({ children }: Props) {
   }
   
   const logIn = async (newAccount: Account, oldAccounts: Account[]) => {
+    setLoading(true);
     const abortController = new AbortController();
     const newAccounts = [...oldAccounts, newAccount];
     const current = newAccounts.indexOf(newAccount);
@@ -167,6 +188,7 @@ export function AppProvider({ children }: Props) {
     if(res) {
       const user = res.data[0].user;
       setUser(user);
+      setAddAccount(false);
       setLoggedIn(true);
     }
   }
@@ -189,18 +211,13 @@ export function AppProvider({ children }: Props) {
     return Promise.resolve(schedule);
   }
 
-  async function fetchAnnouncements(group: string, signal: AbortSignal): Promise<Announcement[]> {
+  async function fetchAnnouncements(signal: AbortSignal): Promise<Announcement[]> {
     const school = accounts[currentAccount].school, token = accounts[currentAccount].accessToken
     const res = await request("GET", '/api/v3/announcements?user=~me&current=true', token, school, signal);
     const announcementsRes: Announcements = res.response;
 
-    if(!group) {
-      return Promise.resolve(announcementsRes.data);
-    };
-
-    const announcements = announcementsRes.data.filter(announcement => (possibleGroups.some(element => announcement.title.toLowerCase().includes(element)) && announcement.title.toLowerCase().includes(group.slice(0,2))) || !possibleGroups.some(element => announcement.title.toLowerCase().includes(element)) || !group);
-    return Promise.resolve(announcements);
+    return Promise.resolve(announcementsRes.data);
   }
   
-  return <AppContext.Provider value={{localPREFIX, user, isDesktop, accounts, currentAccount, logOut, logIn, settings, setSettings, addNewAccount, switchAccount, scheduleLoad, announcementsLoad, datesLoad, fetchLiveSchedule}}>{loading ? (<div className="loader-div"><span className='loader'></span></div>) : (loggedIn ? children : <Login />)}</AppContext.Provider>;
+  return <AppContext.Provider value={{localPREFIX, user, isDesktop, accounts, currentAccount, logOut, logIn, goBack, settings, setSettings, addNewAccount, switchAccount, scheduleLoad, announcementsLoad, datesLoad, fetchLiveSchedule}}>{loading ? (<div className="loader-div"><span className='loader'></span></div>) : (loggedIn ? children : <Login addAccount={addAccount}/>)}</AppContext.Provider>;
 }
