@@ -10,7 +10,7 @@ import { Nav } from './components/Nav';
 import { Header } from './components/Header';
 
 const App = () => {
-  const { isDesktop, accounts, currentAccount, settings, announcementsLoad } = useAppState();
+  const { isDesktop, announcementsLoad } = useAppState();
   const [announcements, setAnnouncements] = useState<Announcement[]>(announcementsLoad);
   const [menuOpen, setMenuOpen] = useState(false);
   const [showAnnouncements, setShowAnnouncements] = useState(false);
@@ -46,10 +46,10 @@ const App = () => {
 
   return (
     <div className={`${menuOpen ? "show-menu " : ""}app`}>
-        <Nav isDesktop={isDesktop} lng={settings.lng} setMenuOpen={setMenuOpen} showSettings={showSettings} showAnnouncements={showAnnouncements} setShowSettings={setShowSettings} setShowAnnouncements={setShowAnnouncements}/>
+        <Nav setMenuOpen={setMenuOpen} showSettings={showSettings} showAnnouncements={showAnnouncements} setShowSettings={setShowSettings} setShowAnnouncements={setShowAnnouncements}/>
 
         {(isDesktop || showAnnouncements) && (
-          <Announcements lng={settings.lng} isDesktop={isDesktop} announcements={announcements}/>
+          <Announcements announcements={announcements}/>
         )}
 
         {showSettings && (
@@ -57,12 +57,12 @@ const App = () => {
         )}
 
         <main className="schedule">
-          <Header currentDay={currentDay} isDesktop={isDesktop} lng={settings.lng} showAnnouncements={showAnnouncements} showSettings={showSettings} setMenuOpen={setMenuOpen}/>
+          <Header currentDay={currentDay} showAnnouncements={showAnnouncements} showSettings={showSettings} setMenuOpen={setMenuOpen}/>
 
-          <Schedule currentDay={currentDay} isDesktop={isDesktop} setAnnouncements={setAnnouncements} choiceModalOpen={choiceModalOpen} openLessonModal={openLessonModal} openChoiceModal={openChoiceModal} />
+          <Schedule currentDay={currentDay} choiceModalOpen={choiceModalOpen} openLessonModal={openLessonModal} openChoiceModal={openChoiceModal} />
 
-          <LessonModal lng={settings.lng} lessonModalOpen={lessonModalOpen} closeLessonModal={closeLessonModal} selectedLesson={selectedLesson}/>
-          <ChoiceModal lng={settings.lng} currentAccount={accounts[currentAccount]} choiceModalOpen={choiceModalOpen} closeChoiceModal={closeChoiceModal} isDesktop={isDesktop} selectedLesson={selectedLesson}/>
+          <LessonModal lessonModalOpen={lessonModalOpen} closeLessonModal={closeLessonModal} selectedLesson={selectedLesson}/>
+          <ChoiceModal choiceModalOpen={choiceModalOpen} closeChoiceModal={closeChoiceModal} selectedLesson={selectedLesson}/>
         </main>
     </div>
   );

@@ -1,7 +1,15 @@
-export const Announcements = ({lng, announcements, isDesktop}: {lng: string, announcements: Announcement[], isDesktop: boolean}) => {
+import { useAppState } from "../../context"
+
+interface Props {
+  announcements: Announcement[]
+}
+
+export const Announcements = ({announcements}: Props) => {
+  const {isDesktop, settings} = useAppState();
+
     return (
         <section aria-labelledby='announcements-header' className={`${!isDesktop ? "mobile " : ""}announcements`}>
-          <h1 id='announcements-header'>{lng === "nl" ? "Mededelingen" : lng === "en" ? "Announcements" : "Announcements"}</h1>
+          <h1 id='announcements-header'>{settings.lng === "nl" ? "Mededelingen" : settings.lng === "en" ? "Announcements" : "Announcements"}</h1>
             {announcements.length !== 0 ? announcements.map((announcement) => {
               return (
               <article key={announcement.id} className='announcement'>
@@ -18,7 +26,7 @@ export const Announcements = ({lng, announcements, isDesktop}: {lng: string, ann
                   {announcement.text}
                 </div>
               </article>)
-            }) : <h2>{lng === "nl" ? "Geen actuele mededelingen" : lng === "en" ? "No current announcements" : "No current announcements"}</h2>}
+            }) : <h2>{settings.lng === "nl" ? "Geen actuele mededelingen" : settings.lng === "en" ? "No current announcements" : "No current announcements"}</h2>}
         </section>
     )
 }

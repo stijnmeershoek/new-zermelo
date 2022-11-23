@@ -1,19 +1,27 @@
 import { FormEvent, useState } from "react";
-import { postEnroll } from "../../../api/Zermelo";
+import { request } from "../../../api/requests";
+import { useAppState } from "../../../context";
 import { LessonBlock } from "../../LessonBlock";
 
-export const ChoiceModal = ({currentAccount, closeChoiceModal, choiceModalOpen, isDesktop, lng, selectedLesson}: {currentAccount: {accountName: string,school: string,accessToken: string}, closeChoiceModal: () => void, choiceModalOpen: boolean, isDesktop: boolean, lng: string, selectedLesson: Appointment | null | undefined}) => {
+interface Props { 
+  closeChoiceModal: () => void, 
+  choiceModalOpen: boolean, 
+  selectedLesson: Appointment | null | undefined}
+
+export const ChoiceModal = ({closeChoiceModal, choiceModalOpen, selectedLesson}: Props) => {
     const [currentValue, setCurrentValue] = useState<string>();
-    const school = currentAccount.school, token = currentAccount.accessToken;
+    const {accounts, currentAccount, settings} = useAppState();
+    const {school, accessToken} = accounts[currentAccount];
   
-    const enrollInChoice = async (e: FormEvent) => {
+    const enrollInChoice = (e: FormEvent) => {
       e.preventDefault();
       if(!currentValue) return;
       const abortController = new AbortController();
       const signal = abortController.signal
   
-      await postEnroll(token, school, currentValue, signal);
-      closeChoiceModal();
+      request("POST", currentValue, accessToken, school, signal).then(() => {
+        closeChoiceModal();
+      });
     }
   
     return ( <>
@@ -23,11 +31,11 @@ export const ChoiceModal = ({currentAccount, closeChoiceModal, choiceModalOpen, 
             selectedLesson.actions.map((action) => {
               return <div key={action.appointment.id}>
                 <input type="radio" name="enroll" id="enroll" value={action.post} checked={currentValue === action.post} onChange={() => {setCurrentValue(action.post)}}/>
-                <LessonBlock lng={lng} lesson={action.appointment} onClick={() => {}} isDesktop={isDesktop} />
+                <LessonBlock lesson={action.appointment} onClick={() => {}} />
               </div>
             })
           )}</div>
-          <button disabled={!currentValue} type='submit' aria-label='enroll'>{lng === "nl" ? "Inschrijven" : lng === "en" ? "Enroll" : "Enroll"}</button></>}
+          <button disabled={!currentValue} type='submit' aria-label='enroll'>{settings.lng === "nl" ? "Inschrijven" : settings.lng === "en" ? "Enroll" : "Enroll"}</button></>}
         </form>
       </dialog>
       </>

@@ -324,22 +324,10 @@
             & > div {
                 @apply h-full flex items-center;
             }
-
-            & > button {
-                @apply bg-neutral-200 dark:bg-[#4d4d4d] text-black dark:text-neutral-200 text-lg font-normal px-7 py-3 rounded-xl ml-2 hover:bg-neutral-300 dark:hover:bg-neutral-500;
-
-                &.active {
-                    @apply bg-black dark:hover:bg-neutral-800 text-neutral-200;
-                }
-            }
         }
 
         & button.next, button.prev {
-            @apply aspect-square dsk:mr-8 sm:mr-5 mr-0;
-
-            &:first-of-type {
-                @apply dsk:mr-8 !mr-5;
-            }
+            @apply aspect-square dsk:ml-8 sm:ml-5;
 
             & > svg {
                 @apply dsk:h-7 h-6;
@@ -348,15 +336,7 @@
     }
 
     & > .schedule-container {
-        @apply overflow-hidden mx-auto flex flex-col flex-grow;
-
-        &.perWeek {
-            @apply w-[min(1110px,100%)];
-        }
-
-        &.perDay {
-            @apply w-[min(750px,100%)];
-        }
+        @apply overflow-hidden mx-auto w-[min(1110px,100%)] flex flex-col flex-grow;
 
         & > .dates {
             @apply relative flex w-full justify-evenly dsk:px-12 dsk:w-[calc(100%-8px)] pl-5 pr-4 bg-transparent;

@@ -1,7 +1,7 @@
 import { useAppState } from "../../context";
 
 export const Settings = () => {
-    const { settings, setSettings, isDesktop } = useAppState();
+    const { settings, setSettings } = useAppState();
 
     return (
         <section className='settings' aria-labelledby='settings-header'>
@@ -27,15 +27,6 @@ export const Settings = () => {
               <option value="true">{settings.lng === "nl" ? "Ja" : settings.lng === "en" ? "Yes" : "Yes"}</option>
             </select>
           </div>
-          {!isDesktop && (
-            <div>
-              <label htmlFor="perWeek">{settings.lng === "nl" ? "Weergave" : settings.lng === "en" ? "View" : "View"}:</label>
-              <select id="perWeek" value={settings.perWeek.toString()} onChange={(e) => {setSettings(prev => prev = {...prev, perWeek: e.target.value === "true"})}}>
-                <option value="true">{settings.lng === "nl" ? "Week" : settings.lng === "en" ? "Week" : "Week"}</option>
-                <option value="false">{settings.lng === "nl" ? "Dag" : settings.lng === "en" ? "Day" : "Day"}</option>
-              </select>
-            </div>
-          )}
         </section>
     )
 }

@@ -1,10 +1,18 @@
+/* 
+    //* SETTINGS
+*/
+type Settings = {
+    lng:         string,
+    theme:       string,
+    showChoices: boolean,
+}
 
 /* 
     //* ACCOUNT
 */
 declare type Account = {
     accountName: string,
-    school: string,
+    school:      string,
     accessToken: string
   }
 
@@ -13,24 +21,24 @@ declare type Account = {
     //* ALL DATA
 */
 declare type Announcements = {
-    data: Announcement[],
-    details?: string,
-    endRow?: number,
-    eventId?: number,
-    message?: string,
-    startRow?: number,
-    status?: number,
+    data:       Announcement[],
+    details?:   string,
+    endRow?:    number,
+    eventId?:   number,
+    message?:   string,
+    startRow?:  number,
+    status?:    number,
     totalRows?: number,
 }
 
 declare type Announcement = {
     branchesOfSchools: number[],
-    end: number,
-    id: number,
-    read: boolean,
-    start: number,
-    text: string,
-    title: string,
+    end:               number,
+    id:                number,
+    read:              boolean,
+    start:             number,
+    text:              string,
+    title:             string,
 }
 
 /* 

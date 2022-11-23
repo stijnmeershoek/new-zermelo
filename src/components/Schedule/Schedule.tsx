@@ -2,35 +2,45 @@ import {useState, useEffect, useRef, useLayoutEffect } from 'react';
 import { Day } from './Day';
 import { LinesAndTimes } from './LinesAndTimes';
 import { useAppState } from '../../context';
-import { getCurrentDate } from '../../utils/functions';
+import { getDates } from '../../utils/functions';
 
-export const Schedule = ({currentDay, isDesktop, openChoiceModal, openLessonModal, choiceModalOpen, setAnnouncements}: {currentDay: Date, isDesktop: boolean, openChoiceModal: (lesson: Appointment) => void, openLessonModal: (lesson: Appointment) => void, choiceModalOpen: boolean, setAnnouncements: React.Dispatch<React.SetStateAction<Announcement[]>>}) => {
-    const {user, settings, dates, fetchLiveSchedule, fetchAnnouncements, scheduleLoad, group, offset} = useAppState()
+interface Props {
+  currentDay: Date, 
+  openChoiceModal: (lesson: Appointment) => void, 
+  openLessonModal: (lesson: Appointment) => void, 
+  choiceModalOpen: boolean, 
+}
+
+export const Schedule = ({currentDay, openChoiceModal, openLessonModal, choiceModalOpen}: Props) => {
+    const {user, settings, fetchLiveSchedule, scheduleLoad, datesLoad, offset} = useAppState()
     const [loading, setLoading] = useState(false);
     const [schedule, setSchedule] = useState<Appointment[][]>(scheduleLoad);
+    const [dates, setDates] = useState<Date[]>(datesLoad)
     const scheduleRef = useRef(null);
     const timeIndicatorRef = useRef(null);
     const showChoicesRef = useRef(settings.showChoices);
     const choiceModalOpenRef = useRef(choiceModalOpen);
   
-    // !
-    // !TODO!
-    // !Make it so that it doesn't refetch if offset changes if perWeek is false unless offset gets bigger than 7 days;
-    // !
     useEffect(() => {
       if(choiceModalOpen !== false) return;
 
       if(offset === 0 && showChoicesRef.current === settings.showChoices && choiceModalOpenRef.current === choiceModalOpen) {
-        setSchedule(scheduleLoad);
+        getDates(currentDay, offset).then(res => {
+          setDates(datesLoad);
+          setSchedule(scheduleLoad);
+        });
         return;
       }
+
+      setLoading(true)
       
-      setLoading(true);
       const abortController = new AbortController();
       const signal = abortController.signal;
   
       const fetchData = async () => {
-        fetchLiveSchedule(user, signal).then((res) => {
+        const dates = await getDates(currentDay, offset);
+        fetchLiveSchedule(user, dates, signal).then((res) => {
+          setDates(dates)
           setSchedule(res);
           setLoading(false);
         })
@@ -41,26 +51,7 @@ export const Schedule = ({currentDay, isDesktop, openChoiceModal, openLessonModa
       return () => {
         abortController.abort();
       };
-    }, [offset, settings.perWeek, settings.showChoices, choiceModalOpen])
-  
-    useEffect(() => {
-      if(!group || schedule === scheduleLoad) return;
-      const abortController = new AbortController();
-      const signal = abortController.signal;
-  
-  
-      const fetchData = async () => {
-        fetchAnnouncements(signal).then((res) => {
-          setAnnouncements(res);
-        })
-      }
-  
-      fetchData();
-  
-      return () => {
-        abortController.abort();
-      }
-    }, [group])
+    }, [offset, settings.showChoices, choiceModalOpen])
   
     useLayoutEffect(() => {
       const schedule = scheduleRef.current as unknown as HTMLDivElement;
@@ -100,11 +91,10 @@ export const Schedule = ({currentDay, isDesktop, openChoiceModal, openLessonModa
       return () => {
         clearInterval(interval);
       }
-    }, [loading, settings.perWeek])
+    }, [loading])
   
     return (
-      <section aria-label='schedule container' className={`schedule-container ${settings.perWeek ? "perWeek" : "perDay"}`}>
-      {settings.perWeek ? (<>
+      <section aria-label='schedule container' className='schedule-container'>
       {dates && (
         <section aria-label='dates' className="dates">
             <>
@@ -126,37 +116,22 @@ export const Schedule = ({currentDay, isDesktop, openChoiceModal, openLessonModa
         <div ref={scheduleRef} aria-label='schedule grid' className="schedule-grid-week">
           <LinesAndTimes />
   
-          <Day lng={settings.lng} schedule={schedule} dayNumber={0} isDesktop={isDesktop} perWeek={settings.perWeek} openLessonModal={openLessonModal} openChoiceModal={openChoiceModal}/>
+          <Day schedule={schedule} dayNumber={0} openLessonModal={openLessonModal} openChoiceModal={openChoiceModal}/>
   
-          <Day lng={settings.lng} schedule={schedule} dayNumber={1} isDesktop={isDesktop} perWeek={settings.perWeek} openLessonModal={openLessonModal} openChoiceModal={openChoiceModal}/>
+          <Day schedule={schedule} dayNumber={1} openLessonModal={openLessonModal} openChoiceModal={openChoiceModal}/>
   
-          <Day lng={settings.lng} schedule={schedule} dayNumber={2} isDesktop={isDesktop} perWeek={settings.perWeek} openLessonModal={openLessonModal} openChoiceModal={openChoiceModal}/>
+          <Day schedule={schedule} dayNumber={2} openLessonModal={openLessonModal} openChoiceModal={openChoiceModal}/>
   
-          <Day lng={settings.lng} schedule={schedule} dayNumber={3} isDesktop={isDesktop} perWeek={settings.perWeek} openLessonModal={openLessonModal} openChoiceModal={openChoiceModal}/>
+          <Day schedule={schedule} dayNumber={3} openLessonModal={openLessonModal} openChoiceModal={openChoiceModal}/>
   
-          <Day lng={settings.lng} schedule={schedule} dayNumber={4} isDesktop={isDesktop} perWeek={settings.perWeek} openLessonModal={openLessonModal} openChoiceModal={openChoiceModal}/>
+          <Day schedule={schedule} dayNumber={4} openLessonModal={openLessonModal} openChoiceModal={openChoiceModal}/>
   
           <div ref={timeIndicatorRef} className="time-indicator">
             <div></div>
             <div></div>
           </div>
         </div>
-        </section> : <span className="loader"></span>}</>
-      ) : (
-        <>
-        {!loading ? <div className='scroller'>
-          <div ref={scheduleRef} aria-label='schedule grid' className='schedule-grid-day'>
-            <LinesAndTimes />
-            <Day lng={settings.lng} schedule={schedule} dayNumber={(getCurrentDate(currentDay, settings.perWeek, offset).getDay() || 6) - 1} isDesktop={true} perWeek={settings.perWeek} openLessonModal={openLessonModal} openChoiceModal={openChoiceModal}/>
-  
-            <div ref={timeIndicatorRef} className="time-indicator">
-              <div></div>
-              <div></div>
-            </div>
-          </div>
-        </div> : <span className="loader"></span>}
-        </>
-      )}
+        </section> : <span className="loader"></span>}
     </section>
     )
   }

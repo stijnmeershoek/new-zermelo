@@ -11,21 +11,15 @@ export const getMonday = (fromDate: Date) => {
     return monday;
 }
 
-export const getCurrentDate = (currentDay: Date, perWeek: boolean, offset: number) => {
+export const getCurrentDate = (currentDay: Date, offset: number) => {
     let newDate;
-    if(perWeek) {
-        newDate = getMonday(currentDay);
-        newDate.setDate(newDate.getDate() + offset * 7);
-    } else {
-        newDate = new Date(currentDay);
-        newDate.setDate(newDate.getDate() + offset);
-        newDate = new Date(newDate.getFullYear(), newDate.getMonth(), newDate.getDate());
-    }
+    newDate = getMonday(currentDay);
+    newDate.setDate(newDate.getDate() + offset * 7);
     return newDate;
 }
 
-export const getDates = async (currentDay: Date, perWeek: boolean, offset: number) => {
-    const date = getCurrentDate(currentDay, perWeek, offset)
+export const getDates = async (currentDay: Date, offset: number) => {
+    const date = getCurrentDate(currentDay, offset)
     let week = [];
     date.setDate((date.getDate() - date.getDay() +1));
     for (let i = 0; i < 5; i++) {
@@ -35,4 +29,13 @@ export const getDates = async (currentDay: Date, perWeek: boolean, offset: numbe
         date.setDate(date.getDate() +1);
     }
     return Promise.resolve(week); 
+}
+
+export const sortSchedule = (liveschedule: LiveSchedule, dates: Date[], showChoices: boolean) => {
+    const day0 = liveschedule.data[0].appointments.filter((lesson) =>new Date(lesson.start * 1000).toDateString() === dates[0].toDateString() && new Date(lesson.end * 1000).toDateString() === dates[0].toDateString()).sort((a, b) => (a.start > b.start ? 1 : -1)).filter((lesson) => !showChoices ? lesson.appointmentType !== "choice" : lesson);
+    const day1 = liveschedule.data[0].appointments.filter((lesson) =>new Date(lesson.start * 1000).toDateString() === dates[1].toDateString() && new Date(lesson.end * 1000).toDateString() === dates[1].toDateString()).sort((a, b) => (a.start > b.start ? 1 : -1)).filter((lesson) => !showChoices ? lesson.appointmentType !== "choice" : lesson);
+    const day2 = liveschedule.data[0].appointments.filter((lesson) =>new Date(lesson.start * 1000).toDateString() === dates[2].toDateString() && new Date(lesson.end * 1000).toDateString() === dates[2].toDateString()).sort((a, b) => (a.start > b.start ? 1 : -1)).filter((lesson) => !showChoices ? lesson.appointmentType !== "choice" : lesson);
+    const day3 = liveschedule.data[0].appointments.filter((lesson) =>new Date(lesson.start * 1000).toDateString() === dates[3].toDateString() && new Date(lesson.end * 1000).toDateString() === dates[3].toDateString()).sort((a, b) => (a.start > b.start ? 1 : -1)).filter((lesson) => !showChoices ? lesson.appointmentType !== "choice" : lesson);
+    const day4 = liveschedule.data[0].appointments.filter((lesson) =>new Date(lesson.start * 1000).toDateString() === dates[4].toDateString() && new Date(lesson.end * 1000).toDateString() === dates[4].toDateString()).sort((a, b) => (a.start > b.start ? 1 : -1)).filter((lesson) => !showChoices ? lesson.appointmentType !== "choice" : lesson);
+    return [day0, day1, day2, day3, day4];
 }
