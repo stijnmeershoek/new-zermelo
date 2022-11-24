@@ -26,10 +26,8 @@ export const Schedule = ({offset, currentDay, openChoiceModal, openLessonModal, 
       if(choiceModalOpen !== false) return;
 
       if(offset === 0 && showChoicesRef.current === settings.showChoices && choiceModalOpenRef.current === choiceModalOpen) {
-        getDates(currentDay, offset).then(res => {
-          setDates(datesLoad);
-          setSchedule(scheduleLoad);
-        });
+        setDates(datesLoad);
+        setSchedule(scheduleLoad);
         return;
       }
 

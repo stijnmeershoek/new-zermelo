@@ -196,52 +196,11 @@
 .schedule {
     @apply relative h-full ml-auto flex-grow flex flex-col dsk:max-w-[min(75vw,calc(100vw-325px))] max-w-[100vw] bg-themeWhite dark:bg-themeDark;
 
-    & > [class$="modal"] {
+    & > .lesson-modal, & > .choice-modal {
         @apply will-change-auto pointer-events-none flex opacity-0 absolute top-0 left-0 w-full h-full bg-black bg-opacity-60 z-40 justify-center items-center transition-opacity;
-
+        
         & > .content {
             @apply w-[clamp(17rem,90%,27rem)] overflow-hidden px-5 py-6 rounded-xl flex flex-col gap-2 text-xl;
-
-            &.choice {
-                @apply !bg-themeWhite !text-black dark:!bg-themeDark dark:!text-white max-h-[90%] w-[clamp(25rem,90%,30rem)]; 
-
-                & > button {
-                    @apply dark:bg-[rgb(255,255,255,.15)] bg-[rgb(0,0,0,0.15)] dark:text-white text-black font-bold rounded-lg py-3 mt-4 dark:hover:bg-[rgb(255,255,255,.25)] hover:bg-[rgb(0,0,0,0.25)];
-                
-                    &:disabled {
-                        @apply pointer-events-none select-none touch-none opacity-20;
-                    }
-                }
-
-                & > div {
-                    @apply flex flex-col gap-3 max-h-full overflow-y-auto pr-4;
-
-                    &::-webkit-scrollbar-track {
-                        @apply bg-transparent;
-                    }
-            
-                    &::-webkit-scrollbar {
-                        @apply w-2;
-                
-                    }
-            
-                    &::-webkit-scrollbar-thumb {
-                        @apply dark:bg-[rgb(255,255,255,.15)] bg-[rgb(0,0,0,0.15)] rounded-lg;
-                    }
-
-                    & > div {
-                        @apply flex gap-5;
-
-                        & > input#enroll {
-                            @apply w-7 cursor-pointer;
-                        }
-
-                        & > article {
-                            @apply max-h-fit !aspect-auto pointer-events-none select-none;
-                        }
-                    }
-                }
-            }
 
             &.lesson {
                 @apply text-black dark:text-white;
@@ -287,6 +246,51 @@
         &.open {
             @apply pointer-events-auto opacity-100;
         }
+    }
+
+    & > .choice-modal > .content {
+        @apply !bg-themeWhite !text-black dark:!bg-themeDark dark:!text-white max-h-[90%] w-[clamp(25rem,90%,30rem)]; 
+
+            & > button {
+                @apply dark:bg-[rgb(255,255,255,.15)] bg-[rgb(0,0,0,0.15)] dark:text-white text-black font-bold rounded-lg py-3 mt-4 dark:hover:bg-[rgb(255,255,255,.25)] hover:bg-[rgb(0,0,0,0.25)];
+            
+                &:disabled {
+                    @apply pointer-events-none select-none touch-none opacity-20;
+                }
+            }
+
+            & > div {
+                @apply flex flex-col gap-3 max-h-full overflow-y-auto pr-4;
+
+                &::-webkit-scrollbar-track {
+                    @apply bg-transparent;
+                }
+        
+                &::-webkit-scrollbar {
+                    @apply w-2;
+            
+                }
+        
+                &::-webkit-scrollbar-thumb {
+                    @apply dark:bg-[rgb(255,255,255,.15)] bg-[rgb(0,0,0,0.15)] rounded-lg;
+                }
+
+                & > div {
+                    @apply flex gap-5;
+
+                    & svg.options {
+                        @apply hidden;
+                    }
+
+                    & > input#enroll {
+                        @apply w-7 cursor-pointer;
+                    }
+
+                    & > article {
+                        @apply max-h-fit !aspect-auto pointer-events-none select-none;
+                    }
+                }
+            }
     }
 
     & > .header {
@@ -519,13 +523,15 @@
             &.allowed {
                 @apply !bg-[#77DD77] !bg-opacity-20;
     
-                & > .content-right > svg {
+                & > .content-right > svg.unlocked {
                     @apply bg-[hsl(120,60%,40%,0.15)] dark:bg-[hsl(120,60%,80%,0.15)];
                 }
             }
     
             & > .content-right > svg {
-                @apply absolute bottom-0 mb-2 mr-1 right-1 w-8 text-inherit bg-[#E9E9E9] dark:bg-[#4D4D4D] p-2 rounded-full;
+                &.locked, &.unlocked {
+                    @apply absolute bottom-0 mb-2 mr-1 right-1 w-8 text-inherit bg-[#E9E9E9] dark:bg-[#4D4D4D] p-2 rounded-full;
+                }
             }
         }
     
@@ -558,7 +564,11 @@
             @apply absolute text-base inset-0 text-right dsk:pr-3 pr-[0.375rem] pt-2;
     
             & > svg {
-                @apply dsk:mb-0 dsk:mr-0 mb-2 mr-1 dsk:relative dsk:right-0 absolute right-1 bottom-0 ml-auto w-4 text-theme;
+                @apply mb-2 mr-1 absolute right-1 bottom-0 ml-auto w-4 text-current;
+
+                &:not(.options) {
+                    @apply dsk:mb-0 dsk:mr-0 dsk:relative dsk:right-0 text-theme;
+                }
             }
         }
     

@@ -13,7 +13,7 @@ type Values = {
   accounts: Account[],
   currentAccount: number,
   logOut: () => void,
-  logIn: (newAccount: Account, oldAccounts: Account[]) => Promise<void>,
+  logIn: (newAccount: Account, oldAccounts: Account[]) => void,
   goBack: () => void,
   addNewAccount: () => void,
   switchAccount: (i: number) => void,
@@ -36,7 +36,7 @@ const defaultValues: Values = {
   accounts: [],
   currentAccount: 0,
   logOut: () => {},
-  logIn: async () => {},
+  logIn: () => {},
   goBack: () => {},
   addNewAccount: () => {},
   switchAccount: () => {},
@@ -85,21 +85,20 @@ export function AppProvider({ children }: Props) {
   }, [])
 
   useEffect(() => {
-    if(!loggedIn || !accounts[currentAccount]) return;
+    if(!loggedIn || !accounts[currentAccount].accessToken) return;
     setLoading(true);
     const abortController = new AbortController();
     const signal = abortController.signal;
 
     const fetchData = async () => {
-        let userNew = user;
-        if(!userNew) {
-          userNew = (await fetchUserData(accounts, currentAccount, signal)).data[0].user;
-          if(userNew) {
-            setUser(userNew);
-          } else {
-            setLoggedIn(false);
-            setLoading(false);
-          }
+        let userNew;
+        const res = await fetchUserData(accounts, currentAccount, signal);
+        if(res && res.data[0].code) {
+          userNew = res.data[0].code;
+        } else {
+          setLoggedIn(false);
+          setLoading(false);
+          return;
         }
 
         const dates = await getDates(currentDay, 0);
@@ -109,7 +108,6 @@ export function AppProvider({ children }: Props) {
           fetchAnnouncements(signal),
         ])
 
-        // !TODO || Make sure appointments with conflict get handled properly.
         let schedule: Appointment[][] = responses[0];
         let announcements: Announcement[] = responses[1];
         
@@ -124,6 +122,7 @@ export function AppProvider({ children }: Props) {
           }
         }
 
+        setUser(userNew)
         setDatesLoad(dates);
         setScheduleLoad(schedule);
         setLoading(false)
@@ -164,37 +163,32 @@ export function AppProvider({ children }: Props) {
   }
 
   const logOut = () => {
+    setLoading(true);
     const newAccounts = accounts;
     newAccounts.splice(currentAccount, 1);
     localStorage.setItem(`${localPREFIX}-accounts`, JSON.stringify(newAccounts));
     localStorage.setItem(`${localPREFIX}-current`, JSON.stringify(0));
     setAccounts(newAccounts)
     setCurrentAccount(0);
-    if(newAccounts.length !== 0) return;
-    setLoggedIn(false)
+    if(newAccounts.length < 1) {
+      setLoggedIn(false)
+    };
   }
   
-  const logIn = async (newAccount: Account, oldAccounts: Account[]) => {
+  const logIn = (newAccount: Account, oldAccounts: Account[]) => {
     setLoading(true);
-    const abortController = new AbortController();
     const newAccounts = [...oldAccounts, newAccount];
     const current = newAccounts.indexOf(newAccount);
     localStorage.setItem(`${localPREFIX}-accounts`, JSON.stringify(newAccounts));
     localStorage.setItem(`${localPREFIX}-current`, JSON.stringify(current));
     setAccounts(newAccounts);
     setCurrentAccount(current);
-
-    const res = await fetchUserData(newAccounts, current, abortController.signal);
-    if(res) {
-      const user = res.data[0].user;
-      setUser(user);
-      setAddAccount(false);
-      setLoggedIn(true);
-    }
+    setAddAccount(false);
+    setLoggedIn(true);
   }
 
   async function fetchUserData(accounts: Account[], currentAccount: number, signal: AbortSignal): Promise<Current> {
-    const res = await request('GET', '/api/v3/tokens/~current', accounts[currentAccount].accessToken, accounts[currentAccount].school, signal);
+    const res = await request('GET', '/api/v3/users/~me?fields=code,displayName', accounts[currentAccount].accessToken, accounts[currentAccount].school, signal);
     return res.response;
   }
 
@@ -203,7 +197,7 @@ export function AppProvider({ children }: Props) {
     const date = getCurrentDate(currentDay, offset);
     const week = `${date.getFullYear()}${Math.ceil(Math.floor((Number(date) - Number(new Date(date.getFullYear(), 0, 1))) / (24 * 60 * 60 * 1000)) / 7)}`
 
-    const res = await request("GET", `/api/v3/liveschedule?student=${user}&week=${week}&fields=appointmentInstance,start,end,startTimeSlotName,endTimeSlotName,subjects,groups,locations,teachers,cancelled,changeDescription,schedulerRemark,content,appointmentType`, token, school, signal);
+    const res = await request("GET", `/api/v3/liveschedule?student=${user}&week=${week}&fields=start,end,startTimeSlotName,endTimeSlotName,subjects,groups,locations,teachers,cancelled,changeDescription,schedulerRemark,content,appointmentType`, token, school, signal);
     const livescheduleRes: LiveSchedule = res.response;     
 
     let schedule = sortSchedule(livescheduleRes, dates, settings.showChoices);

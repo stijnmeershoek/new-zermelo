@@ -57,20 +57,8 @@ declare type Current = {
 }
 
 type CurrentUserData = {
-    token:                string;
-    user:                 string;
-    permissions:          { [key: string]: number };
-    created:              number;
-    expires:              number;
-    timeout:              number;
-    comment:              string;
-    human:                boolean;
-    staffing:             number;
-    subjectSelection:     number;
-    schedule:             number;
-    global:               number;
-    effectivePermissions: { [key: string]: number };
-    authcode:             any;
+    code:        string,
+    displayName: string
 }
 
 /* 
