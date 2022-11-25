@@ -9,19 +9,20 @@ interface Props {
 
 export const LessonBlock = ({lesson, style, className = "", onClick}: Props) => {
   const {settings, isDesktop} = useAppState();
-  const classes = `lesson-block ${lesson.appointmentType === "conflict" ? "lesson" : lesson.appointmentType} ${className} ${lesson.cancelled ? "cancelled" : ""} ${lesson.appointmentType === "choice" ? lesson.actions?.some((appointment) => appointment.allowed === true) ? "allowed" : "locked" : ""}`;
+  const classes = `lesson-block ${lesson.appointmentType} ${className} ${lesson.cancelled ? "cancelled" : ""} ${lesson.appointmentType === "choice" ? lesson.actions?.some((appointment) => appointment.allowed === true) ? "allowed" : "locked" : ""}`;
+  const lessonInfo = (lesson.appointmentType === "conflict" && lesson.actions) ? lesson.actions[0].appointment : lesson;
 
   return (
     <article onClick={onClick} className={classes.replace(/\s+/g,' ').trim()} style={style}>
       {lesson.appointmentType !== "choice" ? (<><section className="content-left">
-        <h1 aria-label='subject'>{lesson.appointmentType === "choice" ? `${settings.lng === "nl" ? "keuze" : settings.lng === "en" ? "choice" : "choice"}`:""}{lesson.subjects.length <= 1 ? lesson.subjects[0] : `${lesson.subjects[0]}, ${lesson.subjects[1]}${lesson.subjects.length > 2 ? "+" : ""}`}</h1>
-        {isDesktop && lesson.teachers && lesson.teachers.length > 0 && <div aria-label='teacher'>{lesson.teachers.length <= 1 ? lesson.teachers[0].toUpperCase() : `${lesson.teachers[0].toUpperCase()}, ${lesson.teachers[1].toUpperCase()}${lesson.teachers.length > 2 ? "+" : ""}`}<span className='change'>{lesson.status?.some((status) => status.code === 3011)}</span></div>}
-        {lesson.locations && lesson.locations.length > 0 && <div aria-label='location'>{lesson.locations.length <= 1 ? lesson.locations[0] : `${lesson.locations[0]}, ${lesson.locations[1]}${lesson.locations.length > 2 ? "+" : ""}`}<span className='change'>{lesson.status?.some((status) => status.code === 3012)}</span></div>}
+        <h1 aria-label='subject'>{lessonInfo.appointmentType === "choice" ? `${settings.lng === "nl" ? "keuze" : settings.lng === "en" ? "choice" : "choice"}`:""}{lessonInfo.subjects.length <= 1 ? lessonInfo.subjects[0] : `${lessonInfo.subjects[0]}, ${lessonInfo.subjects[1]}${lessonInfo.subjects.length > 2 ? "+" : ""}`}</h1>
+        {isDesktop && lessonInfo.teachers && lessonInfo.teachers.length > 0 && <div aria-label='teacher'>{lessonInfo.teachers.length <= 1 ? lessonInfo.teachers[0].toUpperCase() : `${lessonInfo.teachers[0].toUpperCase()}, ${lessonInfo.teachers[1].toUpperCase()}${lessonInfo.teachers.length > 2 ? "+" : ""}`}<span className='change'>{lessonInfo.status?.some((status) => status.code === 3011)}</span></div>}
+        {lessonInfo.locations && lessonInfo.locations.length > 0 && <div aria-label='location'>{lessonInfo.locations.length <= 1 ? lessonInfo.locations[0] : `${lessonInfo.locations[0]}, ${lessonInfo.locations[1]}${lessonInfo.locations.length > 2 ? "+" : ""}`}<span className='change'>{lessonInfo.status?.some((status) => status.code === 3012)}</span></div>}
         {isDesktop && <div className='times'><time aria-label='lesson start' dateTime={`${new Date(lesson.start * 1000)}`}>{String(new Date(lesson.start * 1000).getHours())}:{String(new Date(lesson.start * 1000).getMinutes()).padStart(2,'0')}</time>-<time aria-label='lesson end' dateTime={`${new Date(lesson.end * 1000)}`}>{String(new Date(lesson.end * 1000).getHours())}:{String(new Date(lesson.end * 1000).getMinutes()).padStart(2,'0')}</time><span className='change'>{lesson.status?.some((status) => status.code === 3015)}</span></div>}
       </section>
       <section className="content-right">
         {isDesktop && <span>{lesson.startTimeSlotName}</span>}
-        {(lesson.changeDescription || lesson.cancelled || lesson.schedulerRemark || lesson.status?.some((item) => (item.code.toString().startsWith("4") && item.code !== 4009) || item.code.toString().startsWith("3"))) && (
+        {(lessonInfo.changeDescription || lessonInfo.cancelled || lessonInfo.schedulerRemark || lessonInfo.status?.some((item) => (item.code.toString().startsWith("4") && item.code !== 4009) || item.code.toString().startsWith("3"))) && (
           <svg viewBox="0 0 123.996 123.996">
           <g>
             <path d="M9.821,118.048h104.4c7.3,0,12-7.7,8.7-14.2l-52.2-92.5c-3.601-7.199-13.9-7.199-17.5,0l-52.2,92.5

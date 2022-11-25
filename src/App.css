@@ -202,7 +202,7 @@
         & > .content {
             @apply w-[clamp(17rem,90%,27rem)] overflow-hidden px-5 py-6 rounded-xl flex flex-col gap-2 text-xl;
 
-            &.lesson {
+            &.lesson, .conflict {
                 @apply text-black dark:text-white;
             }
 
@@ -586,7 +586,10 @@
     .lesson{
         @apply bg-[#E9E9E9] dark:bg-[#4d4d4d];
     }
-    .lesson, .choice {
+    .conflict {
+        @apply bg-[#afbfcf] dark:bg-[#303c50];
+    }
+    .lesson, .choice, .conflict {
         & > section {
             @apply dark:text-[rgb(255,255,255,0.75)];
         }
