@@ -50,7 +50,15 @@
     @apply py-7 px-4 bg-black border-r-[1px] border-[rgb(255,255,255,0.2)] max-w-min text-white h-full flex flex-col items-center z-50;
 
     & > .logo {
-        @apply max-w-[3.5rem] rounded-[21%];
+        @apply w-[3.5rem] aspect-square;
+
+        & rect {
+            @apply fill-theme;
+        }
+
+        & path {
+            @apply fill-current;
+        }
     }
 
     & > .separator {
@@ -220,7 +228,7 @@
                 }
 
                 & .change {
-                    @apply ml-1 font-extrabold;
+                    @apply ml-1 font-bold;
                 }
             }
 
@@ -512,7 +520,7 @@
                 @apply relative w-full h-full flex justify-center items-center;
         
                 & > h1 {
-                    @apply text-5xl font-extrabold text-[rgb(0,0,0,0.4)] dark:text-[rgb(255,255,255,0.4)];
+                    @apply text-5xl font-bold text-[rgb(0,0,0,0.4)] dark:text-[rgb(255,255,255,0.4)];
                 }
             }
     

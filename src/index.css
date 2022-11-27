@@ -1,3 +1,27 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@font-face {
+    font-display: swap;
+    font-family: HelveticaNowDisplay;
+    font-style: normal;
+    font-weight: 400;
+    src: url(/fonts/HelveticaNow/HelveticaNowDisplay-Regular.woff2) format("woff2"),local("HelveticaNowDisplay")
+}
+
+@font-face {
+    font-display: swap;
+    font-family: HelveticaNowDisplay;
+    font-style: normal;
+    font-weight: 500;
+    src: url(/fonts/HelveticaNow/HelveticaNowDisplay-Medium.woff2) format("woff2"),local("HelveticaNowDisplay")
+}
+
+@font-face {
+    font-display: swap;
+    font-family: HelveticaNowDisplay;
+    font-style: normal;
+    font-weight: 700;
+    src: url(/fonts/HelveticaNow/HelveticaNowDisplay-Bold.woff2) format("woff2"),local("HelveticaNowDisplay")
+}

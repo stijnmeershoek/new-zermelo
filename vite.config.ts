@@ -1,7 +1,6 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import { VitePWA } from 'vite-plugin-pwa';
-import { VitePluginFonts } from 'vite-plugin-fonts';
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -10,23 +9,10 @@ export default defineConfig({
     target: 'esnext'
   },
   plugins: [
-    react(), 
-    VitePluginFonts({
-      custom: {
-        families: [{
-          name: 'HelveticaNowDisplay',
-          local: 'HelveticaNowDisplay',
-          src: './src/assets/fonts/HelveticaNow/*.woff2',
-        }],
-        display: 'swap',
-        preload: true,
-        prefetch: false,
-        injectTo: 'head',
-      },
-    }),
+    react(),
     VitePWA({
       registerType: 'autoUpdate',
-      includeAssets: ['favicon.ico', 'apple-touch-icon.png', 'masked-icon.svg'],
+      includeAssets: ['favicon-16x16.png', 'favicon-32x32.png', 'apple-touch-icon.png', 'mstile-150x150.png', 'safari-pinned-tab.svg', '/fonts/HelveticaNow/*.woff2'],
       manifest: {
         start_url: "/new-zermelo/",
         name: 'Zermelo',
@@ -46,7 +32,7 @@ export default defineConfig({
               purpose: "maskable",
           }
         ]
-      }
+      },
     }),
   ]
 })
