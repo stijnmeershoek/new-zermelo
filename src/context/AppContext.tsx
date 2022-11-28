@@ -114,7 +114,7 @@ export function AppProvider({ children }: Props) {
         if(!schedule.every((a) => a.length < 1)) {
           const newGroup = [...new Set(schedule.flat().map((lesson) => lesson.groups ? lesson.groups[0] : "").filter((group) => group?.includes(".")))].map((item) => item.split("."))[0].filter(item => possibleGroups.some(group => item == group))[0];
           if(newGroup !== group && newGroup !== "") {
-            const filteredAnnouncements = announcements.filter(announcement => (possibleGroups.some(element => announcement.title.toLowerCase().includes(element)) && announcement.title.toLowerCase().includes(group.slice(0,2))) || !possibleGroups.some(element => announcement.title.toLowerCase().includes(element)) || !group);
+            const filteredAnnouncements = announcements.filter(announcement => (possibleGroups.some(element => announcement.title.toLowerCase().includes(element)) && announcement.title.toLowerCase().includes(newGroup.slice(0,2))) || !possibleGroups.some(element => announcement.title.toLowerCase().includes(element)) || !newGroup);
             setGroup(newGroup)
             setAnnouncementsLoad(filteredAnnouncements);
           } else {
