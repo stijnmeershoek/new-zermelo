@@ -1,0 +1,242 @@
+.schedule {
+    @apply relative h-full ml-auto flex-grow flex flex-col bg-themeWhite dark:bg-themeDark;
+
+    & > .lesson-modal, & > .choice-modal {
+        @apply will-change-auto pointer-events-none cursor-pointer flex opacity-0 absolute top-0 left-0 w-full h-full bg-black bg-opacity-60 z-40 justify-center items-center transition-opacity;
+        
+        & > .content {
+            @apply w-[clamp(17rem,90%,27rem)] cursor-default overflow-hidden px-5 py-6 rounded-xl flex flex-col gap-2 text-xl;
+
+            &.lesson, .conflict {
+                @apply text-black dark:text-white;
+            }
+
+            & > span {
+                @apply font-bold underline;
+            }
+
+            & > div:not(.remarks) {
+                & span:nth-of-type(1) {
+                    @apply text-lg;
+                }
+
+                & span:nth-of-type(2) {
+                    @apply font-bold;
+                }
+
+                & .change {
+                    @apply ml-1 font-bold;
+                }
+            }
+
+            .remarks {
+                @apply mt-3;
+
+                & span:not(.title) {
+                    @apply whitespace-normal;
+                    overflow-wrap: anywhere;
+                }
+
+                & > span.title {
+                    @apply block text-xl font-bold underline;
+                }
+            }
+
+            .times {
+                @apply text-lg
+            }
+        }
+
+        &.open {
+            @apply pointer-events-auto opacity-100;
+        }
+    }
+
+    & > .choice-modal > .content {
+        @apply !bg-themeWhite !text-black dark:!bg-themeDark dark:!text-white max-h-[90%] w-[clamp(25rem,90%,30rem)]; 
+
+            & > button {
+                @apply dark:bg-[rgb(255,255,255,.15)] bg-[rgb(0,0,0,0.15)] dark:text-white text-black font-bold rounded-lg py-3 mt-4 dark:hover:bg-[rgb(255,255,255,.25)] hover:bg-[rgb(0,0,0,0.25)];
+            
+                &:disabled {
+                    @apply pointer-events-none select-none touch-none opacity-20;
+                }
+            }
+
+            & > div {
+                @apply flex flex-col gap-3 max-h-full overflow-y-auto pr-4;
+
+                &::-webkit-scrollbar-track {
+                    @apply bg-transparent;
+                }
+        
+                &::-webkit-scrollbar {
+                    @apply w-2;
+            
+                }
+        
+                &::-webkit-scrollbar-thumb {
+                    @apply dark:bg-[rgb(255,255,255,.15)] bg-[rgb(0,0,0,0.15)] rounded-lg;
+                }
+
+                & > div {
+                    @apply flex gap-5;
+
+                    & svg.options {
+                        @apply hidden;
+                    }
+
+                    & > input#enroll {
+                        @apply w-7 cursor-pointer;
+                    }
+
+                    & > article {
+                        @apply max-h-fit !aspect-auto pointer-events-none select-none;
+                    }
+                }
+            }
+    }
+
+    & > .schedule-container {
+        @apply overflow-hidden mx-auto w-[min(1110px,100%)] flex flex-col flex-grow;
+
+        & > .dates {
+            @apply relative flex w-full justify-evenly dsk:px-12 dsk:w-[calc(100%-8px)] pl-5 pr-4 bg-transparent;
+    
+            &::after {
+                content: "";
+                @apply absolute z-10 w-full -bottom-3 h-3 bg-gradient-to-b from-themeWhite dark:from-themeDark;
+            }
+    
+            & > .space {
+                @apply pointer-events-none select-none touch-none text-transparent dsk:pl-[0.375rem] dsk:pr-5 flex-grow-0 pr-2;
+            }
+    
+            & > div {
+                @apply flex flex-grow justify-evenly z-10 bg-transparent;
+    
+                & .date {
+                    @apply w-full flex flex-col justify-center items-center row-start-1 pb-3 pt-[0.1875rem] -z-10 text-[rgb(0,0,0,0.3)] dark:text-[rgb(255,255,255,.6)];
+            
+                    &.current {
+                        @apply !text-black dark:!text-white;
+                    }
+    
+                    & > span:first-child {
+                        @apply font-bold dsk:text-6xl dsk:mb-2 text-[clamp(2.25rem,8vw,2.5rem)] -mb-2;
+                    }
+    
+                    & > span:not(:first-child) {
+                        @apply text-[clamp(0.9rem,4vw,1.1rem)] font-medium lowercase;
+                    }
+            
+                    & > div:last-child {
+                        @apply h-5 bg-current w-[2px] dsk:mt-4 mt-2;
+                    }
+                }
+            }
+        }
+    
+        & .scroller {
+            @apply flex-grow overflow-y-auto overflow-x-hidden dsk:px-12 pl-5 pr-2 pb-5;
+    
+            &::-webkit-scrollbar-track {
+                @apply bg-themeWhite dark:bg-themeDark;
+            }
+    
+            &::-webkit-scrollbar {
+                @apply w-2;
+        
+            }
+    
+            &::-webkit-scrollbar-thumb {
+                @apply bg-[rgb(0,0,0,0.0)];
+            }
+    
+        }
+    
+        & .schedule-grid-week, & .schedule-grid-day {
+            @apply relative h-fit flex-shrink-0 overflow-x-visible w-auto grid grid-rows-[auto,repeat(110,minmax(0,1fr))];
+        
+            & .time-indicator {
+                @apply absolute z-10 top-[0px] flex items-center h-[1px] overflow-visible left-1/2 -translate-x-1/2 w-[calc(100%+15px)] col-[span_5/7];
+        
+                & > div {
+                    @apply bg-[rgb(0,0,0,0.5)] dark:bg-[rgb(255,255,255,0.5)] mt-1;
+                }
+    
+                & > div:first-child {
+                    @apply w-[2px] h-[25px];
+                }
+    
+                & > div:nth-child(2) {
+                    @apply h-[2px] w-full;
+                }
+            }
+            
+            & .line {
+                @apply absolute flex items-center h-full left-1/2 -translate-x-1/2 dsk:w-[calc(100%+16px)] w-full col-[span_5/7];
+        
+                & > hr {
+                    @apply border-[rgb(0,0,0,0.25)] dark:border-[rgb(255,255,255,0.25)] border-t w-full mt-[1px];
+                }
+            }
+        
+            & > .time {
+                @apply dsk:pl-[0.375rem] dsk:pr-5 pr-2 flex items-center text-black dark:text-white z-10;
+            }
+        
+            & > .time:not(:first-child) {
+                @apply col-start-1 text-[clamp(0.75rem,3.5vw,1rem)];
+            }
+        
+            & > .time:nth-of-type(2) {
+                @apply row-[2/4];
+            }
+        
+            & .line:nth-of-type(1) {
+                @apply row-[2/4];
+            }
+        
+            & .line:nth-of-type(2), & > .time:nth-of-type(3) {
+                @apply row-[14/16];
+            }
+            & .line:nth-of-type(3), & > .time:nth-of-type(4) {
+                @apply row-[26/28];
+            }
+            & .line:nth-of-type(4), & > .time:nth-of-type(5) {
+                @apply row-[38/40];
+            }
+            & .line:nth-of-type(5), & > .time:nth-of-type(6) {
+                @apply row-[50/52];
+            }
+            & .line:nth-of-type(6), & > .time:nth-of-type(7) {
+                @apply row-[62/64];
+            }
+            & .line:nth-of-type(7), & > .time:nth-of-type(8) {
+                @apply row-[74/76];
+            }
+            & .line:nth-of-type(8), & > .time:nth-of-type(9) {
+                @apply row-[86/88];
+            }
+            & .line:nth-of-type(9), & > .time:nth-of-type(10)  {
+                @apply row-[98/100];
+            }
+            & .line:nth-of-type(10), & > .time:nth-of-type(11)  {
+                @apply row-[110/112];
+            }
+        }
+    
+        & .schedule-grid-week {
+            @apply grid-cols-[auto,repeat(5,minmax(0,1fr))];
+        }
+    
+        & .schedule-grid-day {
+            @apply grid-cols-[auto,minmax(0,1fr)];
+
+            & > .lesson-block {
+                @apply aspect-[48/9];
+            }
+        }
+    }
+}

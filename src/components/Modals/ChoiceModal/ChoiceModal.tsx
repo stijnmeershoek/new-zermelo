@@ -1,4 +1,4 @@
-import { FormEvent, useState } from "react";
+import { useState } from "preact/hooks";
 import { request } from "../../../api/requests";
 import { useAppState } from "../../../context";
 import { LessonBlock } from "../../LessonBlock";
@@ -13,7 +13,7 @@ export const ChoiceModal = ({closeChoiceModal, choiceModalOpen, selectedLesson}:
     const {accounts, currentAccount, settings} = useAppState();
     const {school, accessToken} = accounts[currentAccount];
   
-    const postChoice = (e: FormEvent) => {
+    const postChoice = (e: Event) => {
       e.preventDefault();
       if(!currentValue) return;
       const abortController = new AbortController();

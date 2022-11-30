@@ -1,4 +1,5 @@
 import { useAppState } from "../../context"
+import './Announcements.css'
 
 interface Props {
   announcements: Announcement[]

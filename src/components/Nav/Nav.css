@@ -1,0 +1,61 @@
+.navbar {
+    @apply py-7 px-4 bg-black border-r-[1px] border-[rgb(255,255,255,0.2)] max-w-min text-white h-full flex flex-col items-center z-50;
+
+    & > .logo {
+        @apply w-[3.5rem] aspect-square;
+
+        & rect {
+            @apply fill-theme;
+        }
+
+        & path {
+            @apply fill-current;
+        }
+    }
+
+    & > .separator {
+        @apply w-4/5 border-t-2 border-[rgb(255,255,255,0.2)] rounded-md mt-2 mb-4; 
+    }
+
+    & > .buttons {
+        @apply mt-2;
+    }
+
+    & .accounts, & .buttons {    
+        @apply w-full flex flex-col gap-2;
+
+        & button {
+            @apply relative bg-themeDark text-[rgb(255,255,255,0.9)] w-full aspect-square rounded-[50%] capitalize text-2xl font-medium outline-none focus-visible:text-theme hover:text-theme hover:rounded-[21%] focus-visible:rounded-[21%] transition-all duration-100 ease-linear;
+            
+            &.add-account {
+                @apply mb-2;
+    
+                & > svg {
+                    @apply w-6;
+                }
+            }
+            
+            &:hover, &:focus-visible {
+                & > span {
+                    @apply scale-100
+                }
+            }
+    
+            & > svg {
+                @apply w-[1.75rem] m-auto;
+            }
+    
+            & > span {
+                @apply absolute w-auto p-2 ml-2 top-1/2 -translate-y-1/2 min-w-max left-14 rounded-md shadow-md text-white bg-themeDark text-xs font-bold transition-all duration-100 scale-0 origin-left;
+            }
+        }
+    }
+
+    & > button {
+        @apply mt-auto w-1/2 mx-auto text-[rgb(255,255,255,0.5)] hover:text-theme outline-none focus-visible:text-theme transition-colors;
+    }
+
+    & button.active {
+        @apply text-theme;
+    }
+}

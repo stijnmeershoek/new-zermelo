@@ -1,4 +1,5 @@
-import { createContext, useContext, useState, useEffect, ReactNode } from "react";
+import { useContext, useState, useEffect, StateUpdater } from "preact/hooks";
+import { ComponentChildren, createContext } from "preact";
 import { request } from '../api/requests';
 import { Login } from "../pages/login";
 import { getCurrentDate, getDates, sortSchedule } from "../utils/functions";
@@ -7,7 +8,7 @@ import {useMediaQuery} from '../hooks';
 type Values = {
   localPREFIX: string,
   settings: Settings,
-  setSettings: React.Dispatch<React.SetStateAction<Settings>>,
+  setSettings: StateUpdater<Settings>,
   isDesktop: boolean,
   user: string,
   accounts: Account[],
@@ -53,7 +54,7 @@ export function useAppState() {
 }
 
 interface Props {
-  children: ReactNode[] | ReactNode,
+  children: ComponentChildren,
 }
 
 export function AppProvider({ children }: Props) {
@@ -207,7 +208,7 @@ export function AppProvider({ children }: Props) {
 
   async function fetchAnnouncements(signal: AbortSignal): Promise<Announcement[]> {
     const school = accounts[currentAccount].school, token = accounts[currentAccount].accessToken
-    const res = await request("GET", '/api/v3/announcements?user=~me&current=true', token, school, signal);
+    const res = await request("GET", '/api/v3/announcements?user=~me&current=true&fields=text,title,id,read', token, school, signal);
     const announcementsRes: Announcements = res.response;
 
     return Promise.resolve(announcementsRes.data);

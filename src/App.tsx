@@ -1,7 +1,6 @@
-import './App.css'
 import { useAppState } from './context';
 import { useEventListener } from './hooks';
-import { KeyboardEvent, useState } from 'react';
+import { useState } from 'preact/hooks';
 import { Schedule } from './components/Schedule';
 import { ChoiceModal } from './components/Modals/ChoiceModal';
 import { LessonModal } from './components/Modals/LessonModal';

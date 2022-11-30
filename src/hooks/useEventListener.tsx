@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef } from "preact/hooks";
 
 export const useEventListener = (eventName: string, handler: Function, element = window) => {
     const savedHandler = useRef<any>(null);

@@ -1,15 +1,7 @@
-import React from 'react'
-import {createRoot} from 'react-dom/client'
+if(import.meta.env.DEV) import('preact/devtools')
+import { render } from 'preact';
 import App from './App'
 import { AppProvider } from './context'
 import './index.css'
 
-const root = document.getElementById('root');
-
-createRoot(root!).render(
-    <React.StrictMode>
-      <AppProvider>
-        <App/>
-      </AppProvider>
-    </React.StrictMode>
-);
+render((<AppProvider children={<App />} />), document.body)

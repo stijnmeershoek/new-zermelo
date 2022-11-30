@@ -1,11 +1,13 @@
+import { StateUpdater } from "preact/hooks";
 import { useAppState } from "../../context";
+import './Nav.css'
 
 interface Props {
-  setMenuOpen: React.Dispatch<React.SetStateAction<boolean>>, 
+  setMenuOpen: StateUpdater<boolean>, 
   showSettings: boolean, 
   showAnnouncements: boolean, 
-  setShowSettings: React.Dispatch<React.SetStateAction<boolean>>, 
-  setShowAnnouncements: React.Dispatch<React.SetStateAction<boolean>>
+  setShowSettings: StateUpdater<boolean>, 
+  setShowAnnouncements: StateUpdater<boolean>
 }
 
 export const Nav = ({setMenuOpen, showSettings, showAnnouncements, setShowSettings, setShowAnnouncements}: Props) => {
@@ -14,6 +16,7 @@ export const Nav = ({setMenuOpen, showSettings, showAnnouncements, setShowSettin
     return (
         <nav className="navbar" aria-label='primary'>
           <svg className="logo" viewBox="0 0 512 512">
+            <title>Logo</title>
             <g>
               <rect width="512" height="512" rx="100" ry="100" />
               <path d="M374.75,217.71c21.32-33.81,28.64-70.97,29.03-110.31h9.99c0,6.54,.42,13.31-.07,20.01-1.98,26.96-7.88,52.96-19.48,77.55-.98,2.07-.74,5.17-.06,7.51,9.42,32.52,8.61,64.75-2.16,96.83-1.28,3.8-3.08,4.96-7.09,4.94-38.32-.18-76.65-.22-114.97,.03-5.18,.03-8.14-1.11-8.93-6.43-.26-1.77-1.03-3.47-1.69-5.63,1.93-.77,3.73-1.53,5.56-2.23,30.95-11.75,59.96-26.93,83.58-50.55,9.59-9.59,17.46-20.9,26.31-31.73Z"/>
@@ -24,10 +27,10 @@ export const Nav = ({setMenuOpen, showSettings, showAnnouncements, setShowSettin
               <path d="M167.44,290.48c-28.59,33.73-38.59,73.33-38.85,116.54h-8.58c.03-35.29,6.74-68.83,24.65-99.76,19.52-33.71,55.88-63.25,102.72-79.87,.78,2.65,1.54,5.27,2.42,8.26-31.45,12.38-59.88,28.85-82.36,54.82Z"/>
             </g>
           </svg>
-          <div className="separator"></div>
+          <hr className="separator"></hr>
           <ul className="accounts">
             {accounts && accounts.map((acc, i) => {
-              return <li key={i} ><button className={`${(!showSettings && !showAnnouncements) && currentAccount === i ? "active" : ""}`} aria-label='switch to account' onClick={() => {setMenuOpen(false); switchAccount(i); setShowSettings(false); setShowAnnouncements(false)}}>
+              return <li key={i} ><button className={`${(!showSettings && !showAnnouncements) && currentAccount === i ? "active" : ""}`} aria-label={`switch to ${acc.accountName}`} onClick={() => {setMenuOpen(false); switchAccount(i); setShowSettings(false); setShowAnnouncements(false)}}>
                 {acc.accountName.substring(0,2)}
 
                 <span>{acc.accountName}</span>

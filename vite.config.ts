@@ -1,5 +1,5 @@
 import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react'
+import preact from '@preact/preset-vite'
 import { VitePWA } from 'vite-plugin-pwa';
 
 // https://vitejs.dev/config/
@@ -9,7 +9,7 @@ export default defineConfig({
     target: 'esnext'
   },
   plugins: [
-    react(),
+    preact(),
     VitePWA({
       registerType: 'autoUpdate',
       includeAssets: ['favicon-16x16.png', 'favicon-32x32.png', 'apple-touch-icon.png', 'mstile-150x150.png', 'safari-pinned-tab.svg', '/fonts/HelveticaNow/*.woff2'],

@@ -1,0 +1,75 @@
+.announcements {
+    @apply mb-5 w-[max(25vw,325px)] overflow-y-auto overflow-x-hidden bg-themeWhite dark:bg-themeDark z-20;
+
+    &:not(.mobile) {
+        @apply py-7 px-4 bg-black text-white h-full flex flex-col;
+
+        & .announcement {
+            @apply !bg-themeDark text-white;
+
+            & h1 {
+                @apply text-white text-opacity-90;
+            }
+
+            & > div:last-of-type {
+                @apply text-neutral-300;
+            }
+        }
+    }
+
+    &.mobile {
+        @apply absolute w-screen ml-[5.5rem] z-30 pt-20 text-black dark:text-white h-full px-5;
+    }
+
+    & .announcement {
+        @apply flex flex-col justify-between px-5 py-4 bg-[#E9E9E9] dark:bg-[#4d4d4d] text-black dark:text-white rounded-xl text-lg mb-3 cursor-pointer;
+
+        & > div:last-of-type {
+            @apply max-h-0 text-neutral-700 dark:text-neutral-300 leading-5 text-[0.9rem] pt-2 overflow-hidden motion-safe:transition-all motion-safe:duration-500;
+        }
+
+        &:hover > div:last-of-type, &:focus-visible > div:last-of-type, &:focus-within > div:last-of-type {
+            @apply max-h-[200px];
+        }
+
+        &:hover .plusminus span:nth-child(2) {
+            @apply -rotate-90 delay-[0ms];
+        }
+
+        & > header {
+            @apply flex items-center justify-between;
+
+            & > h1 {
+                @apply font-medium tracking-wider text-opacity-90 dark:text-white text-black;
+            }
+
+            & > div {
+                @apply pl-5 flex items-center;
+
+                .plusminus {
+                    @apply block relative w-5 aspect-square ml-2;
+
+                    & span:nth-child(1), & span:nth-child(2) {
+                        @apply block absolute rounded-sm bg-current transition-all delay-300;
+                    }
+
+                    & span:nth-child(1) {
+                        @apply top-1/2 -translate-y-1/2 h-[3px] w-4/5 m-[0_10%];
+                    }
+
+                    & span:nth-child(2) {
+                        @apply left-1/2 -translate-x-1/2 w-[3px] h-4/5 m-[10%_0];
+                    }
+                  }
+            }
+        }
+    }
+
+    & > h1 {
+        @apply font-bold text-3xl dsk:mt-0 mt-4 mb-5 ml-1;
+    }
+
+    & > h2 {
+        @apply ml-1;
+    }
+}

@@ -1,0 +1,16 @@
+.settings {
+    @apply absolute w-screen h-full ml-[5.5rem] z-30 dsk:pt-7 pt-20 dsk:!bg-black dsk:!text-white bg-themeWhite dark:bg-themeDark text-black dark:text-white px-5 dsk:w-1/4 dsk:min-w-[325px];
+
+    & > h1 {
+        @apply font-bold text-3xl mb-5 dsk:mt-0 mt-4;
+    }
+
+    & > div {
+        @apply mt-2 text-lg;
+
+        & select {
+            @apply rounded-lg bg-themeWhite dark:bg-themeDark dsk:!bg-black outline-none ml-3 font-bold px-1;
+        }
+    }
+
+}

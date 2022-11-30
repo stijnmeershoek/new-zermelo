@@ -10,7 +10,7 @@ export const LessonModal = ({closeLessonModal, lessonModalOpen, selectedLesson}:
   const {settings} = useAppState();
 
     return (
-      <dialog onClick={closeLessonModal} aria-modal="true" open={lessonModalOpen} className={`${(lessonModalOpen && selectedLesson) ? "open " : ""}lesson-modal`} aria-label='lesson info'>
+      <dialog onClick={(e) => (e.target as HTMLElement).classList.contains('lesson-modal') && closeLessonModal()} aria-modal="true" open={lessonModalOpen} className={`${(lessonModalOpen && selectedLesson) ? "open " : ""}lesson-modal`} aria-label='lesson info'>
         <div className={`${selectedLesson ? (selectedLesson.appointmentType + " ") : ""}${selectedLesson?.cancelled ? "cancelled " : ""}content`}>
           {selectedLesson && (
             <>

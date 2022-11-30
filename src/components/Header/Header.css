@@ -1,0 +1,57 @@
+.header {
+    @apply z-40 py-5 dsk:px-12 px-5 flex items-center font-bold text-[clamp(1.1rem,4.75vw,1.25rem)] dsk:text-3xl dsk:mb-12 mb-3 text-white dsk:text-black dsk:dark:text-white dsk:bg-transparent bg-black border-b-[1px] border-b-themeWhite border-opacity-20;
+
+    & > .menu-hamburger {
+        @apply text-white h-full pr-5;
+
+        & > svg {
+            @apply h-7 aspect-square;
+        }
+    }
+
+    & > section {
+        @apply relative flex items-center flex-shrink; 
+
+        & > time:first-of-type {
+            @apply relative flex items-center leading-none font-bold gap-1;
+
+            @media (max-width: 375px) {
+                & > span:nth-of-type(2) {
+                    @apply hidden;
+                }
+            }
+        }
+
+        & .line {
+            @apply self-stretch dsk:py-6 py-4 border rounded-full border-current rotate-[25deg] dsk:mx-7 mx-5 z-10;
+        }
+
+        & h1 {
+            @apply mr-5 font-bold;
+        }
+    }
+
+    & button.next {
+        @apply dsk:ml-8 ml-4;
+
+       & > svg {
+            @apply -scale-x-100;
+        }
+    }
+
+    & > .right {
+        @apply ml-auto flex items-center;
+
+        & > div {
+            @apply h-full flex items-center;
+        }
+    }
+
+    & button.next, button.prev {
+        @apply aspect-square hover:text-theme focus-visible:text-theme outline-none transition-colors;
+
+        & > svg {
+            @apply dsk:h-7 h-6;
+        }
+    }
+}

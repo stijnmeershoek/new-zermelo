@@ -1,0 +1,39 @@
+.login {
+    @apply w-full h-full flex flex-col justify-center items-center text-black dark:text-white;
+
+    & h1 {
+        @apply font-bold text-4xl;
+    }
+
+    & > button.back {
+        @apply absolute top-5 left-5 aspect-square hover:text-theme transition-colors;
+
+        & > svg {
+            @apply dsk:h-7 h-6;
+        }
+    }
+
+    & > form {
+        @apply relative w-[clamp(280px,25vw,24rem)] flex flex-col gap-1;
+
+        & > label {
+            @apply mt-4;
+        }
+
+        & input {
+            @apply w-full text-xl text-themeDark dark:text-themeWhite dark:bg-[#0a0a0a] outline-none shadow-md rounded-md px-2 py-[2px];
+
+            &.err {
+                @apply border-theme;
+            }
+        }
+
+        & span.err {
+            @apply absolute bottom-0 translate-y-full pt-5 whitespace-pre-wrap text-theme font-bold;
+        }
+    
+        & button {
+            @apply bg-theme text-white px-3 py-2 rounded-lg mt-4 font-bold shadow-lg;
+        }
+    }
+}

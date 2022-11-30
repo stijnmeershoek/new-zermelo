@@ -1,8 +1,9 @@
-import {useState, useEffect, useRef, useLayoutEffect } from 'react';
+import { useState, useEffect, useRef, useLayoutEffect } from 'preact/hooks';
 import { Day } from './Day';
 import { LinesAndTimes } from './LinesAndTimes';
 import { useAppState } from '../../context';
 import { getDates } from '../../utils/functions';
+import './Schedule.css'
 
 interface Props {
   offset: number,
@@ -100,11 +101,11 @@ export const Schedule = ({offset, currentDay, openChoiceModal, openLessonModal, 
                 <div className="space">10:00</div>
                 <div>
                     {dates && dates.map((date, i) => (
-                        <div key={i} className={`date ${currentDay.toDateString() === date.toDateString() ? "current" : ""}`}>
+                        <time dateTime={`${date}`} key={i} className={`date ${currentDay.toDateString() === date.toDateString() ? "current" : ""}`}>
                             <span>{date.getDate().toString().padStart(2, '0')}</span>
                             <span>{date.toLocaleDateString((settings.lng !== "en" && settings.lng !== "nl") ? "default" : settings.lng, {weekday: 'short'})}</span>
                             <div></div>
-                        </div>
+                        </time>
                     ))}
                 </div>
             </>

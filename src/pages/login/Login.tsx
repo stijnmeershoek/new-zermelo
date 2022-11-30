@@ -1,6 +1,7 @@
-import { useState } from "react"
+import { useState } from "preact/hooks"
 import { getAccessToken } from "../../api/requests";
 import { useAppState } from "../../context";
+import './Login.css'
 
 interface Props {
   addAccount: boolean
@@ -42,11 +43,11 @@ export function Login({addAccount}: Props) {
       <form onSubmit={(e) => {e.preventDefault(); onSubmit(school, code, name)}}>
         <h1>{addAccount ? settings.lng === "nl" ? "Account Toevoegen" : settings.lng === "en" ? "Add Account" : "Add Account" : settings.lng === "nl" ? "Login" : settings.lng === "en" ? "Login" : "Login"}</h1>
         <label htmlFor="name">{settings.lng === "nl" ? "Account Naam" : settings.lng === "en" ? "Account Name" : "Account Name"}</label>
-        <input id="name" value={name} className={`${err ? "err" : ""}`} onChange={(e) => setName(e.target.value)} type="text" required/>
+        <input id="name" value={name} className={`${err ? "err" : ""}`} onChange={({target}) => setName((target as HTMLInputElement).value)} type="text" required/>
         <label htmlFor="school">School</label>
-        <input id="school" value={school} className={`${err ? "err" : ""}`} onChange={(e) => setSchool(e.target.value)} type="text" required/>
+        <input id="school" value={school} className={`${err ? "err" : ""}`} onChange={({target}) => setSchool((target as HTMLInputElement).value)} type="text" required/>
         <label htmlFor="code">Code</label>
-        <input autoComplete="off" id="code" value={code} className={`${err ? "err" : ""}`} onChange={(e) => setCode(e.target.value.replace(/\s+/g, ''))} type="text" required/>
+        <input autoComplete="off" id="code" value={code} className={`${err ? "err" : ""}`} onChange={({target}) => setCode((target as HTMLInputElement).value.replace(/\s+/g, ''))} type="text" required/>
         <button aria-label="login" type="submit">{addAccount ? settings.lng === "nl" ? "Account Toevoegen" : settings.lng === "en" ? "Add Account" : "Add Account" : settings.lng === "nl" ? "Login" : settings.lng === "en" ? "Login" : "Login"}</button>
         {err !== "" && <span className="err">{err}</span>}
       </form>

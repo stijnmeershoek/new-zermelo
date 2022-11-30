@@ -1,8 +1,10 @@
+import { JSXInternal } from "preact/src/jsx";
 import { useAppState } from "../../context";
+import './LessonBlock.css';
 
 interface Props {
     lesson: Appointment
-    style?: React.CSSProperties,
+    style?: JSXInternal.CSSProperties,
     className?: string,
     onClick: () => void,
 }
