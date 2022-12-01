@@ -18,5 +18,8 @@ module.exports = {
       }
     },
   },
+  experimental: {
+    optimizeUniversalDefaults: true
+  },
   plugins: [],
 };

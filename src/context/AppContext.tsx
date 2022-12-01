@@ -1,8 +1,8 @@
 import { useContext, useState, useEffect, StateUpdater } from "preact/hooks";
 import { ComponentChildren, createContext } from "preact";
 import { request } from '../api/requests';
-import { Login } from "../pages/login";
-import { getCurrentDate, getDates, sortSchedule } from "../utils/functions";
+import { Login } from "../pages/Login";
+import { getCurrentDate, getDates, getScheduleHours, getWeekNumber, sortSchedule } from "../utils/functions";
 import {useMediaQuery} from '../hooks';
 
 type Values = {
@@ -18,6 +18,7 @@ type Values = {
   goBack: () => void,
   addNewAccount: () => void,
   switchAccount: (i: number) => void,
+  scheduleHours: number[],
   datesLoad: Date[],
   scheduleLoad: Appointment[][],
   announcementsLoad: Announcement[],
@@ -41,6 +42,7 @@ const defaultValues: Values = {
   goBack: () => {},
   addNewAccount: () => {},
   switchAccount: () => {},
+  scheduleHours: [],
   datesLoad: [],
   scheduleLoad: [],
   announcementsLoad: [],
@@ -59,8 +61,9 @@ interface Props {
 
 export function AppProvider({ children }: Props) {
   const localPREFIX = "zermelo"
+  const scheduleLowMin = 8;
+  const scheduleHighMin = 16;
   const currentDay = new Date(); 
-  const possibleGroups = ["1a","1b","1c","1d","1s","1k","1l","1m","1f","1g","2a","2b","2c","2d","2s","2k","2l","2m","2f","2g","3h","3v","4v","4h","5v","5h","6v"];
   const isDesktop = useMediaQuery('(min-width: 1110px)');
 
   const [loading, setLoading] = useState(true);
@@ -72,6 +75,7 @@ export function AppProvider({ children }: Props) {
   const [settings, setSettings] = useState<Settings>(JSON.parse(localStorage.getItem(`${localPREFIX}-settings`) || '{"lng": "nl", "theme": "light", "showChoices": false, "perWeek": true}'));
 
   const [group, setGroup] = useState("");
+  const [scheduleHours, setScheduleHours] = useState<number[]>([])
   const [scheduleLoad, setScheduleLoad] = useState<Appointment[][]>([])
   const [announcementsLoad, setAnnouncementsLoad] = useState<Announcement[]>([])
   const [datesLoad, setDatesLoad] = useState<Date[]>([]);
@@ -113,9 +117,9 @@ export function AppProvider({ children }: Props) {
         let announcements: Announcement[] = responses[1];
         
         if(!schedule.every((a) => a.length < 1)) {
-          const newGroup = [...new Set(schedule.flat().map((lesson) => lesson.groups ? lesson.groups[0] : "").filter((group) => group?.includes(".")))].map((item) => item.split("."))[0].filter(item => possibleGroups.some(group => item == group))[0];
+          const newGroup = [...new Set(schedule.flat().map((lesson) => lesson.groups ? lesson.groups[0] : "").filter((group) => group?.includes(".")))].map((item) => item.split("."))[0][0];
           if(newGroup !== group && newGroup !== "") {
-            const filteredAnnouncements = announcements.filter(announcement => (possibleGroups.some(element => announcement.title.toLowerCase().includes(element)) && announcement.title.toLowerCase().includes(newGroup.slice(0,2))) || !possibleGroups.some(element => announcement.title.toLowerCase().includes(element)) || !newGroup);
+            const filteredAnnouncements = announcements.filter(announcement => announcement.title.toLowerCase().match(/\d+[A-z]/g)?.includes(newGroup) || !newGroup);
             setGroup(newGroup)
             setAnnouncementsLoad(filteredAnnouncements);
           } else {
@@ -196,13 +200,15 @@ export function AppProvider({ children }: Props) {
   async function fetchLiveSchedule(user: string, dates: Date[], offset: number, signal: AbortSignal): Promise<Appointment[][]>  {
     const school = accounts[currentAccount].school, token = accounts[currentAccount].accessToken;
     const date = getCurrentDate(currentDay, offset);
-    const week = `${date.getFullYear()}${Math.ceil(Math.floor((Number(date) - Number(new Date(date.getFullYear(), 0, 1))) / (24 * 60 * 60 * 1000)) / 7)}`
+    const week = getWeekNumber(date);
 
     const res = await request("GET", `/api/v3/liveschedule?student=${user}&week=${week}&fields=start,end,startTimeSlotName,endTimeSlotName,subjects,groups,locations,teachers,cancelled,changeDescription,schedulerRemark,content,appointmentType`, token, school, signal);
-    const livescheduleRes: LiveSchedule = res.response;     
+    const livescheduleRes: LiveSchedule = res.response;
+    const scheduleHours = getScheduleHours(livescheduleRes.data[0].appointments, scheduleLowMin, scheduleHighMin);
 
     let schedule = sortSchedule(livescheduleRes, dates, settings.showChoices);
 
+    setScheduleHours(scheduleHours);
     return Promise.resolve(schedule);
   }
 
@@ -214,5 +220,5 @@ export function AppProvider({ children }: Props) {
     return Promise.resolve(announcementsRes.data);
   }
   
-  return <AppContext.Provider value={{localPREFIX, user, isDesktop, accounts, currentAccount, logOut, logIn, goBack, settings, setSettings, addNewAccount, switchAccount, scheduleLoad, announcementsLoad, datesLoad, fetchLiveSchedule}}>{loading ? (<div className="loader-div"><span className='loader'></span></div>) : (loggedIn ? children : <Login addAccount={addAccount}/>)}</AppContext.Provider>;
+  return <AppContext.Provider value={{localPREFIX, user, isDesktop, accounts, currentAccount, logOut, logIn, goBack, settings, setSettings, addNewAccount, switchAccount, scheduleHours, scheduleLoad, announcementsLoad, datesLoad, fetchLiveSchedule}}>{loading ? (<div className="loader-div"><span className='loader'></span></div>) : (loggedIn ? children : <Login addAccount={addAccount}/>)}</AppContext.Provider>;
 }

@@ -1,15 +1,15 @@
-import { useAppState } from './context';
-import { useEventListener } from './hooks';
+import { useAppState } from '../../context';
+import { useEventListener } from '../../hooks';
 import { useState } from 'preact/hooks';
-import { Schedule } from './components/Schedule';
-import { ChoiceModal } from './components/Modals/ChoiceModal';
-import { LessonModal } from './components/Modals/LessonModal';
-import { Settings } from './components/Settings';
-import { Announcements } from './components/Announcements';
-import { Nav } from './components/Nav';
-import { Header } from './components/Header';
+import { Schedule } from '../../components/Schedule';
+import { ChoiceModal } from '../../components/Modals/ChoiceModal';
+import { LessonModal } from '../../components/Modals/LessonModal';
+import { Settings } from '../../components/Settings';
+import { Announcements } from '../../components/Announcements';
+import { Nav } from '../../components/Nav';
+import { Header } from '../../components/Header';
 
-const App = () => {
+export const App = () => {
   const { isDesktop, announcementsLoad: announcements } = useAppState();
   const [offset, setOffset] = useState(0);
   const [menuOpen, setMenuOpen] = useState(false);
@@ -80,5 +80,3 @@ const App = () => {
     </div>
   );
 }
-
-export default App

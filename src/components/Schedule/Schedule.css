@@ -41,10 +41,6 @@
                     @apply block text-xl font-bold underline;
                 }
             }
-
-            .times {
-                @apply text-lg
-            }
         }
 
         &.open {
@@ -109,7 +105,7 @@
             }
     
             & > .space {
-                @apply pointer-events-none select-none touch-none text-transparent dsk:pl-[0.375rem] dsk:pr-5 flex-grow-0 pr-2;
+                @apply pointer-events-none select-none touch-none text-transparent flex-grow-0 dsk:pl-[0.375rem] dsk:pr-5 w-[clamp(calc(0.85rem*4+1px),calc(2vw*4+1px),calc(1rem*4+1px))] pr-2;
             }
     
             & > div {
@@ -155,8 +151,8 @@
     
         }
     
-        & .schedule-grid-week, & .schedule-grid-day {
-            @apply relative h-fit flex-shrink-0 overflow-x-visible w-auto grid grid-rows-[auto,repeat(110,minmax(0,1fr))];
+        & .schedule-grid {
+            @apply relative h-fit flex-shrink-0 overflow-x-visible w-auto grid grid-cols-[auto,repeat(5,minmax(0,1fr))];
         
             & .time-indicator {
                 @apply absolute z-10 top-[0px] flex items-center h-[1px] overflow-visible left-1/2 -translate-x-1/2 w-[calc(100%+15px)] col-[span_5/7];
@@ -174,8 +170,12 @@
                 }
             }
             
+            & .highlight {
+                @apply dark:bg-white bg-neutral-600 !bg-opacity-5;
+            }
+
             & .line {
-                @apply absolute flex items-center h-full left-1/2 -translate-x-1/2 dsk:w-[calc(100%+16px)] w-full col-[span_5/7];
+                @apply absolute flex items-center h-full left-1/2 -translate-x-1/2 w-[calc(100%+1rem)] col-[span_5/7];
         
                 & > hr {
                     @apply border-[rgb(0,0,0,0.25)] dark:border-[rgb(255,255,255,0.25)] border-t w-full mt-[1px];
@@ -183,59 +183,7 @@
             }
         
             & > .time {
-                @apply dsk:pl-[0.375rem] dsk:pr-5 pr-2 flex items-center text-black dark:text-white z-10;
-            }
-        
-            & > .time:not(:first-child) {
-                @apply col-start-1 text-[clamp(0.75rem,3.5vw,1rem)];
-            }
-        
-            & > .time:nth-of-type(2) {
-                @apply row-[2/4];
-            }
-        
-            & .line:nth-of-type(1) {
-                @apply row-[2/4];
-            }
-        
-            & .line:nth-of-type(2), & > .time:nth-of-type(3) {
-                @apply row-[14/16];
-            }
-            & .line:nth-of-type(3), & > .time:nth-of-type(4) {
-                @apply row-[26/28];
-            }
-            & .line:nth-of-type(4), & > .time:nth-of-type(5) {
-                @apply row-[38/40];
-            }
-            & .line:nth-of-type(5), & > .time:nth-of-type(6) {
-                @apply row-[50/52];
-            }
-            & .line:nth-of-type(6), & > .time:nth-of-type(7) {
-                @apply row-[62/64];
-            }
-            & .line:nth-of-type(7), & > .time:nth-of-type(8) {
-                @apply row-[74/76];
-            }
-            & .line:nth-of-type(8), & > .time:nth-of-type(9) {
-                @apply row-[86/88];
-            }
-            & .line:nth-of-type(9), & > .time:nth-of-type(10)  {
-                @apply row-[98/100];
-            }
-            & .line:nth-of-type(10), & > .time:nth-of-type(11)  {
-                @apply row-[110/112];
-            }
-        }
-    
-        & .schedule-grid-week {
-            @apply grid-cols-[auto,repeat(5,minmax(0,1fr))];
-        }
-    
-        & .schedule-grid-day {
-            @apply grid-cols-[auto,minmax(0,1fr)];
-
-            & > .lesson-block {
-                @apply aspect-[48/9];
+                @apply col-start-1 text-[clamp(0.85rem,2vw,1rem)] dsk:pl-[0.375rem] w-[clamp(calc(0.85rem*4+1px),calc(2vw*4+1px),calc(1rem*4+1px))] flex items-center text-black dark:text-white z-10;
             }
         }
     }

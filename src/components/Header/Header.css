@@ -1,5 +1,5 @@
 .header {
-    @apply z-40 py-5 dsk:px-12 px-5 flex items-center font-bold text-[clamp(1.1rem,4.75vw,1.25rem)] dsk:text-3xl dsk:mb-12 mb-3 text-white dsk:text-black dsk:dark:text-white dsk:bg-transparent bg-black border-b-[1px] border-b-themeWhite border-opacity-20;
+    @apply z-40 py-5 dsk:px-12 px-5 flex items-center font-bold text-[clamp(1.1rem,4.75vw,1.25rem)] dsk:text-3xl dsk:mb-12 mb-3 text-white dsk:text-black dsk:dark:text-white dsk:bg-transparent bg-black border-b-[1px] dark:border-b-themeWhite border-b-themeDark !border-opacity-20;
 
     & > .menu-hamburger {
         @apply text-white h-full pr-5;

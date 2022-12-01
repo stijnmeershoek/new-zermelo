@@ -3,14 +3,15 @@ import { useAppState } from "../../context";
 import './LessonBlock.css';
 
 interface Props {
+    isDesktop: boolean,
     lesson: Appointment
     style?: JSXInternal.CSSProperties,
     className?: string,
     onClick: () => void,
 }
 
-export const LessonBlock = ({lesson, style, className = "", onClick}: Props) => {
-  const {settings, isDesktop} = useAppState();
+export const LessonBlock = ({isDesktop, lesson, style, className = "", onClick}: Props) => {
+  const { settings } = useAppState();
   const classes = `lesson-block ${lesson.appointmentType} ${className} ${lesson.cancelled ? "cancelled" : ""} ${lesson.appointmentType === "choice" ? lesson.actions?.some((appointment) => appointment.allowed === true) ? "allowed" : "locked" : ""}`;
   const lessonInfo = (lesson.appointmentType === "conflict" && lesson.actions) ? lesson.actions[0].appointment : lesson;
 

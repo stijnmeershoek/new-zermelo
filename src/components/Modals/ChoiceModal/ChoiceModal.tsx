@@ -31,7 +31,7 @@ export const ChoiceModal = ({closeChoiceModal, choiceModalOpen, selectedLesson}:
             selectedLesson.actions.map((action) => {
               return <div key={action.appointment.id}>
                 {selectedLesson.appointmentType === "choice" && <input type="radio" name="enroll" id="enroll" value={action.post} checked={currentValue === action.post} onChange={() => {setCurrentValue(action.post)}}/>}
-                <LessonBlock lesson={action.appointment} onClick={() => {}} />
+                <LessonBlock isDesktop={true} lesson={action.appointment} onClick={() => {}} />
               </div>
             })
           )}</div>

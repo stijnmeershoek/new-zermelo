@@ -31,6 +31,31 @@ export const getDates = async (currentDay: Date, offset: number) => {
     return Promise.resolve(week); 
 }
 
+export const getWeekNumber = (date: Date) => {
+    return `${date.getFullYear()}${Math.ceil(Math.floor((Number(date) - Number(new Date(date.getFullYear(), 0, 1))) / (24 * 60 * 60 * 1000)) / 7)}`
+}
+
+export function getScheduleHours(appointments: Appointment[], min: number, max: number) {
+    let highest = new Date(appointments.reduce(
+        (previous, current) => current.end > previous ? current.end : previous,
+        appointments[0].end
+    ) * 1000).getHours() + 1;
+    let lowest = new Date(appointments.reduce(
+        (previous, current) => current.start < previous ? current.start : previous,
+        appointments[0].start
+    ) * 1000).getHours();
+
+    if(lowest > min) lowest = min;
+    if(highest < max) highest = max;
+
+    let hours = [];
+    for (var i = lowest; i <= highest; i++) {
+        hours.push(i);
+    }
+    
+    return hours;
+}
+
 export const sortSchedule = (liveschedule: LiveSchedule, dates: Date[], showChoices: boolean) => {
     const day0 = liveschedule.data[0].appointments.filter((lesson) =>new Date(lesson.start * 1000).toDateString() === dates[0].toDateString() && new Date(lesson.end * 1000).toDateString() === dates[0].toDateString()).sort((a, b) => (a.start > b.start ? 1 : -1));
     const day1 = liveschedule.data[0].appointments.filter((lesson) =>new Date(lesson.start * 1000).toDateString() === dates[1].toDateString() && new Date(lesson.end * 1000).toDateString() === dates[1].toDateString()).sort((a, b) => (a.start > b.start ? 1 : -1));
