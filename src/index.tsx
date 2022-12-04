@@ -1,7 +1,11 @@
-if(import.meta.env.DEV) import('preact/devtools')
-import { render } from 'preact';
-import { App } from './pages/Dashboard'
-import { AppProvider } from './context'
-import './index.css'
+/* @refresh reload */
+if(import.meta.env.DEV) import('solid-devtools')
+import { render } from 'solid-js/web';
+import { AppProvider } from './context';
 
-render((<AppProvider children={<App />} />), document.body)
+import './index.css';
+import {App} from './pages/Dashboard'
+
+render(() => <AppProvider children={<App />} />, document.body);
+
+document.body.querySelector('.loader-div')?.remove();

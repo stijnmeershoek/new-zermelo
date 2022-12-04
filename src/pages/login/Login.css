@@ -29,7 +29,7 @@
         }
 
         & span.err {
-            @apply absolute bottom-0 translate-y-full pt-5 whitespace-pre-wrap text-theme font-bold;
+            @apply absolute bottom-0 pt-5 top-full whitespace-pre-wrap text-theme font-bold;
         }
     
         & button {

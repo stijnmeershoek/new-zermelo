@@ -56,15 +56,16 @@ export function getScheduleHours(appointments: Appointment[], min: number, max: 
     return hours;
 }
 
-export const sortSchedule = (liveschedule: LiveSchedule, dates: Date[], showChoices: boolean) => {
+export const sortSchedule = (liveschedule: LiveSchedule, dates: Date[], showChoices: string) => {
     const day0 = liveschedule.data[0].appointments.filter((lesson) =>new Date(lesson.start * 1000).toDateString() === dates[0].toDateString() && new Date(lesson.end * 1000).toDateString() === dates[0].toDateString()).sort((a, b) => (a.start > b.start ? 1 : -1));
     const day1 = liveschedule.data[0].appointments.filter((lesson) =>new Date(lesson.start * 1000).toDateString() === dates[1].toDateString() && new Date(lesson.end * 1000).toDateString() === dates[1].toDateString()).sort((a, b) => (a.start > b.start ? 1 : -1));
     const day2 = liveschedule.data[0].appointments.filter((lesson) =>new Date(lesson.start * 1000).toDateString() === dates[2].toDateString() && new Date(lesson.end * 1000).toDateString() === dates[2].toDateString()).sort((a, b) => (a.start > b.start ? 1 : -1));
     const day3 = liveschedule.data[0].appointments.filter((lesson) =>new Date(lesson.start * 1000).toDateString() === dates[3].toDateString() && new Date(lesson.end * 1000).toDateString() === dates[3].toDateString()).sort((a, b) => (a.start > b.start ? 1 : -1));
     const day4 = liveschedule.data[0].appointments.filter((lesson) =>new Date(lesson.start * 1000).toDateString() === dates[4].toDateString() && new Date(lesson.end * 1000).toDateString() === dates[4].toDateString()).sort((a, b) => (a.start > b.start ? 1 : -1));
     let schedule = [day0, day1, day2, day3, day4];
-    if(!showChoices) {
-        schedule = schedule.map((lesson) => lesson.filter((lesson) => lesson.appointmentType !== "choice"));
+    let filtered = schedule;
+    if(showChoices === "false") {
+        filtered = schedule.map(day => (day.filter(lesson => lesson.appointmentType !== "choice")))
     }
-    return schedule;
+    return filtered;
 }

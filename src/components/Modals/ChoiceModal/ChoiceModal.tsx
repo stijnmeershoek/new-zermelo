@@ -1,44 +1,57 @@
-import { useState } from "preact/hooks";
+import { Accessor, createSignal, For, Show  } from "solid-js";
 import { request } from "../../../api/requests";
 import { useAppState } from "../../../context";
 import { LessonBlock } from "../../LessonBlock";
+import { Translate } from "../../Translate";
 
 interface Props { 
   closeChoiceModal: () => void, 
-  choiceModalOpen: boolean, 
-  selectedLesson: Appointment | null | undefined}
+  choiceModalOpen: Accessor<boolean>, 
+  selectedLesson: Accessor<Appointment | null>
+}
 
-export const ChoiceModal = ({closeChoiceModal, choiceModalOpen, selectedLesson}: Props) => {
-    const [currentValue, setCurrentValue] = useState<string>();
-    const {accounts, currentAccount, settings} = useAppState();
-    const {school, accessToken} = accounts[currentAccount];
+export const ChoiceModal = (props: Props) => {
+    const {accounts, currentAccount} = useAppState();
+    const [currentValue, setCurrentValue] = createSignal("");
   
     const postChoice = (e: Event) => {
       e.preventDefault();
       if(!currentValue) return;
+      const {school, accessToken} = accounts()[currentAccount()];
       const abortController = new AbortController();
       const signal = abortController.signal
   
-      request("POST", currentValue, accessToken, school, signal).then(() => {
-        closeChoiceModal();
+      request("POST", currentValue(), accessToken, school, signal).then(() => {
+        props.closeChoiceModal();
       });
     }
   
-    return ( <>
-      <dialog onClick={(e) => {(e.target as HTMLElement).classList.contains("choice-modal") && closeChoiceModal()}} aria-modal="true" open={choiceModalOpen} className={`${(choiceModalOpen && selectedLesson) ? "open " : ""}choice-modal`} aria-label='choice info'>
-        <form onSubmit={postChoice} className={`${selectedLesson ? (selectedLesson.appointmentType + " ") : ""}${selectedLesson?.cancelled ? "cancelled " : ""}content`}>
-          {selectedLesson && <><div className='form-scroller'>{(selectedLesson && selectedLesson.actions && selectedLesson.actions.length !== 0) && (
-            selectedLesson.actions.map((action) => {
-              return <div key={action.appointment.id}>
-                {selectedLesson.appointmentType === "choice" && <input type="radio" name="enroll" id="enroll" value={action.post} checked={currentValue === action.post} onChange={() => {setCurrentValue(action.post)}}/>}
-                <LessonBlock isDesktop={true} lesson={action.appointment} onClick={() => {}} />
+    return ( 
+        <dialog onClick={(e) => {(e.target as HTMLElement).classList.contains("choice-modal") && props.closeChoiceModal()}} aria-modal="true" open={props.choiceModalOpen()} class={`${(props.choiceModalOpen() && props.selectedLesson()) ? "open " : ""}choice-modal`} aria-label='choice info'>
+          <form onSubmit={postChoice} class={`${props.selectedLesson ? (props.selectedLesson()?.appointmentType + " ") : ""}${props.selectedLesson()?.cancelled ? "cancelled " : ""}content`}>
+            <Show when={props.selectedLesson()}>
+              <div class='form-scroller'>
+                <Show when={(props.selectedLesson() && props.selectedLesson()?.actions && props.selectedLesson()?.actions?.length !== 0)}>
+                  <For each={props.selectedLesson()?.actions}>{(action) => (
+                    <div>
+                      <Show when={props.selectedLesson()?.appointmentType === "choice"}>
+                        <input type="radio" name="enroll" id="enroll" value={action.post} checked={currentValue() === action.post} onChange={() => {setCurrentValue(action.post)}}/>
+                      </Show>
+                      <LessonBlock isDesktop={() => true} lesson={action.appointment} onClick={() => {}} />
+                    </div>
+                  )}</For>
+                </Show>
               </div>
-            })
-          )}</div>
-          {selectedLesson.appointmentType === "choice" && <button disabled={!currentValue} type='submit' aria-label='enroll'>{!selectedLesson.studentEnrolled ? settings.lng === "nl" ? "Inschrijven" : settings.lng === "en" ? "Enroll" : "Enroll" : settings.lng === "nl" ? "Uitschrijven" : settings.lng === "en" ? "Disenroll" : "Disenroll"}</button>}</>}
-        </form>
-      </dialog>
-      </>
+              <Show when={props.selectedLesson()?.appointmentType === "choice"}>
+                <button disabled={!currentValue} type='submit' aria-label='enroll'>
+                  <Show when={props.selectedLesson()?.studentEnrolled} fallback={<Translate nlString="Inschrijven" enString="Enroll" />}>
+                    <Translate nlString="Uitschrijven" enString="Disenroll" />
+                  </Show>
+                </button>
+              </Show>          
+            </Show>
+          </form>
+        </dialog>
     )
   }
   

@@ -1,18 +1,17 @@
-import { defineConfig } from 'vite'
-import preact from '@preact/preset-vite'
+import { defineConfig } from 'vite';
 import { VitePWA } from 'vite-plugin-pwa';
+import solidPlugin from 'vite-plugin-solid';
 
-// https://vitejs.dev/config/
 export default defineConfig({
   base: '/new-zermelo/',
   build: {
     target: 'esnext'
   },
   plugins: [
-    preact(),
+    solidPlugin(),
     VitePWA({
       registerType: 'autoUpdate',
-      includeAssets: ['favicon-16x16.png', 'favicon-32x32.png', 'apple-touch-icon.png', 'mstile-150x150.png', 'safari-pinned-tab.svg', '/fonts/HelveticaNow/*.woff2'],
+      includeAssets: ['favicon-16x16.png', 'favicon-32x32.png', 'apple-touch-icon.png', 'mstile-150x150.png', 'safari-pinned-tab.svg', 'fonts/HelveticaNow/*.woff2'],
       manifest: {
         start_url: "/new-zermelo/",
         name: 'Zermelo',
@@ -34,5 +33,5 @@ export default defineConfig({
         ]
       },
     }),
-  ]
-})
+  ],
+});

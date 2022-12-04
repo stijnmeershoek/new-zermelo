@@ -1,23 +1,23 @@
-import { useAppState } from '../../context';
-import { useEventListener } from '../../hooks';
-import { useState } from 'preact/hooks';
-import { Schedule } from '../../components/Schedule';
-import { ChoiceModal } from '../../components/Modals/ChoiceModal';
-import { LessonModal } from '../../components/Modals/LessonModal';
-import { Settings } from '../../components/Settings';
-import { Announcements } from '../../components/Announcements';
-import { Nav } from '../../components/Nav';
-import { Header } from '../../components/Header';
+import { createSignal, Show } from "solid-js";
+import { Announcements } from "../../components/Announcements";
+import { Header } from "../../components/Header";
+import { ChoiceModal } from "../../components/Modals/ChoiceModal";
+import { LessonModal } from "../../components/Modals/LessonModal";
+import { Nav } from "../../components/Nav";
+import { Schedule } from "../../components/Schedule";
+import { Settings } from "../../components/Settings";
+import { useAppState } from "../../context";
+import { useEventListener } from "../../hooks";
 
 export const App = () => {
   const { isDesktop, announcementsLoad: announcements } = useAppState();
-  const [offset, setOffset] = useState(0);
-  const [menuOpen, setMenuOpen] = useState(false);
-  const [showAnnouncements, setShowAnnouncements] = useState(false);
-  const [showSettings, setShowSettings] = useState(false);
-  const [lessonModalOpen, setLessonModalOpen] = useState(false);
-  const [choiceModalOpen, setChoiceModalOpen] = useState(false);
-  const [selectedLesson, setSelectedLesson] = useState<Appointment | null>();
+  const [offset, setOffset] = createSignal(0);
+  const [menuOpen, setMenuOpen] = createSignal(false);
+  const [showAnnouncements, setShowAnnouncements] = createSignal(false);
+  const [showSettings, setShowSettings] = createSignal(false);
+  const [lessonModalOpen, setLessonModalOpen] = createSignal(false);
+  const [choiceModalOpen, setChoiceModalOpen] = createSignal(false);
+  const [selectedLesson, setSelectedLesson] = createSignal<Appointment | null>(null);
   const currentDay = new Date();
 
   useEventListener('keydown', keyHandler);
@@ -58,19 +58,19 @@ export const App = () => {
   }
 
   return (
-    <div className={`${menuOpen ? "show-menu " : ""}app`}>
+    <div class={`${menuOpen() ? "show-menu " : ""}app`}>
         <Nav setMenuOpen={setMenuOpen} showSettings={showSettings} showAnnouncements={showAnnouncements} setShowSettings={setShowSettings} setShowAnnouncements={setShowAnnouncements}/>
 
-        {(isDesktop || showAnnouncements) && (
+        <Show when={isDesktop() || showAnnouncements()}>
           <Announcements announcements={announcements}/>
-        )}
+        </Show>
 
-        {showSettings && (
+        <Show when={showSettings()}>
           <Settings />
-        )}
+        </Show>
 
-        <main className="schedule">
-          <Header offset={offset} setOffset={setOffset} currentDay={currentDay} showAnnouncements={showAnnouncements} showSettings={showSettings} setMenuOpen={setMenuOpen}/>
+        <main class="schedule">
+          <Header offset={offset} setOffset={setOffset} currentDay={currentDay} showAnnouncements={showAnnouncements} showSettings={showSettings} menuOpen={menuOpen} setMenuOpen={setMenuOpen}/>
 
           <Schedule offset={offset} currentDay={currentDay} choiceModalOpen={choiceModalOpen} openLessonModal={openLessonModal} openChoiceModal={openChoiceModal} />
 
@@ -79,4 +79,4 @@ export const App = () => {
         </main>
     </div>
   );
-}
+};

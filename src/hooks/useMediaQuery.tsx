@@ -1,17 +1,21 @@
-import { useState, useEffect } from "preact/hooks";
+import { createSignal, createEffect, onCleanup } from "solid-js";
 
-export const useMediaQuery = (query: string) => {
-  const [matches, setMatches] = useState(false);
+interface Props {
+  query: string
+}
 
-  useEffect(() => {
-    const media = window.matchMedia(query);
-    if (media.matches !== matches) {
-      setMatches(media.matches);
-    }
-    const listener = () => setMatches(media.matches);
-    window.addEventListener("resize", listener);
-    return () => window.removeEventListener("resize", listener);
-  }, [matches, query]);
+export const useMediaQuery = (props: Props) => {
+  const [matches, setMatches] = createSignal(window.matchMedia(props.query).matches);
+
+  createEffect(() => {
+      const media = window.matchMedia(props.query);
+      const listener = () => {
+        if(media.matches === matches()) return;
+        setMatches(media.matches)
+      };
+      window.addEventListener("resize", listener);
+      onCleanup(() => window.removeEventListener("resize", listener))
+  });
 
   return matches;
 }

@@ -1,31 +1,78 @@
-import { useAppState } from "../../../context"
+import { Accessor, Show } from "solid-js";
+import { Translate } from "../../Translate";
 
 interface Props {
   closeLessonModal: () => void, 
-  lessonModalOpen: boolean, 
-  selectedLesson: Appointment | null | undefined
+  lessonModalOpen: Accessor<boolean>, 
+  selectedLesson: Accessor<Appointment | null | undefined>
 }
 
-export const LessonModal = ({closeLessonModal, lessonModalOpen, selectedLesson}: Props) => {
-  const {settings} = useAppState();
-
+export const LessonModal = (props: Props) => {
     return (
-      <dialog onClick={(e) => (e.target as HTMLElement).classList.contains('lesson-modal') && closeLessonModal()} aria-modal="true" open={lessonModalOpen} className={`${(lessonModalOpen && selectedLesson) ? "open " : ""}lesson-modal`} aria-label='lesson info'>
-        <div className={`${selectedLesson ? (selectedLesson.appointmentType + " ") : ""}${selectedLesson?.cancelled ? "cancelled " : ""}content`}>
-          {selectedLesson && (
-            <>
-              <span>{selectedLesson.appointmentType}</span>
-              <div><span>{settings.lng === "nl" ? "Vak" : settings.lng === "en" ? "Subject" : "Subject"}</span>: <span>{selectedLesson.subjects.length <= 1 ? selectedLesson!.subjects[0] : `${selectedLesson.subjects[0]}, ${selectedLesson.subjects[1]}${selectedLesson!.subjects.length > 2 ? "+" : ""}`}<span className='change'>{selectedLesson.status?.some((status) => status.code === 3014)}</span></span></div>
-              <div><span>{settings.lng === "nl" ? "Docent" : settings.lng === "en" ? "Teacher" : "Teacher"}</span>: {selectedLesson.teachers!.length > 0 && <span aria-label='teacher'>{selectedLesson.teachers!.length <= 1 ? selectedLesson.teachers![0].toUpperCase() : `${selectedLesson.teachers![0].toUpperCase()}, ${selectedLesson.teachers![1].toUpperCase()}${selectedLesson.teachers!.length > 2 ? "+" : ""}`}<span className='change'>{selectedLesson.status?.some((status) => status.code === 3011)}</span></span>}</div>
-              <div><span>{settings.lng === "nl" ? "Lokaal" : settings.lng === "en" ? "Classroom" : "Classroom"}</span>: {selectedLesson.locations!.length > 0 && <span aria-label='location'>{selectedLesson.locations!.length <= 1 ? selectedLesson.locations![0] : `${selectedLesson.locations![0]}, ${selectedLesson.locations![1]}${selectedLesson.locations!.length > 2 ? "+" : ""}`}<span className='change'>{selectedLesson.status?.some((status) => status.code === 3012)}</span></span>}</div>
-              <div><span>{settings.lng === "nl" ? "Tijden" : settings.lng === "en" ? "Times" : "Times"}</span>: <span className='times'><time aria-label='lesson start' dateTime={`${new Date(selectedLesson.start * 1000)}`}>{String(new Date(selectedLesson.start * 1000).getHours())}:{String(new Date(selectedLesson.start * 1000).getMinutes()).padStart(2,'0')}</time>-<time aria-label='lesson end' dateTime={`${new Date(selectedLesson.end * 1000)}`}>{String(new Date(selectedLesson.end * 1000).getHours())}:{String(new Date(selectedLesson.end * 1000).getMinutes()).padStart(2,'0')}</time><span className='change'>{selectedLesson.status?.some((status) => status.code === 3015)}</span></span></div>
-              {(selectedLesson.changeDescription || selectedLesson.schedulerRemark) &&<div className='remarks'>
-              <span className='title'>{settings.lng === "nl" ? "Opmerking" : settings.lng === "en" ? "Remark" : "Remark"}:</span>
-              {selectedLesson.changeDescription && <span>{selectedLesson.changeDescription}</span>}
-              {selectedLesson.schedulerRemark && <span>{selectedLesson.schedulerRemark}</span>}
-              </div>}
+      <dialog onClick={(e) => (e.target as HTMLElement).classList.contains('lesson-modal') && props.closeLessonModal()} aria-modal="true" open={props.lessonModalOpen()} class={`${(props.lessonModalOpen() && props.selectedLesson()) ? "open " : ""}lesson-modal`} aria-label='lesson info'>
+        <div class={`${props.selectedLesson() ? (props.selectedLesson()?.appointmentType + " ") : ""}${props.selectedLesson()?.cancelled ? "cancelled " : ""}content`}>
+          <Show when={props.selectedLesson()}>
+          <>
+              <span>{props.selectedLesson()?.appointmentType}</span>
+              <div>
+                <span><Translate nlString="Vak" enString="Subject" />: </span>
+                <span>
+                  <Show when={props.selectedLesson()!.subjects.length <= 1} fallback={`${props.selectedLesson()?.subjects[0]}, ${props.selectedLesson()?.subjects[1]}${props.selectedLesson()!.subjects.length > 2 ? "+" : ""}`}>
+                    {props.selectedLesson()!.subjects[0] }
+                  </Show>
+                  <span class='change'>{props.selectedLesson()?.status?.some((status) => status.code === 3014)}</span>
+                </span>
+              </div>
+              <div>
+                <span><Translate nlString="Docent" enString="Teacher" />: </span>
+                <Show when={props.selectedLesson()!.teachers.length > 0}>
+                  <span aria-label='teacher'>
+                    <Show when={props.selectedLesson()!.teachers.length <= 1 } fallback={`${props.selectedLesson()?.teachers![0].toUpperCase()}, ${props.selectedLesson()?.teachers![1].toUpperCase()}${props.selectedLesson()!.teachers!.length > 2 ? "+" : ""}`}>
+                      {props.selectedLesson()?.teachers![0].toUpperCase()}
+                    </Show>
+                    <span class='change'>{props.selectedLesson()?.status?.some((status) => status.code === 3011)}</span>
+                  </span>
+                </Show>
+              </div>
+              <div>
+                <span><Translate nlString="Lokaal" enString="Classroom" />: </span>
+                <Show when={props.selectedLesson()?.locations.length !== 0}>
+                  <span aria-label='location'>
+                    <Show when={props.selectedLesson()!.locations.length <= 1} fallback={`${props.selectedLesson()?.locations![0]}, ${props.selectedLesson()?.locations![1]}${props.selectedLesson()!.locations!.length > 2 ? "+" : ""}`}>
+                      {props.selectedLesson()!.locations[0]}
+                    </Show>
+                    <span class='change'>{props.selectedLesson()?.status?.some((status) => status.code === 3012)}</span>
+                  </span>
+                </Show>
+              </div>
+              <div>
+                <span><Translate nlString="Tijden" enString="Times" />: </span> 
+                <span class='times'>
+                  <time aria-label='lesson start' dateTime={`${new Date(props.selectedLesson()!.start * 1000)}`}>
+                    {String(new Date(props.selectedLesson()!.start * 1000).getHours())}:{String(new Date(props.selectedLesson()!.start * 1000).getMinutes()).padStart(2,'0')}
+                  </time>
+                  <span>-</span>
+                  <time aria-label='lesson end' dateTime={`${new Date(props.selectedLesson()!.end * 1000)}`}>
+                    {String(new Date(props.selectedLesson()!.end * 1000).getHours())}:{String(new Date(props.selectedLesson()!.end * 1000).getMinutes()).padStart(2,'0')}
+                  </time>
+                  <span class='change'>
+                    {props.selectedLesson()?.status?.some((status) => status.code === 3015)}
+                  </span>
+                </span>
+              </div>
+              <Show when={(props.selectedLesson()?.changeDescription || props.selectedLesson()?.schedulerRemark)}>
+                <div class='remarks'>
+                  <span class='title'><Translate nlString="Opmerking" enString="Remark" />:</span>
+                  <Show when={props.selectedLesson()?.changeDescription}>
+                    <span>{props.selectedLesson()?.changeDescription}</span>
+                  </Show>
+                  <Show when={props.selectedLesson()?.schedulerRemark}>
+                    <span>{props.selectedLesson()?.changeDescription}</span>
+                  </Show>
+                </div>
+              </Show>
             </>
-          )}
+          </Show>
         </div>
       </dialog>
     )

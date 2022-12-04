@@ -4,7 +4,7 @@
 type Settings = {
     lng:         string,
     theme:       string,
-    showChoices: boolean,
+    showChoices: string,
 }
 
 /* 

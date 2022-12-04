@@ -1,33 +1,36 @@
+import { Accessor, For, Show } from "solid-js";
 import { useAppState } from "../../context"
+import { Translate } from "../Translate";
 import './Announcements.css'
 
 interface Props {
-  announcements: Announcement[]
+  announcements: Accessor<Announcement[]>
 }
 
-export const Announcements = ({announcements}: Props) => {
-  const {isDesktop, settings} = useAppState();
+export const Announcements = (props: Props) => {
+  const {isDesktop} = useAppState();
 
     return (
-        <aside aria-labelledby='announcements-header' className={`${!isDesktop ? "mobile " : ""}announcements`}>
-          <h1 id='announcements-header'>{settings.lng === "nl" ? "Mededelingen" : settings.lng === "en" ? "Announcements" : "Announcements"}</h1>
-            {announcements.length !== 0 ? announcements.map((announcement) => {
-              return (
-              <article key={announcement.id} className='announcement'>
-                <header>
-                  <h1>{announcement.title}</h1>
-                  <div>
-                    <div className='plusminus'>
-                      <span></span>
-                      <span></span>
+        <aside aria-labelledby='announcements-header' class={`${!isDesktop() ? "mobile " : ""}announcements`}>
+          <h1 id='announcements-header'><Translate nlString="Mededelingen" enString="Announcements" /></h1>
+            <Show when={props.announcements().length !== 0} fallback={<h2><Translate nlString="Geen actuele mededelingen" enString="No current announcements" /></h2>}>
+              <For each={props.announcements()}>{(announcement) => (
+                <article class='announcement'>
+                  <header>
+                    <h1>{announcement.title}</h1>
+                    <div>
+                      <div class='plusminus'>
+                        <span></span>
+                        <span></span>
+                      </div>
                     </div>
+                  </header>
+                  <div>
+                    {announcement.text}
                   </div>
-                </header>
-                <div>
-                  {announcement.text}
-                </div>
-              </article>)
-            }) : <h2>{settings.lng === "nl" ? "Geen actuele mededelingen" : settings.lng === "en" ? "No current announcements" : "No current announcements"}</h2>}
+                </article>
+              )}</For>
+            </Show>
         </aside>
     )
 }
