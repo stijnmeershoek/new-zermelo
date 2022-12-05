@@ -134,7 +134,7 @@
         }
     
         & .scroller {
-            @apply flex-grow overflow-y-auto overflow-x-hidden dsk:px-12 pl-5 pr-2 pb-5;
+            @apply flex-grow overflow-y-auto overflow-x-hidden dsk:px-12 pl-5 pr-2;
     
             &::-webkit-scrollbar-track {
                 @apply bg-themeWhite dark:bg-themeDark;

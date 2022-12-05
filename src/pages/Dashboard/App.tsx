@@ -18,17 +18,16 @@ export const App = () => {
   const [lessonModalOpen, setLessonModalOpen] = createSignal(false);
   const [choiceModalOpen, setChoiceModalOpen] = createSignal(false);
   const [selectedLesson, setSelectedLesson] = createSignal<Appointment | null>(null);
-  const currentDay = new Date();
 
   useEventListener('keydown', keyHandler);
 
   function keyHandler(event: KeyboardEvent) {
     switch (event.key) {
       case "ArrowLeft":
-        setOffset(prev => prev - 1);
+        setOffset(offset() - 1);
         break;
       case "ArrowRight":
-        setOffset(prev => prev + 1);
+        setOffset(offset() + 1);
         break;
     }
   }
@@ -70,9 +69,9 @@ export const App = () => {
         </Show>
 
         <main class="schedule">
-          <Header offset={offset} setOffset={setOffset} currentDay={currentDay} showAnnouncements={showAnnouncements} showSettings={showSettings} menuOpen={menuOpen} setMenuOpen={setMenuOpen}/>
+          <Header offset={offset} setOffset={setOffset} showAnnouncements={showAnnouncements} showSettings={showSettings} menuOpen={menuOpen} setMenuOpen={setMenuOpen}/>
 
-          <Schedule offset={offset} currentDay={currentDay} choiceModalOpen={choiceModalOpen} openLessonModal={openLessonModal} openChoiceModal={openChoiceModal} />
+          <Schedule offset={offset} choiceModalOpen={choiceModalOpen} openLessonModal={openLessonModal} openChoiceModal={openChoiceModal} />
 
           <LessonModal lessonModalOpen={lessonModalOpen} closeLessonModal={closeLessonModal} selectedLesson={selectedLesson}/>
           <ChoiceModal choiceModalOpen={choiceModalOpen} closeChoiceModal={closeChoiceModal} selectedLesson={selectedLesson}/>

@@ -1,9 +1,9 @@
 .header {
     --tw-translate-x: 0;
-    @apply z-40 py-5 dsk:px-12 px-5 flex items-center font-bold text-[clamp(1.1rem,4.75vw,1.25rem)] dsk:text-3xl dsk:mb-12 mb-3 text-white dsk:text-black dsk:dark:text-white dsk:bg-transparent bg-black border-b-[1px] dark:border-b-themeWhite border-b-themeDark !border-opacity-20;
+    @apply z-40 py-5 dsk:pl-12 dsk:pr-14 pl-5 pr-4 flex items-center font-bold text-[clamp(1.1rem,4.75vw,1.25rem)] dsk:text-3xl dsk:mb-12 mb-3 text-white dsk:text-black dsk:dark:text-white dsk:bg-transparent bg-black border-b-[1px] dark:border-b-themeWhite border-b-themeDark !border-opacity-20;
 
     & > .menu-hamburger {
-        @apply text-white h-full pr-5;
+        @apply text-white h-full pr-5 hover:text-theme focus-visible:text-theme transition-colors outline-none;
 
         & > svg {
             @apply h-7 aspect-square;
@@ -13,17 +13,11 @@
     & > section {
         @apply relative flex items-center flex-shrink; 
 
-        & > time:first-of-type {
+        & > time {
             @apply relative flex items-center leading-none font-bold gap-1;
-
-            @media (max-width: 375px) {
-                & > span:nth-of-type(2) {
-                    @apply hidden;
-                }
-            }
         }
 
-        & .line {
+        & > .line {
             @apply self-stretch dsk:py-6 py-4 border rounded-full border-current rotate-[25deg] dsk:mx-7 mx-5 z-10;
         }
 

@@ -1,4 +1,4 @@
-import { Accessor, JSX, Show } from "solid-js";
+import { Accessor, createMemo, JSX, Show } from "solid-js";
 import { Translate } from "../Translate";
 import './LessonBlock.css';
 
@@ -11,10 +11,10 @@ interface Props {
 }
 
 export const LessonBlock = (props: Props) => {
-  const classes = `lesson-block ${props.lesson.appointmentType} ${props.className} ${props.lesson.cancelled ? "cancelled" : ""} ${props.lesson.appointmentType === "choice" ? props.lesson.actions?.some((appointment) => appointment.allowed === true) ? "allowed" : "locked" : ""}`;
+  const classes = createMemo(() => `lesson-block ${props.lesson.appointmentType} ${props.className} ${props.lesson.cancelled ? "cancelled" : ""} ${props.lesson.appointmentType === "choice" ? props.lesson.actions?.some((appointment) => appointment.allowed === true) ? "allowed" : "locked" : ""}`);
 
   return (
-    <article onClick={props.onClick} class={classes.replace(/\s+/g,' ').trim()} style={props.style}>
+    <article onClick={props.onClick} class={classes().replace(/\s+/g,' ').trim()} style={props.style}>
       <Show when={props.lesson.appointmentType !== "choice"} fallback={<ChoiceContent lesson={props.lesson}/>}>
         <LessonContent lesson={props.lesson} isDesktop={props.isDesktop}/>
       </Show>

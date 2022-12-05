@@ -1,4 +1,4 @@
-import { Accessor, createSignal, createEffect, on, onCleanup, Show, For } from 'solid-js';
+import { Accessor, createSignal, createEffect, on, onCleanup, Show, For, createMemo } from 'solid-js';
 import { Day } from './Day';
 import { LinesAndTimes } from './LinesAndTimes';
 import { useAppState } from '../../context';
@@ -7,7 +7,6 @@ import './Schedule.css'
 
 interface Props {
   offset: Accessor<number>,
-  currentDay: Date, 
   openChoiceModal: (lesson: Appointment) => void, 
   openLessonModal: (lesson: Appointment) => void, 
   choiceModalOpen: Accessor<boolean>, 
@@ -18,7 +17,8 @@ export const Schedule = (props: Props) => {
     const [loading, setLoading] = createSignal(false);
     const [schedule, setSchedule] = createSignal<Appointment[][]>(scheduleLoad());
     const [dates, setDates] = createSignal<Date[]>(datesLoad());
-    const currentDayNumber = () => dates().findIndex(date => date.toDateString() === props.currentDay.toDateString());
+    const currentDayNumber = createMemo(() => dates().findIndex(date => date.toDateString() === new Date().toDateString()));
+    const rowAmount = createMemo(() => (scheduleHours()[scheduleHours().length - 1] - scheduleHours()[0]) * 12 + 3);
     let scheduleRef: HTMLDivElement | undefined;
     let timeIndicatorRef: HTMLDivElement | undefined;
     let showChoicesRef = settings.showChoices;
@@ -26,20 +26,22 @@ export const Schedule = (props: Props) => {
 
     createEffect(on(() => [props.offset(), settings.showChoices, props.choiceModalOpen()], () => {
       if(props.choiceModalOpen() !== false) return;
-      
-      if(props.offset() === 0 && showChoicesRef === settings.showChoices && choiceModalOpenRef === props.choiceModalOpen()) {
+
+      if(props.offset() === 0) {
         setDates(datesLoad);
-        setSchedule(scheduleLoad);
-        return;
+        if(props.offset() === 0 && showChoicesRef === settings.showChoices && choiceModalOpenRef === props.choiceModalOpen()) {
+          setSchedule(scheduleLoad);
+          return;
+        }
       }
-      
+            
       setLoading(true)
       
       const abortController = new AbortController();
       const signal = abortController.signal;
   
       const fetchData = async () => {
-        const dates = await getDates(props.currentDay, props.offset());
+        const dates = await getDates(new Date(), props.offset());
         fetchLiveSchedule(user(), dates, props.offset(), signal).then((res) => {
           setDates(dates)
           setSchedule(res);
@@ -54,34 +56,37 @@ export const Schedule = (props: Props) => {
 
     createEffect(on(() => [loading()], () => {
       if(!timeIndicatorRef || !scheduleRef) return;
-      if(props.currentDay.getHours() > 17 || props.currentDay.getHours() < 8) {
+      let date = new Date();
+
+      if(date.getHours() > scheduleHours()[scheduleHours().length - 1] || date.getHours() < scheduleHours()[0]) {
         timeIndicatorRef.classList.add('!hidden');
         return;
       } else {
         timeIndicatorRef.classList.remove("!hidden");
       }
 
+      let dayStart = new Date(date.getFullYear(), date.getMonth(), date.getDate(), 8, 0);
+
       const changeTimePosition = () => {
         if(!scheduleRef || !timeIndicatorRef) return;
-        const date = new Date(new Date(props.currentDay.toDateString()).setHours(8));
-        let diff = (props.currentDay.getTime() - date.getTime());
+        let diff = (new Date().getTime() - dayStart.getTime());
         let diffMins = Math.floor((diff/1000/60) << 0);
-
+        
         if(diffMins > 540 || diffMins < 0) {
-            timeIndicatorRef.classList.add("!hidden");
-          } else {
-            timeIndicatorRef.classList.remove("!hidden");
-            const percent = (diffMins / 550) * 100;
-            const correction = scheduleRef.offsetHeight / 111;
-            timeIndicatorRef.style.cssText = `top: calc(${percent}% + ${correction}px);`
-          }
+          timeIndicatorRef.classList.add("!hidden");
+        } else {
+          timeIndicatorRef.classList.remove("!hidden");
+          const percent = (diffMins / (rowAmount() * 5)) * 100;
+          const correction = scheduleRef.offsetHeight / rowAmount();
+          timeIndicatorRef.style.cssText = `top: calc(${percent}% + ${correction}px);`
+        }
       }
 
       changeTimePosition();
 
       const interval = setInterval(() => {
           changeTimePosition();
-      }, 1000 * 60)
+      }, 1000)
 
       onCleanup(() => clearInterval(interval))
     }))
@@ -107,7 +112,7 @@ export const Schedule = (props: Props) => {
 
       <Show when={!loading()} fallback={<span class="loader"></span>}>
         <section  aria-label='schedule' class="scroller">
-          <div ref={scheduleRef} aria-label='schedule grid' class="schedule-grid" style={{"grid-template-rows": ` auto repeat(${(scheduleHours()[scheduleHours().length - 1] - scheduleHours()[0]) * 12 + 2},minmax(0,1fr))`}}>
+          <div ref={scheduleRef} aria-label='schedule grid' class="schedule-grid" style={{"grid-template-rows": ` auto repeat(${rowAmount()},minmax(0,1fr))`}}>
             <LinesAndTimes scheduleHours={scheduleHours}/>
             <div class="highlight" style={currentDayNumber() !== -1 ? {'grid-row': "1 / -1", 'grid-column': `${currentDayNumber() + 2}/${currentDayNumber() + 3}`} : {display: "none"}}></div>
     

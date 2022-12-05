@@ -16,8 +16,7 @@ type State = {
     currentAccount: Accessor<number>,
     logOut: () => void,
     logIn: (newAccount: Account, oldAccounts: Account[]) => void,
-    goBack: () => void,
-    addNewAccount: () => void,
+    toggleAddAccount: () => void,
     switchAccount: (i: number) => void,
     scheduleHours: Accessor<number[]>,
     datesLoad: Accessor<Date[]>,
@@ -36,8 +35,7 @@ type State = {
     currentAccount: () => 0,
     logOut: () => {},
     logIn: () => {},
-    goBack: () => {},
-    addNewAccount: () => {},
+    toggleAddAccount: () => {},
     switchAccount: () => {},
     scheduleHours: () => [],
     datesLoad: () => [],
@@ -58,9 +56,8 @@ interface Props {
 
 export function AppProvider(props: Props) {
     const localPREFIX = "zermelo"
-    const scheduleLowMin = 8;
-    const scheduleHighMin = 16;
-    const currentDay = new Date();
+    const [scheduleStartMin, setScheduleStartMin] = createSignal(8);
+    const [scheduleEndMin, setScheduleEndMin] = createSignal(16);
     const isDesktop = useMediaQuery({query: '(min-width: 1110px)'})
     const [loading, setLoading] = createSignal(true);
 
@@ -104,7 +101,7 @@ export function AppProvider(props: Props) {
         
             const fetchData = async () => {
                 let userNew;
-                const res = await fetchUserData(accounts(), currentAccount(), signal);
+                const res = await fetchUserData(signal);
                 if(res && res.data[0].code) {
                   userNew = res.data[0].code;
                 } else {
@@ -113,7 +110,7 @@ export function AppProvider(props: Props) {
                   return;
                 }
         
-                const dates = await getDates(currentDay, 0);
+                const dates = await getDates(new Date(), 0);
         
                 const responses = await Promise.all([
                   fetchLiveSchedule(userNew, dates, 0, signal),
@@ -176,60 +173,58 @@ export function AppProvider(props: Props) {
         setAddAccount(false);
         setLoggedIn(true);
     }
+    
+    const toggleAddAccount = () => {
+      setAddAccount(!addAccount());
+      setLoggedIn(!loggedIn())
+    }
+  
+    const switchAccount = (i: number) => {
+      if(i < -1 || i > accounts().length) return;
+      localStorage.setItem(`${localPREFIX}-current`, JSON.stringify(i));
+      setCurrentAccount(i);
+    }
 
-    const addNewAccount = () => {
-        setAddAccount(true);
-        setLoggedIn(false);
-      }
-    
-      const goBack = () => {
-        setAddAccount(false);
-        setLoggedIn(true);
-      }
-    
-      const switchAccount = (i: number) => {
-        if(i < -1 || i > accounts().length) return;
-        localStorage.setItem(`${localPREFIX}-current`, JSON.stringify(i));
-        setCurrentAccount(i);
-      }
+    async function fetchUserData(signal: AbortSignal): Promise<Current> {
+      const current = accounts()[currentAccount()];
+      const school = current.school, token = current.accessToken;
+      
+      const res = await request('GET', '/api/v3/users/~me?fields=code,displayName', token, school, signal);
+      return res.response;
+    }
+  
+    async function fetchLiveSchedule(user: string, dates: Date[], offset: number, signal: AbortSignal): Promise<Appointment[][]>  {
+      const current = accounts()[currentAccount()];
+      const school = current.school, token = current.accessToken;
+      const date = getCurrentDate(new Date(), offset);
+      const week = getWeekNumber(date);
+  
+      const res = await request("GET", `/api/v3/liveschedule?student=${user}&week=${week}&fields=start,end,startTimeSlotName,endTimeSlotName,subjects,groups,locations,teachers,cancelled,changeDescription,schedulerRemark,content,appointmentType`, token, school, signal);
+      const livescheduleRes: LiveSchedule = res.response;
+      const scheduleHours = getScheduleHours(livescheduleRes.data[0].appointments, scheduleStartMin(), scheduleEndMin());
+  
+      let schedule = sortSchedule(livescheduleRes, dates, settings.showChoices);
+  
+      setScheduleHours(scheduleHours);
+      return Promise.resolve(schedule);
+    }
+  
+    async function fetchAnnouncements(signal: AbortSignal): Promise<Announcement[]> {
+      const current = accounts()[currentAccount()];
+      const school = current.school, token = current.accessToken
+      const res = await request("GET", '/api/v3/announcements?user=~me&current=true&fields=text,title,id,read', token, school, signal);
+      const announcementsRes: Announcements = res.response;
+  
+      return Promise.resolve(announcementsRes.data);
+    }
 
-      async function fetchUserData(accounts: Account[], currentAccount: number, signal: AbortSignal): Promise<Current> {
-        const res = await request('GET', '/api/v3/users/~me?fields=code,displayName', accounts[currentAccount].accessToken, accounts[currentAccount].school, signal);
-        return res.response;
-      }
-    
-      async function fetchLiveSchedule(user: string, dates: Date[], offset: number, signal: AbortSignal): Promise<Appointment[][]>  {
-        const current = accounts()[currentAccount()];
-        const school = current.school, token = current.accessToken;
-        const date = getCurrentDate(currentDay, offset);
-        const week = getWeekNumber(date);
-    
-        const res = await request("GET", `/api/v3/liveschedule?student=${user}&week=${week}&fields=start,end,startTimeSlotName,endTimeSlotName,subjects,groups,locations,teachers,cancelled,changeDescription,schedulerRemark,content,appointmentType`, token, school, signal);
-        const livescheduleRes: LiveSchedule = res.response;
-        const scheduleHours = getScheduleHours(livescheduleRes.data[0].appointments, scheduleLowMin, scheduleHighMin);
-    
-        let schedule = sortSchedule(livescheduleRes, dates, settings.showChoices);
-    
-        setScheduleHours(scheduleHours);
-        return Promise.resolve(schedule);
-      }
-    
-      async function fetchAnnouncements(signal: AbortSignal): Promise<Announcement[]> {
-        const current = accounts()[currentAccount()];
-        const school = current.school, token = current.accessToken
-        const res = await request("GET", '/api/v3/announcements?user=~me&current=true&fields=text,title,id,read', token, school, signal);
-        const announcementsRes: Announcements = res.response;
-    
-        return Promise.resolve(announcementsRes.data);
-      }
-
-    return (
-        <AppContext.Provider value={{localPREFIX, user, isDesktop, accounts, currentAccount, logOut, logIn, goBack, settings, updateSettings, addNewAccount, switchAccount, scheduleHours, scheduleLoad, announcementsLoad, datesLoad, fetchLiveSchedule}}>
-            <Show when={!loading()} fallback={<div class="loader-div"><span class='loader'></span></div>}>
-                <Show when={loggedIn() && accounts()} fallback={<Login addAccount={addAccount}/>}>
-                    {props.children}
-                </Show>
-            </Show>
-        </AppContext.Provider>
-    );
+  return (
+      <AppContext.Provider value={{localPREFIX, user, isDesktop, accounts, currentAccount, logOut, logIn, toggleAddAccount, settings, updateSettings, switchAccount, scheduleHours, scheduleLoad, announcementsLoad, datesLoad, fetchLiveSchedule}}>
+          <Show when={!loading()} fallback={<div class="loader-div"><span class='loader'></span></div>}>
+              <Show when={loggedIn() && accounts()} fallback={<Login addAccount={addAccount}/>}>
+                  {props.children}
+              </Show>
+          </Show>
+      </AppContext.Provider>
+  );
 }

@@ -1,4 +1,4 @@
-import { Show } from "solid-js"
+import { Match, Switch } from "solid-js"
 import { useAppState } from "../../context"
 
 interface Props {
@@ -10,10 +10,13 @@ export const Translate = (props: Props) => {
     const {settings} = useAppState();
 
     return (
-        <Show when={props.nlString !== "" && props.enString !== ""} fallback={""}>
-            <Show when={settings.lng === "nl" && props.nlString !== ""} fallback={props.enString}>
+        <Switch fallback={props.enString}>
+            <Match when={settings.lng === "nl"}>
                 {props.nlString}
-            </Show>
-        </Show>
+            </Match>
+            <Match when={settings.lng === "en"}>
+                {props.enString}
+            </Match>
+        </Switch>
     )
 }

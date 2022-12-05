@@ -12,7 +12,7 @@ interface Props {
 }
 
 export const Nav = (props: Props) => {
-    const { isDesktop, accounts, currentAccount, switchAccount, addNewAccount, logOut} = useAppState();
+    const { isDesktop, accounts, currentAccount, switchAccount, toggleAddAccount, logOut} = useAppState();
 
     return (
         <nav class="navbar" aria-label='primary' id="primary-navigation">
@@ -43,7 +43,7 @@ export const Nav = (props: Props) => {
           </ul>
           <section class="buttons">
             <Show when={accounts().length < 5}>
-              <button aria-label='add account' class='add-account' onClick={() => {addNewAccount(); props.setShowSettings(false); props.setShowAnnouncements(false)}}>
+              <button aria-label='add account' class='add-account' onClick={() => {toggleAddAccount(); props.setShowSettings(false); props.setShowAnnouncements(false)}}>
                   <svg viewBox="0 0 1024 1024"><path d="M960 448H576V64a64 64 0 0 0-128 0v384H64a64 64 0 0 0 0 128h384v384a64 64 0 0 0 128 0V576h384a64 64 0 0 0 0-128z" fill="currentColor" /></svg>
                   <span><Translate nlString="Account Toevoegen" enString="Add Account" /></span>
               </button>
@@ -59,7 +59,7 @@ export const Nav = (props: Props) => {
               <span><Translate nlString="Instellingen" enString="Settings" /></span>
             </button>
           </section>
-          <button aria-label='logout' class='logout' onClick={logOut}>
+          <button title="logout" aria-label='logout' class='logout' onClick={logOut}>
             <svg viewBox="0 0 490.3 490.3"><path d="M0,121.05v248.2c0,34.2,27.9,62.1,62.1,62.1h200.6c34.2,0,62.1-27.9,62.1-62.1v-40.2c0-6.8-5.5-12.3-12.3-12.3s-12.3,5.5-12.3,12.3v40.2c0,20.7-16.9,37.6-37.6,37.6H62.1c-20.7,0-37.6-16.9-37.6-37.6v-248.2c0-20.7,16.9-37.6,37.6-37.6h200.6c20.7,0,37.6,16.9,37.6,37.6v40.2c0,6.8,5.5,12.3,12.3,12.3s12.3-5.5,12.3-12.3v-40.2c0-34.2-27.9-62.1-62.1-62.1H62.1C27.9,58.95,0,86.75,0,121.05z" fill="currentColor"/><path d="M385.4,337.65c2.4,2.4,5.5,3.6,8.7,3.6s6.3-1.2,8.7-3.6l83.9-83.9c4.8-4.8,4.8-12.5,0-17.3l-83.9-83.9c-4.8-4.8-12.5-4.8-17.3,0s-4.8,12.5,0,17.3l63,63H218.6c-6.8,0-12.3,5.5-12.3,12.3c0,6.8,5.5,12.3,12.3,12.3h229.8l-63,63C380.6,325.15,380.6,332.95,385.4,337.65z" fill="currentColor"/></svg>
           </button>
         </nav>
