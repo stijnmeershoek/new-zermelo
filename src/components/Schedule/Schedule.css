@@ -94,10 +94,10 @@
     }
 
     & > .schedule-container {
-        @apply overflow-hidden mx-auto w-[min(1110px,100%)] flex flex-col flex-grow;
+        @apply overflow-hidden mx-auto w-[min(1110px,100vw)] flex flex-col flex-grow;
 
         & > .dates {
-            @apply relative flex w-full justify-evenly dsk:px-12 dsk:w-[calc(100%-8px)] pl-5 pr-4 bg-transparent;
+            @apply relative flex w-full justify-evenly dsk:px-12 pl-5 pr-2 bg-transparent;
     
             &::after {
                 content: "";
@@ -134,25 +134,17 @@
         }
     
         & .scroller {
-            @apply flex-grow overflow-y-auto overflow-x-hidden dsk:px-12 pl-5 pr-2;
-    
-            &::-webkit-scrollbar-track {
-                @apply bg-themeWhite dark:bg-themeDark;
-            }
-    
+            @apply relative overflow-y-auto overflow-x-hidden dsk:px-12 pl-5 pr-2;
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+                
             &::-webkit-scrollbar {
-                @apply w-2;
-        
+                @apply hidden;
             }
-    
-            &::-webkit-scrollbar-thumb {
-                @apply bg-[rgb(0,0,0,0.0)];
-            }
-    
         }
     
         & .schedule-grid {
-            @apply relative h-fit flex-shrink-0 overflow-x-visible w-auto grid grid-cols-[auto,repeat(5,minmax(0,1fr))];
+            @apply relative h-fit flex-shrink-0 overflow-x-visible w-full grid grid-cols-[auto,repeat(5,minmax(0,1fr))];
         
             & .time-indicator {
                 @apply absolute z-10 top-[0px] flex items-center h-[1px] overflow-visible left-1/2 -translate-x-1/2 w-[calc(100%+15px)] col-[span_5/7];
