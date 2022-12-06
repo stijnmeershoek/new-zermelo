@@ -94,7 +94,7 @@
     }
 
     & > .schedule-container {
-        @apply overflow-hidden mx-auto w-[min(1110px,100vw)] flex flex-col flex-grow;
+        @apply overflow-hidden mx-auto w-[min(1110px,100%)] flex flex-col flex-grow;
 
         & > .dates {
             @apply relative flex w-full justify-evenly dsk:px-12 pl-5 pr-2 bg-transparent;
