@@ -4,7 +4,7 @@ import { Translate } from "../../Translate";
 interface Props {
   closeLessonModal: () => void, 
   lessonModalOpen: Accessor<boolean>, 
-  selectedLesson: Accessor<Appointment | null | undefined>
+  selectedLesson: Accessor<Appointment | undefined>
 }
 
 export const LessonModal = (props: Props) => {

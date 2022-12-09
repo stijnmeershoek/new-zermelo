@@ -7,7 +7,7 @@ import { Translate } from "../../Translate";
 interface Props { 
   closeChoiceModal: () => void, 
   choiceModalOpen: Accessor<boolean>, 
-  selectedLesson: Accessor<Appointment | null>
+  selectedLesson: Accessor<Appointment | undefined>
 }
 
 export const ChoiceModal = (props: Props) => {
@@ -24,13 +24,15 @@ export const ChoiceModal = (props: Props) => {
       request("POST", currentValue(), accessToken, school, signal).then(() => {
         props.closeChoiceModal();
       });
-    }
-  
+    }  
     return ( 
         <dialog onClick={(e) => {(e.target as HTMLElement).classList.contains("choice-modal") && props.closeChoiceModal()}} aria-modal="true" open={props.choiceModalOpen()} class={`${(props.choiceModalOpen() && props.selectedLesson()) ? "open " : ""}choice-modal`} aria-label='choice info'>
           <form onSubmit={postChoice} class={`${props.selectedLesson ? (props.selectedLesson()?.appointmentType + " ") : ""}${props.selectedLesson()?.cancelled ? "cancelled " : ""}content`}>
             <Show when={props.selectedLesson()}>
               <div class='form-scroller'>
+              <Show when={props.selectedLesson()?.appointmentType !== "conflict"}>
+                <div><LessonBlock isDesktop={() => true} lesson={props.selectedLesson()!} onClick={() => {}} /></div>
+              </Show>
                 <Show when={(props.selectedLesson() && props.selectedLesson()?.actions && props.selectedLesson()?.actions?.length !== 0)}>
                   <For each={props.selectedLesson()?.actions}>{(action) => (
                     <div>

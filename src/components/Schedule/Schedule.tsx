@@ -86,7 +86,7 @@ export const Schedule = (props: Props) => {
 
       const interval = setInterval(() => {
           changeTimePosition();
-      }, 1000)
+      }, 1000 * 30)
 
       onCleanup(() => clearInterval(interval))
     }))

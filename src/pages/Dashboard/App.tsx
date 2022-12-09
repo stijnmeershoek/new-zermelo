@@ -17,7 +17,7 @@ export const App = () => {
   const [showSettings, setShowSettings] = createSignal(false);
   const [lessonModalOpen, setLessonModalOpen] = createSignal(false);
   const [choiceModalOpen, setChoiceModalOpen] = createSignal(false);
-  const [selectedLesson, setSelectedLesson] = createSignal<Appointment | null>(null);
+  const [selectedLesson, setSelectedLesson] = createSignal<Appointment | undefined>();
 
   useEventListener('keydown', keyHandler);
 
@@ -40,7 +40,7 @@ export const App = () => {
   const closeLessonModal = () => {
     setLessonModalOpen(false);
     setTimeout(() => {
-      setSelectedLesson(null);
+      setSelectedLesson(undefined);
     }, 150)
   }
 
@@ -52,7 +52,7 @@ export const App = () => {
   const closeChoiceModal = () => {
     setChoiceModalOpen(false);
     setTimeout(() => {
-      setSelectedLesson(null);
+      setSelectedLesson(undefined);
     }, 150)
   }
 
