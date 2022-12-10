@@ -1,0 +1,35 @@
+.add-appointment-modal > .content {
+    @apply w-[clamp(17rem,90%,27rem)] cursor-default overflow-hidden px-5 py-6 rounded-xl flex flex-col gap-2 text-xl;
+
+    &.lesson {
+        @apply dark:text-themeWhite;
+    }
+
+    & h2 {
+        @apply font-bold;
+    }
+
+    & > form {
+        @apply flex flex-col;
+
+        & > input {
+            @apply dark:bg-[rgb(0,0,0,0.3)] bg-[rgb(255,255,255,0.5)] px-1 rounded-md mb-2;
+        }
+        
+        & > select {
+            @apply dark:bg-[rgb(0,0,0,0.3)] bg-[rgb(255,255,255,0.5)] py-1 rounded-md mb-2;
+
+            & > option {
+                @apply text-black bg-themeWhite dark:bg-themeDark dark:text-themeWhite;
+            }
+        }
+        
+        & label {
+            @apply text-sm;
+        }
+
+        & > button {
+            @apply dark:bg-[rgb(0,0,0,0.3)] bg-[rgb(255,255,255,0.5)] py-1 font-bold rounded-lg mt-5;
+        }
+    }
+}

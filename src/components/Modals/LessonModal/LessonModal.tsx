@@ -9,7 +9,7 @@ interface Props {
 
 export const LessonModal = (props: Props) => {
     return (
-      <dialog onClick={(e) => (e.target as HTMLElement).classList.contains('lesson-modal') && props.closeLessonModal()} aria-modal="true" open={props.lessonModalOpen()} class={`${(props.lessonModalOpen() && props.selectedLesson()) ? "open " : ""}lesson-modal`} aria-label='lesson info'>
+      <dialog onClick={(e) => (e.target as HTMLElement).classList.contains('lesson-modal') && props.closeLessonModal()} aria-modal="true" open={props.lessonModalOpen()} class='lesson-modal' aria-label='lesson info'>
         <div class={`${props.selectedLesson() ? (props.selectedLesson()?.appointmentType + " ") : ""}${props.selectedLesson()?.cancelled ? "cancelled " : ""}content`}>
           <Show when={props.selectedLesson()}>
           <>

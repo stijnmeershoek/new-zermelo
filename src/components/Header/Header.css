@@ -26,6 +26,14 @@
         }
     }
 
+    & > button.add-appointment {
+        @apply dsk:ml-7 ml-5 aspect-square dsk:p-2 p-[0.4rem] rounded-lg transition-colors dsk:dark:bg-themeWhite dsk:bg-themeDark bg-themeWhite dsk:dark:text-themeDark dsk:text-themeWhite text-themeDark hover:!bg-theme focus-visible:!bg-theme outline-none;
+
+        & > svg {
+            @apply dsk:h-5 h-4;
+        }
+    }
+
     & button.next {
         @apply dsk:ml-8 ml-4;
 

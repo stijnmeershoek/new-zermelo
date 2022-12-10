@@ -96,6 +96,7 @@ export function AppProvider(props: Props) {
             const current = accounts()[currentAccount()];
             if(!loggedIn() || !current.accessToken) return;
             setLoading(true);
+            const defaultOffset = (new Date().getDay() === 6 || new Date().getDay() === 0) ? 1 : 0;
             const abortController = new AbortController();
             const signal = abortController.signal;
         
@@ -110,10 +111,10 @@ export function AppProvider(props: Props) {
                   return;
                 }
         
-                const dates = await getDates(new Date(), 0);
+                const dates = await getDates(new Date(), defaultOffset);
         
                 const responses = await Promise.all([
-                  fetchLiveSchedule(userNew, dates, 0, signal),
+                  fetchLiveSchedule(userNew, dates, defaultOffset, signal),
                   fetchAnnouncements(signal),
                 ])
         
@@ -201,11 +202,14 @@ export function AppProvider(props: Props) {
   
       const res = await request("GET", `/api/v3/liveschedule?student=${user}&week=${week}&fields=start,end,startTimeSlotName,endTimeSlotName,subjects,groups,locations,teachers,cancelled,changeDescription,schedulerRemark,content,appointmentType`, token, school, signal);
       const livescheduleRes: LiveSchedule = res.response;
-      const scheduleHours = getScheduleHours(livescheduleRes.data[0].appointments, scheduleStartMin(), scheduleEndMin());
-  
-      let schedule = sortSchedule(livescheduleRes, dates, settings.showChoices);
-  
-      setScheduleHours(scheduleHours);
+
+      let schedule: Appointment[][] = [];
+      if(livescheduleRes.data[0].appointments.length > 1) {
+        schedule = sortSchedule(livescheduleRes.data[0].appointments, dates, settings.showChoices);
+        const scheduleHours = getScheduleHours(livescheduleRes.data[0].appointments, scheduleStartMin(), scheduleEndMin());
+        setScheduleHours(scheduleHours);
+      }
+
       return Promise.resolve(schedule);
     }
   

@@ -26,7 +26,7 @@ export const ChoiceModal = (props: Props) => {
       });
     }  
     return ( 
-        <dialog onClick={(e) => {(e.target as HTMLElement).classList.contains("choice-modal") && props.closeChoiceModal()}} aria-modal="true" open={props.choiceModalOpen()} class={`${(props.choiceModalOpen() && props.selectedLesson()) ? "open " : ""}choice-modal`} aria-label='choice info'>
+        <dialog onClick={(e) => {(e.target as HTMLElement).classList.contains("choice-modal") && props.closeChoiceModal()}} aria-modal="true" open={props.choiceModalOpen()} class='choice-modal' aria-label='choice info'>
           <form onSubmit={postChoice} class={`${props.selectedLesson ? (props.selectedLesson()?.appointmentType + " ") : ""}${props.selectedLesson()?.cancelled ? "cancelled " : ""}content`}>
             <Show when={props.selectedLesson()}>
               <div class='form-scroller'>

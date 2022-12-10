@@ -62,6 +62,15 @@ type CurrentUserData = {
 }
 
 /* 
+    //* CUSTOM APPOINTMENTS
+    //* ALL DATA
+*/
+
+type CustomAppointments = {
+    [userId: string]: Appointment[]
+}
+
+/* 
     //* LIVESCHEDULE 
     //* ALL DATA
 */
@@ -77,35 +86,35 @@ declare type LiveSchedule = {
 }
 
 declare type Appointment = {
-    status?:                    Status[];
-    actions?:                   Action[];
-    start:                      number;
-    end:                        number;
-    cancelled:                  boolean;
-    appointmentType:            string;
-    online:                     boolean;
-    optional:                   boolean;
-    appointmentInstance:        number | null;
-    startTimeSlotName:          string;
-    endTimeSlotName:            string;
-    subjects:                   string[];
-    groups:                     string[];
-    locations:                  string[];
-    teachers:                   string[];
-    onlineTeachers:             any[];
-    onlineLocationUrl:          null;
-    capacity:                   null;
-    expectedStudentCount:       null;
-    expectedStudentCountOnline: null;
-    changeDescription:          null | string;
-    schedulerRemark:            null | string;
-    content:                    null;
-    id:                         number | null;
-    plannedAttendance?:         boolean;
-    studentEnrolled?:           boolean;
-    allowedActions?:            string;
-    attendanceOverruled?:       boolean;
-    availableSpace?:            number;
+    start:                       number;
+    end:                         number;
+    cancelled:                   boolean;
+    appointmentType:             string;
+    online:                      boolean;
+    optional:                    boolean;  
+    subjects:                    string[];
+    groups:                      string[];
+    locations:                   string[];
+    teachers:                    string[];
+    id?:                         number;
+    onlineTeachers?:             string[];
+    onlineLocationUrl?:          str;
+    appointmentInstance?:        number;
+    startTimeSlotName?:          string;
+    endTimeSlotName?:            string;
+    capacity?:                   number;
+    expectedStudentCount?:       number;
+    expectedStudentCountOnline?: number;
+    changeDescription?:          string;
+    schedulerRemark?:            string;
+    content?:                    string;
+    plannedAttendance?:          boolean;
+    studentEnrolled?:            boolean;
+    allowedActions?:             string;
+    attendanceOverruled?:        boolean;
+    availableSpace?:             number;
+    status?:                     Status[];
+    actions?:                    Action[];
 }
 
 type Data =  {

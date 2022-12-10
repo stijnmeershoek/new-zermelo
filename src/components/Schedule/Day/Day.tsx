@@ -15,7 +15,7 @@ export const Day = (props: Props) => {
 
     return (
         <>
-            <Show when={props.schedule()[props.dayNumber]?.length !== 0} fallback={<div style={{'grid-row': "1 / -1"}}></div>}>
+            <Show when={props.schedule()[props.dayNumber]?.length !== 0}>
                 <For each={props.schedule()[props.dayNumber]}>{(lesson) => {
                     let rowStart = (new Date(lesson.start * 1000).getHours() - props.scheduleMin) * 12 + new Date(lesson.start * 1000).getMinutes() / 5 + 3;
                     let rowEnd = (new Date(lesson.end * 1000).getHours() - props.scheduleMin) * 12 + new Date(lesson.end * 1000).getMinutes() / 5 + 3

@@ -32,10 +32,11 @@ export const getDates = async (currentDay: Date, offset: number) => {
 }
 
 export const getWeekNumber = (date: Date) => {
-    return `${date.getFullYear()}${Math.ceil(Math.floor((Number(date) - Number(new Date(date.getFullYear(), 0, 1))) / (24 * 60 * 60 * 1000)) / 7)}`
+    return `${date.getFullYear()}` + `${Math.ceil(Math.floor((Number(date) - Number(new Date(date.getFullYear(), 0, 1))) / (24 * 60 * 60 * 1000)) / 7)}`.padStart(2, "0")
 }
 
 export function getScheduleHours(appointments: Appointment[], min: number, max: number) {
+    if(appointments.length < 1) return [];
     let highest = new Date(appointments.reduce(
         (previous, current) => current.end > previous ? current.end : previous,
         appointments[0].end
@@ -56,12 +57,13 @@ export function getScheduleHours(appointments: Appointment[], min: number, max: 
     return hours;
 }
 
-export const sortSchedule = (liveschedule: LiveSchedule, dates: Date[], showChoices: string) => {
-    const day0 = liveschedule.data[0].appointments.filter((lesson) =>new Date(lesson.start * 1000).toDateString() === dates[0].toDateString() && new Date(lesson.end * 1000).toDateString() === dates[0].toDateString()).sort((a, b) => (a.start > b.start ? 1 : -1));
-    const day1 = liveschedule.data[0].appointments.filter((lesson) =>new Date(lesson.start * 1000).toDateString() === dates[1].toDateString() && new Date(lesson.end * 1000).toDateString() === dates[1].toDateString()).sort((a, b) => (a.start > b.start ? 1 : -1));
-    const day2 = liveschedule.data[0].appointments.filter((lesson) =>new Date(lesson.start * 1000).toDateString() === dates[2].toDateString() && new Date(lesson.end * 1000).toDateString() === dates[2].toDateString()).sort((a, b) => (a.start > b.start ? 1 : -1));
-    const day3 = liveschedule.data[0].appointments.filter((lesson) =>new Date(lesson.start * 1000).toDateString() === dates[3].toDateString() && new Date(lesson.end * 1000).toDateString() === dates[3].toDateString()).sort((a, b) => (a.start > b.start ? 1 : -1));
-    const day4 = liveschedule.data[0].appointments.filter((lesson) =>new Date(lesson.start * 1000).toDateString() === dates[4].toDateString() && new Date(lesson.end * 1000).toDateString() === dates[4].toDateString()).sort((a, b) => (a.start > b.start ? 1 : -1));
+export const sortSchedule = (appointments: Appointment[], dates: Date[], showChoices: string) => {
+    if(appointments.length < 1) return [];
+    const day0 = appointments.filter((lesson) =>new Date(lesson.start * 1000).toDateString() === dates[0].toDateString() && new Date(lesson.end * 1000).toDateString() === dates[0].toDateString()).sort((a, b) => (a.start > b.start ? 1 : -1));
+    const day1 = appointments.filter((lesson) =>new Date(lesson.start * 1000).toDateString() === dates[1].toDateString() && new Date(lesson.end * 1000).toDateString() === dates[1].toDateString()).sort((a, b) => (a.start > b.start ? 1 : -1));
+    const day2 = appointments.filter((lesson) =>new Date(lesson.start * 1000).toDateString() === dates[2].toDateString() && new Date(lesson.end * 1000).toDateString() === dates[2].toDateString()).sort((a, b) => (a.start > b.start ? 1 : -1));
+    const day3 = appointments.filter((lesson) =>new Date(lesson.start * 1000).toDateString() === dates[3].toDateString() && new Date(lesson.end * 1000).toDateString() === dates[3].toDateString()).sort((a, b) => (a.start > b.start ? 1 : -1));
+    const day4 = appointments.filter((lesson) =>new Date(lesson.start * 1000).toDateString() === dates[4].toDateString() && new Date(lesson.end * 1000).toDateString() === dates[4].toDateString()).sort((a, b) => (a.start > b.start ? 1 : -1));
     let schedule = [day0, day1, day2, day3, day4];
     let filtered = schedule;
     if(showChoices === "false") {

@@ -7,6 +7,7 @@ import './Schedule.css'
 
 interface Props {
   offset: Accessor<number>,
+  defaultOffset: Accessor<number>,
   openChoiceModal: (lesson: Appointment) => void, 
   openLessonModal: (lesson: Appointment) => void, 
   choiceModalOpen: Accessor<boolean>, 
@@ -27,9 +28,9 @@ export const Schedule = (props: Props) => {
     createEffect(on(() => [props.offset(), settings.showChoices, props.choiceModalOpen()], () => {
       if(props.choiceModalOpen() !== false) return;
 
-      if(props.offset() === 0) {
+      if(props.offset() === props.defaultOffset()) {
         setDates(datesLoad);
-        if(props.offset() === 0 && showChoicesRef === settings.showChoices && choiceModalOpenRef === props.choiceModalOpen()) {
+        if(props.offset() === props.defaultOffset() && showChoicesRef === settings.showChoices && choiceModalOpenRef === props.choiceModalOpen()) {
           setSchedule(scheduleLoad);
           return;
         }

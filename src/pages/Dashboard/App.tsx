@@ -1,6 +1,7 @@
-import { createSignal, Show } from "solid-js";
+import { createMemo, createSignal, Show } from "solid-js";
 import { Announcements } from "../../components/Announcements";
 import { Header } from "../../components/Header";
+import { AddAppointmentModal } from "../../components/Modals/AddAppointmentModal";
 import { ChoiceModal } from "../../components/Modals/ChoiceModal";
 import { LessonModal } from "../../components/Modals/LessonModal";
 import { Nav } from "../../components/Nav";
@@ -11,8 +12,10 @@ import { useEventListener } from "../../hooks";
 
 export const App = () => {
   const { isDesktop, announcementsLoad: announcements } = useAppState();
-  const [offset, setOffset] = createSignal(0);
+  const defaultOffset = createMemo(() => (new Date().getDay() === 6 || new Date().getDay() === 0) ? 1 : 0);
+  const [offset, setOffset] = createSignal(defaultOffset());
   const [menuOpen, setMenuOpen] = createSignal(false);
+  const [addAppointmentOpen, setAddAppointmentOpen] = createSignal(false);
   const [showAnnouncements, setShowAnnouncements] = createSignal(false);
   const [showSettings, setShowSettings] = createSignal(false);
   const [lessonModalOpen, setLessonModalOpen] = createSignal(false);
@@ -69,12 +72,13 @@ export const App = () => {
         </Show>
 
         <main class="schedule">
-          <Header offset={offset} setOffset={setOffset} showAnnouncements={showAnnouncements} showSettings={showSettings} menuOpen={menuOpen} setMenuOpen={setMenuOpen}/>
+          <Header offset={offset} setOffset={setOffset} showAnnouncements={showAnnouncements} showSettings={showSettings} menuOpen={menuOpen} setMenuOpen={setMenuOpen} addAppointmentOpen={addAppointmentOpen} setAddAppointmentOpen={setAddAppointmentOpen}/>
 
-          <Schedule offset={offset} choiceModalOpen={choiceModalOpen} openLessonModal={openLessonModal} openChoiceModal={openChoiceModal} />
+          <Schedule offset={offset} defaultOffset={defaultOffset} choiceModalOpen={choiceModalOpen} openLessonModal={openLessonModal} openChoiceModal={openChoiceModal} />
 
           <LessonModal lessonModalOpen={lessonModalOpen} closeLessonModal={closeLessonModal} selectedLesson={selectedLesson}/>
           <ChoiceModal choiceModalOpen={choiceModalOpen} closeChoiceModal={closeChoiceModal} selectedLesson={selectedLesson}/>
+          <AddAppointmentModal addAppointmentOpen={addAppointmentOpen} setAddAppointmentOpen={setAddAppointmentOpen}/>
         </main>
     </div>
   );

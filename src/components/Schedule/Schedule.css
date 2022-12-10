@@ -1,9 +1,15 @@
 .schedule {
     @apply relative h-full ml-auto flex-grow flex flex-col bg-themeWhite dark:bg-themeDark;
 
-    & > .lesson-modal, & > .choice-modal {
+    & > dialog[class$="modal"] {
         @apply will-change-auto pointer-events-none cursor-pointer flex opacity-0 absolute top-0 left-0 w-full h-full bg-black bg-opacity-60 z-40 justify-center items-center transition-opacity;
-        
+    
+        &[open] {
+            @apply pointer-events-auto opacity-100;
+        }
+    }
+
+    & > .lesson-modal, & > .choice-modal {
         & > .content {
             @apply w-[clamp(17rem,90%,27rem)] cursor-default overflow-hidden px-5 py-6 rounded-xl flex flex-col gap-2 text-xl;
 
@@ -41,10 +47,6 @@
                     @apply block text-xl font-bold underline;
                 }
             }
-        }
-
-        &.open {
-            @apply pointer-events-auto opacity-100;
         }
     }
 
