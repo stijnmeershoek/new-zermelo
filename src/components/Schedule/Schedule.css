@@ -55,10 +55,6 @@
 
             & > button {
                 @apply dark:bg-[rgb(255,255,255,.15)] bg-[rgb(0,0,0,0.15)] dark:text-white text-black font-bold rounded-lg py-3 mt-4 dark:hover:bg-[rgb(255,255,255,.25)] hover:bg-[rgb(0,0,0,0.25)];
-            
-                &:disabled {
-                    @apply pointer-events-none select-none touch-none opacity-20;
-                }
             }
 
             & > .form-scroller {

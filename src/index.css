@@ -33,3 +33,7 @@
         @apply translate-x-0;
     }
 }
+
+button:disabled {
+    @apply pointer-events-none select-none touch-none opacity-20;
+}

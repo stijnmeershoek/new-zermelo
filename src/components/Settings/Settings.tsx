@@ -29,6 +29,14 @@ export const Settings = () => {
               <option value="true"><Translate nlString="Ja" enString="Yes" /></option>
             </select>
           </div>
+          {/* //TODO finalize custom appointments */}
+          {/* <div>
+            <label for="custom"><Translate nlString="Eigen afspraken" enString="Personal Appointments" />:</label>
+            <select id="custom" value={settings.enableCustom} onInput={updateSettings('enableCustom')}>
+              <option value="false"><Translate nlString="Nee" enString="No" /></option>
+              <option value="true"><Translate nlString="Ja" enString="Yes" /></option>
+            </select>
+          </div> */}
         </aside>
     )
 }

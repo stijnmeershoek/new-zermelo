@@ -4,7 +4,7 @@ import { Accessor, For, Show } from 'solid-js';
 
 interface Props {
     dayNumber: number,
-    schedule: Accessor<Appointment[][]>, 
+    schedule: Accessor<Appointment[][]>,
     scheduleMin: number,
     openLessonModal: (lesson: Appointment) => void, 
     openChoiceModal: (lesson: Appointment) => void
@@ -20,7 +20,7 @@ export const Day = (props: Props) => {
                     let rowStart = (new Date(lesson.start * 1000).getHours() - props.scheduleMin) * 12 + new Date(lesson.start * 1000).getMinutes() / 5 + 3;
                     let rowEnd = (new Date(lesson.end * 1000).getHours() - props.scheduleMin) * 12 + new Date(lesson.end * 1000).getMinutes() / 5 + 3
 
-                    const onClick = lesson.actions?.length !== 0 ? () => {props.openChoiceModal(lesson)} : () => {props.openLessonModal(lesson)};
+                    const onClick = (lesson.actions && lesson.actions.length !== 0) ? () => {props.openChoiceModal(lesson)} : () => {props.openLessonModal(lesson)};
 
                     return (
                         <LessonBlock

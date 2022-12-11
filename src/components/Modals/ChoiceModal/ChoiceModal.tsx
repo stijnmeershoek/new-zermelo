@@ -1,18 +1,31 @@
-import { Accessor, createSignal, For, Show  } from "solid-js";
+import { Accessor, createEffect, createSignal, For, Show  } from "solid-js";
 import { request } from "../../../api/requests";
 import { useAppState } from "../../../context";
 import { LessonBlock } from "../../LessonBlock";
 import { Translate } from "../../Translate";
 
 interface Props { 
-  closeChoiceModal: () => void, 
-  choiceModalOpen: Accessor<boolean>, 
+  closeModal: () => void, 
   selectedLesson: Accessor<Appointment | undefined>
 }
 
 export const ChoiceModal = (props: Props) => {
     const {accounts, currentAccount} = useAppState();
     const [currentValue, setCurrentValue] = createSignal("");
+    const [open, setOpen] = createSignal(false);
+
+    createEffect(() => {
+      setTimeout(() => {
+        setOpen(true)
+      }, 1)
+    })
+
+    const closeModal = () => {
+      setOpen(false);
+      setTimeout(() => {
+        props.closeModal();
+      }, 150)
+    }
   
     const postChoice = (e: Event) => {
       e.preventDefault();
@@ -22,11 +35,12 @@ export const ChoiceModal = (props: Props) => {
       const signal = abortController.signal
   
       request("POST", currentValue(), accessToken, school, signal).then(() => {
-        props.closeChoiceModal();
+        closeModal();
       });
-    }  
+    }
+
     return ( 
-        <dialog onClick={(e) => {(e.target as HTMLElement).classList.contains("choice-modal") && props.closeChoiceModal()}} aria-modal="true" open={props.choiceModalOpen()} class='choice-modal' aria-label='choice info'>
+        <dialog onClick={(e) => {(e.target as HTMLElement).classList.contains("choice-modal") && closeModal()}} aria-modal="true" open={open()} class='choice-modal' aria-label='choice info'>
           <form onSubmit={postChoice} class={`${props.selectedLesson ? (props.selectedLesson()?.appointmentType + " ") : ""}${props.selectedLesson()?.cancelled ? "cancelled " : ""}content`}>
             <Show when={props.selectedLesson()}>
               <div class='form-scroller'>

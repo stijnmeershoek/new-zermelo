@@ -81,7 +81,7 @@ const LessonContent = (props: LessonProps) => {
             </g>
           </svg>
         </Show>
-        <Show when={props.lesson.actions?.length !== 0}>
+        <Show when={props.lesson.actions && props.lesson.actions.length !== 0}>
           <svg class="options" viewBox="0 0 1024 1024"><path d="M960 448H576V64a64 64 0 0 0-128 0v384H64a64 64 0 0 0 0 128h384v384a64 64 0 0 0 128 0V576h384a64 64 0 0 0 0-128z" fill="currentColor" /></svg>
         </Show>
       </section>

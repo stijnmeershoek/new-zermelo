@@ -2,9 +2,10 @@
     //* SETTINGS
 */
 type Settings = {
-    lng:         string,
-    theme:       string,
-    showChoices: string,
+    lng:          string,
+    theme:        string,
+    showChoices:  string,
+    enableCustom: string
 }
 
 /* 

@@ -1,21 +1,21 @@
-import { createEffect, on, onCleanup } from "solid-js";
+import { createEffect, onCleanup } from "solid-js";
 
-export const useEventListener = (eventName: string, handler: Function, element = window) => {
-  let savedHandler = handler;
+interface Props {
+  eventName: string,
+  handler: Function,
+  element: HTMLElement | (Window & typeof globalThis)
+}
 
-  createEffect(
-    on(() => handler, () => {
-      savedHandler = handler;
-    })
-  );
+export const useEventListener = (props: Props) => {
+  let savedHandler = props.handler;
 
   createEffect(() => {
-    const isSupported = element && element.addEventListener;
+    const isSupported = props.element && props.element.addEventListener;
     if (!isSupported) return;
 
     const eventListener = (event: any) => savedHandler(event);
-    element.addEventListener(eventName, eventListener);
+    props.element.addEventListener(props.eventName, eventListener);
 
-    onCleanup(() => element.removeEventListener(eventName, eventListener))
+    onCleanup(() => props.element.removeEventListener(props.eventName, eventListener))
   })
 };

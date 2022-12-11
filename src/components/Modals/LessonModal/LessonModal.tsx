@@ -1,15 +1,29 @@
-import { Accessor, Show } from "solid-js";
+import { Accessor, createEffect, createSignal, Show } from "solid-js";
 import { Translate } from "../../Translate";
 
 interface Props {
-  closeLessonModal: () => void, 
-  lessonModalOpen: Accessor<boolean>, 
+  closeModal: () => void, 
   selectedLesson: Accessor<Appointment | undefined>
 }
 
 export const LessonModal = (props: Props) => {
+    const [open, setOpen] = createSignal(false);
+
+    createEffect(() => {
+      setTimeout(() => {
+        setOpen(true)
+      }, 1)
+    })
+
+    const closeModal = () => {
+      setOpen(false);
+      setTimeout(() => {
+        props.closeModal();
+      }, 150)
+    }
+
     return (
-      <dialog onClick={(e) => (e.target as HTMLElement).classList.contains('lesson-modal') && props.closeLessonModal()} aria-modal="true" open={props.lessonModalOpen()} class='lesson-modal' aria-label='lesson info'>
+      <dialog onClick={(e) => (e.target as HTMLElement).classList.contains('lesson-modal') && closeModal()} aria-modal="true" open={open()} class='lesson-modal' aria-label='lesson info'>
         <div class={`${props.selectedLesson() ? (props.selectedLesson()?.appointmentType + " ") : ""}${props.selectedLesson()?.cancelled ? "cancelled " : ""}content`}>
           <Show when={props.selectedLesson()}>
           <>

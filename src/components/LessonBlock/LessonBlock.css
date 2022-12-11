@@ -42,7 +42,7 @@
         }
         
         & > :first-child {
-            @apply font-black text-[clamp(.875rem,3vw,1rem)] text-[rgba(0,0,0,0.65)] max-w-full whitespace-nowrap text-ellipsis uppercase dsk:normal-case dsk:leading-normal leading-4;
+            @apply font-black text-[clamp(.875rem,3vw,1rem)] text-[rgba(0,0,0,0.65)] max-w-full uppercase dsk:normal-case dsk:leading-normal leading-4;
         }
 
         & > :nth-child(2) {

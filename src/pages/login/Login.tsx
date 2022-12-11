@@ -15,7 +15,7 @@ type LoginForm = {
   code: string,
 }
 
-export function Login(props: Props) {
+export default function Login(props: Props) {
     const {localPREFIX, logIn, toggleAddAccount} = useAppState();
     const [err, setErrMessage] = createSignal({nlString: "", enString: ""});
     const [form, setForm] = createStore<LoginForm>({

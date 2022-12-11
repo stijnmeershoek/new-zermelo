@@ -1,9 +1,9 @@
-import { useContext, createSignal, createEffect, createContext, JSX, Show, Accessor, on, onCleanup } from "solid-js";
+import { useContext, createSignal, createEffect, createContext, JSX, Show, Accessor, on, onCleanup, lazy } from "solid-js";
 import { createStore } from "solid-js/store";
+import { getCurrentDate, getDates, getScheduleHours, getWeekNumber, sortSchedule } from "../utils/functions";
 import { request } from "../api/requests";
 import { useMediaQuery } from "../hooks";
-import { Login } from "../pages/Login";
-import { getCurrentDate, getDates, getScheduleHours, getWeekNumber, sortSchedule } from "../utils/functions";
+const Login = lazy(() => import("../pages/Login/Login"));
 
 
 type State = {
@@ -27,7 +27,7 @@ type State = {
   
   const initialState: State = {
     localPREFIX: "zermelo",
-    settings: {lng: "nl",showChoices: "false",theme: "light"},
+    settings: {lng: "nl",showChoices: "false",theme: "light", enableCustom: "false"},
     updateSettings: () => () => {},
     isDesktop: () => true,
     user: () => "",
@@ -67,7 +67,7 @@ export function AppProvider(props: Props) {
     const [addAccount, setAddAccount] = createSignal(false);
     const [user, setUser] = createSignal("");
 
-    const [settings, setSettings] = createStore<Settings>(JSON.parse(localStorage.getItem(`${localPREFIX}-settings`) || '{"lng": "nl", "theme": "light", "showChoices": "false"}'));
+    const [settings, setSettings] = createStore<Settings>(JSON.parse(localStorage.getItem(`${localPREFIX}-settings`) || '{"lng": "nl", "theme": "light", "showChoices": "false", "enableCustom": "false"}'));
 
     const [group, setGroup] = createSignal("");
     const [scheduleHours, setScheduleHours] = createSignal<number[]>([])
@@ -87,6 +87,7 @@ export function AppProvider(props: Props) {
             setLoggedIn(false)
             setLoading(false);
           } else {
+            if(currentAccount() > accounts().length - 1) setCurrentAccount(accounts().length - 1);
             setLoggedIn(true);
           }
     })
@@ -144,7 +145,7 @@ export function AppProvider(props: Props) {
         })
       );
 
-      createEffect(on(() => [settings.showChoices, settings.lng, settings.theme], () => {
+      createEffect(on(() => [settings.enableCustom, settings.showChoices, settings.lng, settings.theme], () => {
         if(!settings) return;
         localStorage.setItem(`${localPREFIX}-settings`, JSON.stringify(settings));
         document.body.classList.value = settings.theme;
@@ -193,6 +194,14 @@ export function AppProvider(props: Props) {
       const res = await request('GET', '/api/v3/users/~me?fields=code,displayName', token, school, signal);
       return res.response;
     }
+
+    async function fetchCustomAppointments(user: string): Promise<Appointment[]> {
+      const res = localStorage.getItem(`${localPREFIX}-customappointments`)
+      if(!res) return [];
+      const appointmentsRes = JSON.parse(res);
+      const appointments = appointmentsRes[user] || []
+      return Promise.resolve(appointments);
+    }
   
     async function fetchLiveSchedule(user: string, dates: Date[], offset: number, signal: AbortSignal): Promise<Appointment[][]>  {
       const current = accounts()[currentAccount()];
@@ -202,11 +211,17 @@ export function AppProvider(props: Props) {
   
       const res = await request("GET", `/api/v3/liveschedule?student=${user}&week=${week}&fields=start,end,startTimeSlotName,endTimeSlotName,subjects,groups,locations,teachers,cancelled,changeDescription,schedulerRemark,content,appointmentType`, token, school, signal);
       const livescheduleRes: LiveSchedule = res.response;
+      let merged = livescheduleRes.data[0].appointments;
+      
+      if(settings.enableCustom === "true") {
+        const customAppointments = await fetchCustomAppointments(user);
+        merged = livescheduleRes.data[0].appointments.concat(customAppointments);
+      }
 
       let schedule: Appointment[][] = [];
-      if(livescheduleRes.data[0].appointments.length > 1) {
-        schedule = sortSchedule(livescheduleRes.data[0].appointments, dates, settings.showChoices);
-        const scheduleHours = getScheduleHours(livescheduleRes.data[0].appointments, scheduleStartMin(), scheduleEndMin());
+      if(merged.length > 1) {
+        schedule = sortSchedule(merged, dates, settings.showChoices);
+        const scheduleHours = getScheduleHours(merged, scheduleStartMin(), scheduleEndMin());
         setScheduleHours(scheduleHours);
       }
 
