@@ -1,1 +1,0 @@
-import{u as a,a as t,M as r,v as g}from"./index.771b03eb.js";const c=e=>{const{settings:n}=a();return t(g,{get fallback(){return e.enString},get children(){return[t(r,{get when(){return n.lng==="nl"},get children(){return e.nlString}}),t(r,{get when(){return n.lng==="en"},get children(){return e.enString}})]}})};export{c as T};
