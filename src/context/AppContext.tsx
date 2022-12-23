@@ -57,7 +57,7 @@ interface Props {
 export function AppProvider(props: Props) {
     const localPREFIX = "zermelo"
     const [scheduleStartMin, setScheduleStartMin] = createSignal(8);
-    const [scheduleEndMin, setScheduleEndMin] = createSignal(16);
+    const [scheduleEndMin, setScheduleEndMin] = createSignal(17);
     const isDesktop = useMediaQuery({query: '(min-width: 1110px)'})
     const [loading, setLoading] = createSignal(true);
 

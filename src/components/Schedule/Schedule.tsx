@@ -76,7 +76,7 @@ export const Schedule = (props: Props) => {
         let diff = (new Date().getTime() - dayStart.getTime());
         let diffMins = Math.floor((diff/1000/60) << 0);
         
-        if(diffMins > 540 || diffMins < 0) {
+        if(diffMins > rowAmount() * 5 || diffMins < 0) {
           timeIndicatorRef.classList.add("!hidden");
         } else {
           timeIndicatorRef.classList.remove("!hidden");
