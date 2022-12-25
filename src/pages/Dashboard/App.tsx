@@ -13,6 +13,7 @@ export default function App() {
   const defaultOffset = createMemo(() => (new Date().getDay() === 6 || new Date().getDay() === 0) ? 1 : 0);
   const [offset, setOffset] = createSignal(defaultOffset());
   const [menuOpen, setMenuOpen] = createSignal(false);
+  const [addAppointmentOpen, setAddAppointmentOpen] = createSignal(false);
   const [showAnnouncements, setShowAnnouncements] = createSignal(false);
   const [showSettings, setShowSettings] = createSignal(false);
 
@@ -42,9 +43,9 @@ export default function App() {
         </Show>
         
         <main class="schedule">
-          <Header offset={offset} setOffset={setOffset} showAnnouncements={showAnnouncements} showSettings={showSettings} menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
+          <Header offset={offset} setOffset={setOffset} showAnnouncements={showAnnouncements} showSettings={showSettings} menuOpen={menuOpen} setMenuOpen={setMenuOpen} addAppointmentOpen={addAppointmentOpen} setAddAppointmentOpen={setAddAppointmentOpen} />
 
-          <Schedule offset={offset} defaultOffset={defaultOffset} />
+          <Schedule offset={offset} defaultOffset={defaultOffset} addAppointmentOpen={addAppointmentOpen} />
         </main>
     </div>
   );

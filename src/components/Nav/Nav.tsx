@@ -3,7 +3,7 @@ import { useAppState } from "../../context";
 import { Translate } from "../Translate";
 import './Nav.css'
 
-interface Props {
+type Props = {
   setMenuOpen: Setter<boolean>, 
   showSettings: Accessor<boolean>, 
   showAnnouncements: Accessor<boolean>, 

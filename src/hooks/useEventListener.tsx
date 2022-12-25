@@ -1,6 +1,6 @@
 import { createEffect, onCleanup } from "solid-js";
 
-interface Props {
+type Props = {
   eventName: string,
   handler: Function,
   element: HTMLElement | (Window & typeof globalThis)

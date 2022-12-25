@@ -4,7 +4,7 @@ import { useAppState } from "../../../context";
 import { Translate } from "../../Translate";
 import './AddAppointmentModal.css'
 
-interface Props {
+type Props = {
     setAddAppointmentOpen: Setter<boolean>
 }
 

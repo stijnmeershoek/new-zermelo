@@ -2,7 +2,7 @@ import { Accessor, createMemo, JSX, Show } from "solid-js";
 import { Translate } from "../Translate";
 import './LessonBlock.css';
 
-interface Props {
+type Props = {
     isDesktop: Accessor<boolean>,
     lesson: Appointment
     style?: JSX.CSSProperties,
@@ -22,7 +22,7 @@ export const LessonBlock = (props: Props) => {
   )
 }
 
-interface ChoiceProps {
+type ChoiceProps = {
   lesson: Appointment
 }
 
@@ -41,7 +41,7 @@ const ChoiceContent = (props: ChoiceProps) => {
   )
 }
 
-interface LessonProps {
+type LessonProps = {
   lesson: Appointment,
   isDesktop: Accessor<boolean>
 }

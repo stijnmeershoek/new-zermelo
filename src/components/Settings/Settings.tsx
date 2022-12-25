@@ -1,9 +1,10 @@
+import { Show } from "solid-js";
 import { useAppState } from "../../context";
 import { Translate } from "../Translate";
 import './settings.css'
 
 export const Settings = () => {
-    const { settings, updateSettings } = useAppState();
+    const { settings, updateSettings, isDesktop } = useAppState();
 
     return (
         <aside class='settings' aria-labelledby='settings-header'>
@@ -29,14 +30,15 @@ export const Settings = () => {
               <option value="true"><Translate nlString="Ja" enString="Yes" /></option>
             </select>
           </div>
-          {/* //TODO finalize custom appointments */}
-          {/* <div>
-            <label for="custom"><Translate nlString="Eigen afspraken" enString="Personal Appointments" />:</label>
-            <select id="custom" value={settings.enableCustom} onInput={updateSettings('enableCustom')}>
-              <option value="false"><Translate nlString="Nee" enString="No" /></option>
-              <option value="true"><Translate nlString="Ja" enString="Yes" /></option>
-            </select>
-          </div> */}
+          <Show when={isDesktop()}>
+            <div>
+              <label for="custom"><Translate nlString="Eigen afspraken" enString="Personal Appointments" />:</label>
+              <select id="custom" value={settings.enableCustom} onInput={updateSettings('enableCustom')}>
+                <option value="false"><Translate nlString="Nee" enString="No" /></option>
+                <option value="true"><Translate nlString="Ja" enString="Yes" /></option>
+              </select>
+            </div>
+          </Show>
         </aside>
     )
 }

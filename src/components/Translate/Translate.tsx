@@ -1,7 +1,7 @@
 import { Match, Switch } from "solid-js"
 import { useAppState } from "../../context"
 
-interface Props {
+type Props = {
     nlString: string,
     enString: string
 }

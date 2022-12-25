@@ -36,21 +36,25 @@ export const getWeekNumber = (date: Date) => {
 }
 
 export function getScheduleHours(appointments: Appointment[], min: number, max: number) {
-    if(appointments.length < 1) return [];
-    let highest = new Date(appointments.reduce(
-        (previous, current) => current.end > previous ? current.end : previous,
-        appointments[0].end
-    ) * 1000).getHours() + 1;
-    let lowest = new Date(appointments.reduce(
-        (previous, current) => current.start < previous ? current.start : previous,
-        appointments[0].start
-    ) * 1000).getHours();
-
-    if(lowest > min) lowest = min;
-    if(highest < max) highest = max;
-
+    let highest = max;
+    let lowest = min;
     let hours = [];
-    for (var i = lowest; i <= highest; i++) {
+    
+    if(appointments.length > 1) {
+        highest = new Date(appointments.reduce(
+            (previous, current) => current.end > previous ? current.end : previous,
+            appointments[0].end
+        ) * 1000).getHours() + 1;
+        lowest = new Date(appointments.reduce(
+            (previous, current) => current.start < previous ? current.start : previous,
+            appointments[0].start
+        ) * 1000).getHours();
+    
+        if(lowest > min) lowest = min;
+        if(highest < max) highest = max;
+    };
+
+    for (let i = lowest; i <= highest; i++) {
         hours.push(i);
     }
     

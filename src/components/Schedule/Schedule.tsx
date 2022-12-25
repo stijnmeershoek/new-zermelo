@@ -7,9 +7,10 @@ import { useAppState } from '../../context';
 import { getDates } from '../../utils/functions';
 import './Schedule.css'
 
-interface Props {
+type Props = {
   offset: Accessor<number>,
   defaultOffset: Accessor<number>,
+  addAppointmentOpen: Accessor<boolean>
 }
 
 export const Schedule = (props: Props) => {
@@ -28,8 +29,8 @@ export const Schedule = (props: Props) => {
     let enableCustomRef = settings.enableCustom;
     let choiceModalOpenRef = choiceModalOpen();
 
-    createEffect(on(() => [props.offset(), settings.showChoices, settings.enableCustom, choiceModalOpen()], () => {
-      if(choiceModalOpen() !== false) return;
+    createEffect(on(() => [props.offset(), settings.showChoices, settings.enableCustom, choiceModalOpen(), props.addAppointmentOpen()], () => {
+      if(choiceModalOpen() !== false || props.addAppointmentOpen() !== false) return;
 
       if(props.offset() === props.defaultOffset()) {
         setDates(datesLoad);

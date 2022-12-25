@@ -5,7 +5,7 @@ import { Translate } from "../../components/Translate";
 import { useAppState } from "../../context";
 import './Login.css'
 
-interface Props {
+type Props = {
   addAccount: Accessor<boolean>
 }
 

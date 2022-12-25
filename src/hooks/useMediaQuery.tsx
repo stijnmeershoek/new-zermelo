@@ -1,6 +1,6 @@
 import { createSignal, createEffect, onCleanup } from "solid-js";
 
-interface Props {
+type Props = {
   query: string
 }
 

@@ -1,7 +1,7 @@
 import { Accessor, createEffect, createSignal, Show } from "solid-js";
 import { Translate } from "../../Translate";
 
-interface Props {
+type Props = {
   closeModal: () => void, 
   selectedLesson: Accessor<Appointment | undefined>
 }
@@ -81,7 +81,7 @@ export const LessonModal = (props: Props) => {
                     <span>{props.selectedLesson()?.changeDescription}</span>
                   </Show>
                   <Show when={props.selectedLesson()?.schedulerRemark}>
-                    <span>{props.selectedLesson()?.changeDescription}</span>
+                    <span>{props.selectedLesson()?.schedulerRemark}</span>
                   </Show>
                 </div>
               </Show>

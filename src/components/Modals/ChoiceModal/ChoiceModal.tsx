@@ -4,7 +4,7 @@ import { useAppState } from "../../../context";
 import { LessonBlock } from "../../LessonBlock";
 import { Translate } from "../../Translate";
 
-interface Props { 
+type Props = { 
   closeModal: () => void, 
   selectedLesson: Accessor<Appointment | undefined>
 }

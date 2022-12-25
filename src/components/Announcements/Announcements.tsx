@@ -3,7 +3,7 @@ import { useAppState } from "../../context"
 import { Translate } from "../Translate";
 import './Announcements.css'
 
-interface Props {
+type Props = {
   announcements: Accessor<Announcement[]>
 }
 

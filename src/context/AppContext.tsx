@@ -50,7 +50,7 @@ export function useAppState() {
     return useContext(AppContext);
 }
 
-interface Props {
+type Props = {
     children: JSX.Element | JSX.Element[]
 }
 
@@ -221,9 +221,10 @@ export function AppProvider(props: Props) {
       let schedule: Appointment[][] = [];
       if(merged.length > 1) {
         schedule = sortSchedule(merged, dates, settings.showChoices);
-        const scheduleHours = getScheduleHours(merged, scheduleStartMin(), scheduleEndMin());
-        setScheduleHours(scheduleHours);
       }
+      
+      const scheduleHours = getScheduleHours(merged, scheduleStartMin(), scheduleEndMin());
+      setScheduleHours(scheduleHours);
 
       return Promise.resolve(schedule);
     }

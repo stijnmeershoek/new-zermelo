@@ -2,7 +2,7 @@ import { LessonBlock } from '../../LessonBlock';
 import { useAppState } from '../../../context'
 import { Accessor, For, Show } from 'solid-js';
 
-interface Props {
+type Props = {
     dayNumber: number,
     schedule: Accessor<Appointment[][]>,
     scheduleMin: number,

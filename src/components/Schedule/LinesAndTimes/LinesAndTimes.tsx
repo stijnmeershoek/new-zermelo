@@ -1,6 +1,6 @@
 import { Accessor, For } from "solid-js"
 
-interface Props {
+type Props = {
     scheduleHours: Accessor<number[]>
 }
 
